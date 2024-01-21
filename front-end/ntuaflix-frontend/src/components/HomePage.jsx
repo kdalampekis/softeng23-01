@@ -35,7 +35,6 @@ function HomePage() {
 
     const handleFunctionalityClick = (option) => {
         setSelectedFunctionality(option);
-        setMessage(option);
         // setInputValues({});
         if (option === "Add a like/dislike to a movie") {
             setSearchButtonText("Add");
@@ -48,7 +47,6 @@ function HomePage() {
 
     const handleBackToOptions = () => {
         setSelectedFunctionality(null);
-        setMessage("How can Ntuaflix help you today?");
         setActor("actor/cast member")
         setGenre("genre");
         setNumberOfMovies("N");
