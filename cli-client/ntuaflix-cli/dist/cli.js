@@ -3,11 +3,10 @@ import { render } from 'ink';
 import React from 'react';
 import meow from 'meow';
 import App from './app.js';
-
+import { login, logout, getTitleById, getTitleList, usser, adduser, healthcheck, resetall, newtitles, newakas, newnames, newcrew, newepisod, newprincipals, newratings, bygenre, name, searchname } from './apiClients.js';
 
 
 const cli = meow(`
-
   Usage
     $ ntuaflix-cli
     $ se2301 login --username <your_username> --password <your_password>
@@ -29,10 +28,7 @@ const cli = meow(`
     $ se2301 name --nameid <name_ID>
     $ se2301 searchname --name <searched_name>
 
-
-
   Options
-
     --name       Your name
     --username   Username for authentication
     --password   Password for authentication
@@ -45,8 +41,6 @@ const cli = meow(`
     --to         Ending year (optional for date range)
     --nameid     ID of the name
 
-
-
   Examples
 
     $ ntuaflix-cli --name=Jane
@@ -58,6 +52,12 @@ const cli = meow(`
 	importMeta: import.meta
 
 });
+
+if (cli.input[0] === 'login' && cli.flags.username && cli.flags.password) {
+	login(cli.flags.username, cli.flags.password);
+} else if (cli.input[0] === 'logout' && cli.flags.apikey) {
+	logout(cli.flags.apikey);
+}
 
 render( /*#__PURE__*/React.createElement(App, {
 
