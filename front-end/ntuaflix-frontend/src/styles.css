@@ -19,7 +19,14 @@ html {
 body {
     background: black;
     padding: 0 16px;
-    min-height: 100vh; /* 100% of the viewport height */
+    /*min-height: 100vh; !* 100% of the viewport height *!*/
+    overflow-x: hidden;
+}
+
+html, body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
 }
 
 header {
@@ -149,7 +156,36 @@ input, .inputContainer .styled-select {
     padding: 20px 10px;
 }
 
+footer {
+    text-align: center;
+    width: 100%;
+    height: 2.5rem;
+    position: fixed;
+    bottom: 1rem;
+}
 
+footer p, .link {
+    color: #ccc;
+    text-decoration: none;
+}
+
+.link:hover {
+    color: white;
+    /*text-decoration: underline;*/
+}
+
+.dynamic-content {
+    /* Define your gradient */
+    background: linear-gradient(45deg, var(--gradient1), var(--gradient2));
+
+    /* Clip the background to the text */
+    -webkit-background-clip: text;
+    background-clip: text;
+
+    /* Make the text transparent to show the background */
+    -webkit-text-fill-color: transparent;
+    color: transparent;
+}
 
 
 

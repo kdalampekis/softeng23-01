@@ -2,182 +2,134 @@ import React, {useState} from "react";
 import Header from "./Header";
 import "../styles.css"
 import Options from "../constants/Options";
-import {useNavigate} from "react-router-dom";
-import Button from "./Button";
+import RenderOptionContent from "../Functions/RenderOptionContent";
+import Footer from "./Footer";
 
 
 
 function HomePage() {
-    const [message, setMessage] = useState("How can Ntuaflix help you today?");
     const [selectedFunctionality, setSelectedFunctionality] = useState(null);
     const [inputValues, setInputValues] = useState({}); // Object to hold values for multiple inputs
+
+    const [genre, setGenre] = useState('a genre');
+    const [numberOfMovies, setNumberOfMovies] = useState('N');
+    const [actor, setActor] = useState('actor/cast member');
+    const [movieTitle, setMovieTitle] = useState("movie");
+    const [movieYear, setMovieYear] = useState("year");
+
+    const [searchButtonText, setSearchButtonText] = useState("Search");
+
 
     const handleInputChange = (name, value) => {
         setInputValues(prevValues => ({
             ...prevValues,
             [name]: value
         }));
+
+        if (name === 'genre') setGenre(value || 'genre');
+        else if (name === 'numberOfMovies') setNumberOfMovies(value || 'N');
+        else if (name === 'actor') setActor(value || "actor/cast member");
+        else if (name === 'movieTitle') setMovieTitle(value || "movie");
+        else if (name === 'movieYear') setMovieYear(value || "year");
     };
 
     const handleFunctionalityClick = (option) => {
         setSelectedFunctionality(option);
         setMessage(option);
-        setInputValues({});
+        // setInputValues({});
+        if (option === "Add a like/dislike to a movie") {
+            setSearchButtonText("Add");
+        }
+        else if (option === "Movie analytics" || option === "Actor/cast member profile") {
+            setSearchButtonText("Dive")
+        }
+        else setSearchButtonText("Search");
     };
 
     const handleBackToOptions = () => {
         setSelectedFunctionality(null);
         setMessage("How can Ntuaflix help you today?");
-        setInputValues({}); // Reset the input value when going back
-    };
+        setActor("actor/cast member")
+        setGenre("genre");
+        setNumberOfMovies("N");
+        setMovieYear("year");
+        setSearchButtonText("Search");
+        // setInputValues({}); // Reset the input value when going back
 
-    const renderOptionContent = (option) => {
-        switch(option) {
-            case "N highest rated movies in a genre":
-                return (
-                    <div className="inputContainer query">
-                        <input
-                            type="text"
-                            value={inputValues.genre || ""}
-                            onChange={(e) => handleInputChange('genre', e.target.value)}
-                            placeholder="Enter genre"
-                        />
-                        <input
-                            type="number"
-                            value={inputValues.numberOfMovies || ""}
-                            onChange={(e) => handleInputChange('numberOfMovies', e.target.value)}
-                            placeholder="Enter no. of movies"
-                        />
-                        <div>Content for N highest rated movies in a genre</div>
-                    </div>
-                );
-            case "Highest rated movie of an actor/cast member":
-                return (
-                    <div className= "query">
-                        <input
-                            type="text"
-                            value={inputValues.actor || ""}
-                            onChange={(e) => handleInputChange('actor', e.target.value)}
-                            placeholder="Enter actor/cast member"
-                        />
-                        <div>Content for Highest rated movie of an actor/cast member</div>
-                    </div>
-                );
-            case "Add a like/dislike to a movie":
-                return (
-                    <div className= "query">
-                        <input
-                            type="text"
-                            value={inputValues.movieTitle || ""}
-                            onChange={(e) => handleInputChange('movieTitle', e.target.value)}
-                            placeholder="Enter movie title"
-                        />
-                        <div>Content for like/dislike to a movie</div>
-                    </div>
-                );
-            case "Most recent movie of an actor/cast member":
-                return (
-                    <div className= "query">
-                        <input
-                            type="text"
-                            value={inputValues.actor || ""}
-                            onChange={(e) => handleInputChange('actor', e.target.value)}
-                            placeholder="Enter actor/cast member"
-                        />
-                        <div>Content for Most recent movie of an actor/cast member</div>
-                    </div>
-                );
-            case "N highest rated movies of an actor/cast member":
-                return (
-                    <div className="inputContainer query">
-                        <input
-                            type="text"
-                            value={inputValues.actor || ""}
-                            onChange={(e) => handleInputChange('actor', e.target.value)}
-                            placeholder="Enter actor/cast member"
-                        />
-                        <input
-                            type="number"
-                            value={inputValues.numberOfMovies || ""}
-                            onChange={(e) => handleInputChange('numberOfMovies', e.target.value)}
-                            placeholder="Enter number of movies"
-                        />
-                        <div>Content for N highest rated movies by actor/cast member</div>
-                    </div>
-                );
-            case "Search movie by actor/cast member":
-                return (
-                    <div className= "query">
-                        <input
-                            type="text"
-                            value={inputValues.actor || ""}
-                            onChange={(e) => handleInputChange('actor', e.target.value)}
-                            placeholder="Enter actor/cast member"
-                        />
-                        <div>Content for movie by actor/cast member</div>
-                    </div>
-                );
-            case "Search movie by genre":
-                return (
-                    <div className= "query">
-                        <input
-                            type="text"
-                            value={inputValues.genre || ""}
-                            onChange={(e) => handleInputChange('genre', e.target.value)}
-                            placeholder="Enter genre"
-                        />
-                        <div>Content for movie by genre</div>
-                    </div>
-                );
-            case "Movie analytics":
-                return (
-                    <div className= "query">
-                        <input
-                            type="text"
-                            value={inputValues.movieTitle || ""}
-                            onChange={(e) => handleInputChange('movieTitle', e.target.value)}
-                            placeholder="Enter movie title"
-                        />
-                        <div>Content for Movie analytics</div>
-                    </div>
-                );
-            case "Search movie by year":
-                return (
-                    <div className= "query">
-                        <input
-                            type="number"
-                            value={inputValues.year || ""}
-                            onChange={(e) => handleInputChange('year', e.target.value)}
-                            placeholder="Enter year"
-                        />
-                        <div>Content for movie by year</div>
-                    </div>
-                );
-            case "Actor/cast member profile":
-                return (
-                    <div className= "query">
-                        <input
-                            type="text"
-                            value={inputValues.actor || ""}
-                            onChange={(e) => handleInputChange('actor', e.target.value)}
-                            placeholder="Enter actor/cast member"
-                        />
-                        <div>Content for Actor/cast member profile</div>
-                    </div>
-                );
-            // Add cases for other options
-            default:
-                return null;
-        }
     };
-
 
 
 
     return(
         <div>
             <Header />
-            <h1 className={`message ${!selectedFunctionality ? 'message home' : 'message'}`}>{message}</h1>
+            <h1 className={`message ${!selectedFunctionality ? 'home' : ''}`}>
+                {!selectedFunctionality && "How can Ntuaflix help you today?"}
+
+                {selectedFunctionality === "The N highest rated movies in a genre" &&
+                    <span>
+                        Find the <span className="dynamic-content">{numberOfMovies} </span>
+                        highest rated movies in <span className="dynamic-content">{genre}</span>
+                    </span>
+                }
+
+                {selectedFunctionality === "Highest rated movie of an actor/cast member" && (
+                    <span>
+                        Highest rated movie of <span className="dynamic-content">{actor}</span>
+                    </span>
+                )}
+
+                {selectedFunctionality === "Add a like/dislike to a movie" && (
+                    <span>
+                        Add a like/dislike to <span className="dynamic-content">{movieTitle}</span>
+                    </span>
+                )}
+
+                {selectedFunctionality === "Most recent movie of an actor/cast member" && (
+                    <span>
+                        Most recent movie of <span className="dynamic-content">{actor}</span>
+                    </span>
+                )}
+
+                {selectedFunctionality === "The N highest rated movies of an actor/cast member" && (
+                    <span>
+                        Find the <span className="dynamic-content">{numberOfMovies} </span>
+                        highest rated movies of <span className="dynamic-content">{actor}</span>
+                    </span>
+                )}
+
+                {selectedFunctionality === "Search movies by actor/cast member" && (
+                    <span>
+                        Search movies with <span className="dynamic-content">{actor}</span>
+                    </span>
+                )}
+
+                {selectedFunctionality === "Search movies by genre" && (
+                    <span>
+                        Search <span className="dynamic-content">{genre}</span> movies
+                    </span>
+                )}
+
+                {selectedFunctionality === "Movie analytics" && (
+                    <span>
+                        Dive into the analytics of <span className="dynamic-content">{movieTitle}</span>
+                    </span>
+                )}
+
+                {selectedFunctionality === "Search movies by year" && (
+                    <span>
+                        Search movies published in <span className="dynamic-content">{movieYear}</span>
+                    </span>
+                )}
+
+                {selectedFunctionality === "Actor/cast member profile" && (
+                    <span>
+                        Dive into the profile of <span className="dynamic-content">{actor}</span>
+                    </span>
+                )}
+
+            </h1>
+
 
             {!selectedFunctionality && (
                 <div className="functionalitiesContainer">
@@ -191,13 +143,15 @@ function HomePage() {
 
             {selectedFunctionality && (
                 <div className="buttonContainer">
-                    {renderOptionContent(selectedFunctionality)}
-                    <button>Search</button>
+                    {RenderOptionContent(selectedFunctionality, inputValues, handleInputChange)}
+                    <button>{searchButtonText}</button>
                     <button onClick={handleBackToOptions}>Go Back</button>
                 </div>
             )}
+
+            <Footer role="user" />
         </div>
-    )
+    );
 }
 
 
