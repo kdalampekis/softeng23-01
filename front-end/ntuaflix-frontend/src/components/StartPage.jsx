@@ -3,12 +3,15 @@ import Header from "./Header";
 import "../styles.css"
 import Button from "./Button";
 import Countries from "../constants/Countries";
+import {useNavigate} from "react-router-dom";
 
 function StartPage() {
     const [showLogin, setShowLogin] = useState(false);
     const [showSignUp, setShowSignUp] = useState(false);
     const [message, setMessage] = useState("Welcome to Ntuaflix");
     const [signupStep, setSignupStep] = useState(1);
+
+    const navigate = useNavigate();
 
     const handleContinueClick = () => {
         setSignupStep(2); // Move to the next step of signup
@@ -34,6 +37,9 @@ function StartPage() {
     const handleLogin = () => {
         console.log("Logging in...");
         // Add login logic here
+
+        // Navigate to the home page after the login logic
+        navigate('/home');
     };
 
     const handleSignUp = () => {
@@ -44,6 +50,12 @@ function StartPage() {
     const handleFinalSignUp = () => {
         console.log("Final signup details submitted");
         // Add logic to handle final signup submission
+
+        //Reset states to initial values
+        setShowLogin(false);
+        setShowSignUp(false);
+        setSignupStep(1);
+        setMessage("Welcome to Ntuaflix");
     };
 
 

@@ -4,6 +4,8 @@
     --gradient2: #BF40BF;
     --gradient1: #7F00FF;
     --button: #7F00FF;
+    --functionality: #800080;
+    --functionality1: #9F2B68;
 }
 
 * {
@@ -42,15 +44,22 @@ header h1 {
 
 button {
     padding: 10px 20px;
-    background-color: var(--button); /* A pleasant green */
     width: 130px;
     color: white;
-    border: 1px solid black;
     border-radius: 10px;
     font-size: 16px;
     cursor: pointer;
     text-align: center;
     margin: 1rem;
+    background: black;
+    border: 2px solid var(--button);
+}
+
+button:hover {
+    /*background: linear-gradient(to right, var(--gradient1), var(--gradient2));*/
+    /*border: 2px solid white;*/
+    background: var(--button);
+    color: white;
 }
 
 .buttonContainer {
@@ -69,19 +78,11 @@ button {
     margin-top: 2rem;
 }
 
-.inputContainer input {
-    width: 15%; /* Making inputs wider */
-    padding: 10px;
-    margin: 10px 0;
-    border-radius: 5px;
-    border: 1px solid #ddd; /* A light grey border */
-}
-
 .inputContainer Button {
     margin-top: 1rem;
 }
 
-.inputContainer input, .inputContainer .styled-select {
+input, .inputContainer .styled-select {
     width: 200px; /* Set a fixed width */
     padding: 10px;
     margin: 10px 0;
@@ -89,9 +90,12 @@ button {
     border: 1px solid #ddd;
     background-color: white;
     color: black;
-    cursor: pointer;
     font-size: 16px;
     text-align: left;
+}
+
+.query input {
+    width: 250px;
 }
 
 
@@ -104,3 +108,48 @@ button {
 .styled-select:hover {
     background-color: #f5f5f5; /* Example hover color */
 }
+
+.home {
+    margin-top: 5rem;
+}
+
+.functionality {
+    border: 2px solid var(--button); /* Example border */
+    padding: 10px;
+    margin: 4px 0;
+    border-radius: 10px;
+    width: 10rem;
+    height: 10rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    color: white;
+    background: black;
+}
+
+.functionality button {
+    background-color: black;
+}
+
+.functionality:hover {
+    background: linear-gradient(to right, var(--gradient1), var(--gradient2));
+    border: 2px solid white;
+}
+
+.functionalitiesContainer {
+    margin: 3rem auto;
+    width: 70%;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+    padding: 20px 10px;
+}
+
+
+
+
+
