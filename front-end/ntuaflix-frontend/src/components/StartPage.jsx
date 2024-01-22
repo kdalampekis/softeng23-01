@@ -39,7 +39,7 @@ function StartPage() {
         // Add login logic here
 
         // Navigate to the home page after the login logic
-        navigate('/home');
+        navigate('/admin');
     };
 
     const handleSignUp = () => {
