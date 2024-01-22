@@ -1,4 +1,4 @@
-const Options = [
+const UserOptions = [
     "The N highest rated movies in a genre",
     "Highest rated movie of an actor/cast member",
     "Add a like/dislike to a movie",
@@ -11,4 +11,4 @@ const Options = [
     "Actor/cast member profile"
 ];
 
-export default Options;
+export default UserOptions;

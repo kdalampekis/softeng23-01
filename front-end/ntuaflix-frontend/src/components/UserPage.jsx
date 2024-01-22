@@ -1,13 +1,13 @@
 import React, {useState} from "react";
 import Header from "./Header";
-import "../styles.css"
-import Options from "../constants/Options";
+import "../styles.css";
 import RenderOptionContent from "../Functions/RenderOptionContent";
 import Footer from "./Footer";
+import UserOptions from "../constants/UserOptions";
 
 
 
-function HomePage() {
+export default function UserPage() {
     const [selectedFunctionality, setSelectedFunctionality] = useState(null);
     const [inputValues, setInputValues] = useState({}); // Object to hold values for multiple inputs
 
@@ -52,8 +52,6 @@ function HomePage() {
         setNumberOfMovies("N");
         setMovieYear("year");
         setSearchButtonText("Search");
-        // setInputValues({}); // Reset the input value when going back
-
     };
 
 
@@ -131,7 +129,7 @@ function HomePage() {
 
             {!selectedFunctionality && (
                 <div className="functionalitiesContainer">
-                    {Options.map((option, index) => (
+                    {UserOptions.map((option, index) => (
                         <button key={index} className="functionality" onClick={() => handleFunctionalityClick(option)}>
                             {option}
                         </button>
@@ -153,4 +151,4 @@ function HomePage() {
 }
 
 
-export default HomePage;
+// export default UserPage;
