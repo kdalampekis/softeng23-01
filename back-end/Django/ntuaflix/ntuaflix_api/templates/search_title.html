@@ -1,0 +1,16 @@
+<!-- templates/search_form.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Search Titles</title>
+</head>
+<body>
+    <h1>Search Titles</h1>
+    <form action="{% url 'search-title' %}" method="get">
+        <label for="title">Title:</label>
+        <input type="text" id="title" name="title">
+        <button type="submit">Search</button>
+    </form>
+</body>
+</html>
