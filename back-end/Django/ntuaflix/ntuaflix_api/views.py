@@ -12,13 +12,13 @@ from django.db.models import Q
 class TitleBasicList(generics.ListAPIView):
     serializer_class = TitleObjectSerializer
     queryset = TitleObject.objects.all()
-    renderer_classes = (CSVRenderer, ) 
+    # renderer_classes = (CSVRenderer, ) 
 
-    def get_queryset(self):
+    def get_title(self):
+        serializer_class = TitleObjectSerializer
+        title = TitleObject.objects.all()
 
-        queryset = TitleObject.objects.all()
-
-        return queryset
+        return title
 
 class TitleDetailView(generics.ListAPIView):
     serializer_class = TitleObjectSerializer
