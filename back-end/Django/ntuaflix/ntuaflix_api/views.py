@@ -150,14 +150,31 @@ class SearchByGenre(APIView):
 
     def get(self, request, *args, **kwargs):
         # Retrieve query parameters
-        genre = request.GET.get('genre', None)        
+        genre = request.GET.get('genre', None)  
+        number = request.GET.get('number',None)     
+        toprated = request.GET.get('toprated',None)
         # Check if the 'genre' parameter is provided
         if genre:
             # Filter by genre
             queryset = TitleObject.objects.filter(genres__icontains=genre)
             # Serialize the queryset
-            serializer = TitleObjectSerializer(queryset, many=True)
 
+            if toprated=='true':
+                if number:
+                    queryset = queryset.order_by('-averageRating')[:int(number)]
+
+                else:
+                    context = {
+                    'error_message': "You have to input a number."
+                    }
+                    return render(request, 'SearchByGenre.html', context)
+
+            else:
+                if number:
+                    queryset = queryset[:int(number)]
+                    
+
+            serializer = TitleObjectSerializer(queryset, many=True)
             # Return the serialized data
         else:
             # If 'genre' is not provided, render the search criteria form

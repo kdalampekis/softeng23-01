@@ -6,7 +6,9 @@ urlpatterns = [
     # ///////////////////////////   END POINTS NECESSARY           ////////////////////////////
 
     path('title/', TitleBasicList.as_view(), name='title-basic-list'),
-    path('title/<str:titleID>/', TitleDetailView.as_view(), name='title-detail'),
+
+    path('title/<str:titleID>/', TitleDetailView.as_view(), name='title-detail'), #30th Requirement
+
     path('searchtitle/', SearchTitleView.as_view(), name='search-title'),
 
         # /////////////////     FILTERS     ////////////////////////////////////////
@@ -16,7 +18,9 @@ urlpatterns = [
         # /////////////////     NAMES     ////////////////////////////////////////
 
     path('name/', NameObjectView.as_view(), name='name-basic-list'),
-    path('name/<str:nameID>/', NameBiography.as_view(), name='name-detail'),
+
+    path('name/<str:nameID>/', NameBiography.as_view(), name='name-detail'), # 25th Requirement aswell
+
     path('searchname/', SearchNameView.as_view(), name='search-name'),
 
     # /////////////////////////     END OF NECESSARY ENDPOINTS   /////////////////////////
@@ -26,24 +30,18 @@ urlpatterns = [
 
     # ///////////////////////////   BELOW ARE ENDPOINTS FROM REQUIREMENTS    ////////////////////
 
-    # 1ST REQUIREMENT:
-    # Choose N movies with the best rating from a specific genre
-    path('NBestRatedGenre/', NBestRatedGenre.as_view(), name='NBestRatedGenre'),
-
-
-    # 4th Requirement    
-    # path('SearchByNameTopRated/', SearchByNameTopRated.as_view(), name='SearchByNameTopRated'),
-
-
-    # 16th Requirement    
+    # 17th Requirement and 1st Requirement   
     path('SearchByGenre/', SearchByGenre.as_view(), name='SearchByGenre'),
     
-    # 17th Requirement    
+    # 18th Requirement 
     path('SearchByYear/', SearchByYear.as_view(), name='SearchByYear'),
 
     
-    # 15th Requirement    
+    # 4,5,6,16th Requirement Requirement    
     path('SearchByName/', SearchByName.as_view(), name='SearchByName'),
+
+
+    # 25th and 30th Requirement see in the first block of code (Necessary Endpoints)
 
     # //////////////////////////////////////////////////////////////////////////////////
 

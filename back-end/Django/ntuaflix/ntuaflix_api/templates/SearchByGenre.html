@@ -7,12 +7,29 @@
 </head>
 <body>
     <h1>Search for Movies based on a Genre</h1>
+
+    {% if error_message %}
+    <p style="color: red;">{{ error_message }}</p>
+    {% endif %}
+
+
     <form action="{% url 'SearchByGenre' %}" method="get">
         <label for="genre">Genre:</label>
         <input type="text" id="genre" name="genre"><br><br>
 
+        <label for="toprated">Highest Rated:</label>
+        <select id="toprated" name="toprated">
+            <option value="true">True</option>
+            <option value="false">False</option>
+        </select><br><br>
+                
+        <label for="number">Enter amount of movies to be shown:</label>
+        <input type="number" id="number" name="number"><br><br>
+
         <input type="submit" value="Search">
     </form>
+    
+    
 
     {% if results %}
         <h2>Results</h2>
