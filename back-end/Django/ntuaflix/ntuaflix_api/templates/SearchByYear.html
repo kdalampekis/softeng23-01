@@ -1,0 +1,28 @@
+<!-- templates/search_titles.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Search By Year</title>
+</head>
+<body>
+    <h1>Search for Movies based on a Year Created</h1>
+    <form action="{% url 'SearchByYear' %}" method="get">
+        <label for="year">Genre:</label>
+        <input type="text" id="year" name="year"><br><br>
+
+        <input type="submit" value="Search">
+    </form>
+
+    {% if results %}
+        <h2>Results</h2>
+        <ul>
+            {% for title_object in results %}
+                <li>
+                    {{ title_object.originalTitle }} - {{ title_object.averageRating }}
+                </li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+</body>
+</html>

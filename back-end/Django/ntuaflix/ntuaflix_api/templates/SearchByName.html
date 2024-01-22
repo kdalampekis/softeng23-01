@@ -1,0 +1,53 @@
+<!-- templates/search_titles.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+    <meta charset="UTF-8">
+    <title>Search By Name</title>
+
+</head>
+<body onload="toggleNField()">
+    <h1>Search for Movies based on a Name</h1>
+
+    {% if error_message %}
+        <p style="color: red;">{{ error_message }}</p>
+    {% endif %}
+
+    <form action="{% url 'SearchByName' %}" method="get">
+        <label for="name">Name:</label>
+        <input type="text" id="name" name="name"><br><br>
+    
+        <label for="toprated">Highest Rated:</label>
+        <select id="toprated" name="toprated">
+            <option value="true">True</option>
+            <option value="false">False</option>
+        </select><br><br>
+
+        <label for="newest">Newest Release:</label>
+        <select id="newest" name="newest">
+            <option value="true">True</option>
+            <option value="false">False</option>
+        </select><br><br>
+
+        
+        <label for="number">Enter amount of movies to be shown:</label>
+        <input type="number" id="number" name="number"><br><br>
+        
+    
+        <input type="submit" value="Search">
+
+    </form>
+
+    {% if results %}
+        <h2>Results</h2>
+        <ul>
+            {% for title_object in results %}
+                <li>
+                    {{ title_object.originalTitle }} - {{ title_object.averageRating }}
+                </li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+</body>
+</html>
