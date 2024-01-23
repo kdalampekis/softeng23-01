@@ -1,9 +1,9 @@
 import React from 'react';
 import { Text } from 'ink';
 export default function App({
-  name = 'Stranger'
+  name = 'Ntuaflix CLI'
 }) {
-  return /*#__PURE__*/React.createElement(Text, null, "Hello, ", /*#__PURE__*/React.createElement(Text, {
+  return /*#__PURE__*/React.createElement(Text, null, "$", /*#__PURE__*/React.createElement(Text, {
     color: "green"
   }, name));
 }

@@ -107,20 +107,80 @@ async function title(titleID) {
 }
 
 async function searchtitle(titlepart) {
-	// Implement the 'searchtitle' API call here
+	const url = `${BASE_URL}/searchtitle/?title=${encodeURIComponent(titlepart)}`;
+
+	try {
+		const response = await axios.get(url);
+
+		if (response.status === 200) {
+			console.log('Search results:', response.data);
+		} else {
+			console.log('Failed to fetch search results');
+		}
+	} catch (error) {
+		console.error('Error:', error.message);
+	}
 }
 
-async function bygenre(genre, min, from, to) {
-	// Implement the 'bygenre' API call here
+async function bygenre(genre, minimumRating, yearFrom = null, yearTo = null) {
+	let url = `${BASE_URL}/bygenre/?genre=${encodeURIComponent(genre)}&minimumrating=${minimumRating}`;
+
+	// Append optional parameters if provided
+	if (yearFrom !== null) {
+		url += `&yearfrom=${yearFrom}`;
+	}
+
+	if (yearTo !== null) {
+		url += `&yearto=${yearTo}`;
+	}
+
+	try {
+		const response = await axios.get(url);
+
+		if (response.status === 200) {
+			console.log('By Genre results:', response.data);
+		} else {
+			console.log('Failed to fetch By Genre results');
+		}
+	} catch (error) {
+		console.error('Error:', error.message);
+	}
 }
+
+
 
 async function name(nameID) {
-	// Implement the 'name' API call here
+	const url = `${BASE_URL}/name/${nameID}`;
+
+	try {
+		const response = await axios.get(url);
+
+		if (response.status === 200) {
+			console.log('Name Biography:', response.data);
+		} else {
+			console.log('Failed to fetch Name Biography');
+		}
+	} catch (error) {
+		console.error('Error:', error.message);
+	}
 }
 
 async function searchname(name) {
-	// Implement the 'searchname' API call here
+	const url = `${BASE_URL}/searchname/?name=${encodeURIComponent(name)}`;
+
+	try {
+		const response = await axios.get(url);
+
+		if (response.status === 200) {
+			console.log('Search Name results:', response.data);
+		} else {
+			console.log('Failed to fetch Search Name results');
+		}
+	} catch (error) {
+		console.error('Error:', error.message);
+	}
 }
+
 
 
 export { login, logout, adduser, user, healthcheck, resetall, newtitles, newakas, newnames, newcrew, newepisode, newprincipals, newratings, title, searchtitle, bygenre, name, searchname };
