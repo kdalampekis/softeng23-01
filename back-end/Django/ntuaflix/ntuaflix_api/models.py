@@ -37,3 +37,17 @@ class NameObject(models.Model):
 
     def __str__(self):
         return self.originalTitle
+
+class User(models.Model):
+    username = models.CharField(max_length=255)
+    passwordHash = models.CharField(max_length=255)
+    email = models.EmailField()
+    dateOfBirth = models.DateField()
+    country = models.CharField(max_length=255)
+    gender = models.IntegerField()
+
+    class Meta:
+        db_table = 'user' 
+
+    def __str__(self):
+        return self.username
