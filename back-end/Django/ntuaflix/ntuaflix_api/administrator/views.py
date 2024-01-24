@@ -3,6 +3,19 @@ from django.http import JsonResponse
 import csv
 from .forms import TitleBasicUploadForm
 
+from django.http import JsonResponse
+from django.db import DatabaseError, connections
+from django.core.exceptions import ValidationError
+
+from .models import *
+
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.http import require_http_methods
+from django.db import transaction, DatabaseError
+
+
+
 def UploadTitleBasics(request):
     if request.method == 'POST':
         form = TitleBasicUploadForm(request.POST, request.FILES)
@@ -42,3 +55,102 @@ def UploadTitleBasics(request):
         form = TitleBasicUploadForm()
 
     return render(request, 'administrator/upload_titlebasics.html', {'form': form})
+
+
+
+
+
+
+
+
+
+
+
+
+# //////////////////////////////////////////////////////////////////////////////////////////////
+
+def health_check(request):
+    try:
+        # Example: attempting to fetch the first row of some table
+        # Replace 'your_model' with an actual model from your app
+        TitleBasic.objects.first()
+        
+        # If you want to test raw database connectivity
+        # connections['default'].cursor()
+        
+        connection_string = "Database connection successful"  # Customize as needed
+        return JsonResponse({"status": "OK", "dataconnection": connection_string})
+    except (DatabaseError, ValidationError):
+        connection_string = "Database connection failed"  # Customize as needed
+        return JsonResponse({"status": "failed", "dataconnection": connection_string})
+
+
+# @csrf_exempt
+# @require_http_methods(["POST"])
+def reset_all(request):
+    try:
+        with transaction.atomic():
+            # List all models that you want to reset
+            TitleAka.objects.all().delete()
+            Principals.objects.all().delete()
+            Workas.objects.all().delete()
+            Names.objects.all().delete()
+            Episode.objects.all().delete()
+            Rating.objects.all().delete()
+            Crew.objects.all().delete()
+            TitleBasic.objects.all().delete()
+             # Add similar lines for all other models you have
+
+        return JsonResponse({"status": "OK"})
+    except DatabaseError as e:
+        return JsonResponse({"status": "failed", "reason": str(e)})
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -4,9 +4,9 @@ from .models import *
 
 admin.site.register(TitleBasic)
 admin.site.register(TitleAka)
-admin.site.register(Name)
+admin.site.register(Names)
 admin.site.register(Crew)
 admin.site.register(Episode)
-admin.site.register(Principal)
+admin.site.register(Principals)
 admin.site.register(Rating)
 

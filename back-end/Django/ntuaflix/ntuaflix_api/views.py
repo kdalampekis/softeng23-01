@@ -113,36 +113,36 @@ class SearchNameView(APIView):
             return render(request, 'search_name.html')
 
 
-class NBestRatedGenre(APIView):
+# class NBestRatedGenre(APIView):
 
-    def get(self, request, *args, **kwargs):
-        # Retrieve query parameters
-        genre = request.GET.get('genre', None)
-        numberofmovies = request.GET.get('numberofmovies', None)
+#     def get(self, request, *args, **kwargs):
+#         # Retrieve query parameters
+#         genre = request.GET.get('genre', None)
+#         numberofmovies = request.GET.get('numberofmovies', None)
         
-        # Check if the 'genre' parameter is provided
-        if genre:
-            # Filter by genre
-            queryset = TitleObject.objects.filter(genres__icontains=genre)
+#         # Check if the 'genre' parameter is provided
+#         if genre:
+#             # Filter by genre
+#             queryset = TitleObject.objects.filter(genres__icontains=genre)
 
-            # If 'numberofmovies' is provided, cast it to an integer and get the top N movies
-            if numberofmovies:
-                try:
-                    numberofmovies = int(numberofmovies)
-                    queryset = queryset.order_by('-averageRating')[:numberofmovies]
-                except ValueError:
-                    # Handle the exception if 'numberofmovies' is not a valid integer
-                    return Response({"error": "numberofmovies must be an integer"}, status=400)
+#             # If 'numberofmovies' is provided, cast it to an integer and get the top N movies
+#             if numberofmovies:
+#                 try:
+#                     numberofmovies = int(numberofmovies)
+#                     queryset = queryset.order_by('-averageRating')[:numberofmovies]
+#                 except ValueError:
+#                     # Handle the exception if 'numberofmovies' is not a valid integer
+#                     return Response({"error": "numberofmovies must be an integer"}, status=400)
 
-            # Serialize the queryset
-            serializer = TitleObjectSerializer(queryset, many=True)
+#             # Serialize the queryset
+#             serializer = TitleObjectSerializer(queryset, many=True)
 
-            # Return the serialized data
-        else:
-            # If 'genre' is not provided, render the search criteria form
-            return render(request, 'NBestRatedGenre.html')
+#             # Return the serialized data
+#         else:
+#             # If 'genre' is not provided, render the search criteria form
+#             return render(request, 'NBestRatedGenre.html')
 
-        return Response(serializer.data)
+#         return Response(serializer.data)
 
 
 
@@ -255,36 +255,22 @@ class SearchByName(APIView):
 # ////////////////////////////////////////////////////////////////////////
 # ///////////////   ADMIN FUNCTIONALITIES   //////////////////////////////
     
-# @csrf_exempt
-# @require_http_methods(["POST"])
-# def upload_titlebasics(request):
-#     try:
-#         file = request.FILES['file']
-#         if not file.name.endswith('.tsv'):
-#             return JsonResponse({'error': 'File is not TSV format'}, status=400)
 
-#         file_data = file.read().decode('utf-8')
-#         io_string = io.StringIO(file_data)
-#         reader = csv.DictReader(io_string, delimiter='\t')
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.http import require_http_methods
+from django.db import transaction, DatabaseError
 
-#         for row in reader:
-#             # Process each row and save it to the database
-#             TitleBasic.objects.create(
-#                 tconst=row.get('tconst', '').strip(),
-#                 titleType=row.get('titleType', '').strip(),
-#                 primaryTitle=row.get('primaryTitle', '').strip(),
-#                 originalTitle=row.get('originalTitle', '').strip(),
-#                 isAdult=int(row['isAdult']) if row['isAdult'] else 0,
-#                 startYear=int(row['startYear']) if row['startYear'] else None,
-#                 endYear=int(row['endYear']) if row['endYear'] else None,
-#                 runtimeMinutes=int(row['runtimeMinutes']) if row['runtimeMinutes'] else None,
-#                 genres=row.get('genres', '').strip(),
-#                 img_url_asset=row.get('img_url_asset', '').strip()
-#             )
+def reset_all(request):
+    try:
+        with transaction.atomic():
+            # List all models that you want to reset
+            NameObject.objects.all().delete()
+            TitleObject.objects.all().delete()
+            # Add similar lines for all other models you have
 
-#         return JsonResponse({'message': 'File processed successfully'}, status=200)
-#     except Exception as e:
-#         return JsonResponse({'error': str(e)}, status=500)
-
+        return JsonResponse({"status": "OK"})
+    except DatabaseError as e:
+        return JsonResponse({"status": "failed", "reason": str(e)})
 
 

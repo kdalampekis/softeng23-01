@@ -41,7 +41,7 @@ class TitleAka(models.Model):
     def __str__(self):
         return self.title
     
-class Name(models.Model):
+class Names(models.Model):
     nconst = models.CharField(max_length=10, primary_key=True)
     primaryName = models.CharField(max_length=255, blank=True, null=True)
     birthYear = models.IntegerField(blank=True, null=True)
@@ -51,7 +51,7 @@ class Name(models.Model):
     imgUrl = models.CharField(max_length=255, blank=True, null=True)
 
     class Meta:
-        db_table = 'Name'  
+        db_table = 'Names'  
 
     def __str__(self):
         return self.primaryName or 'Unknown Name'
@@ -82,7 +82,7 @@ class Episode(models.Model):
     def __str__(self):
         return f"Episode {self.episodeNumber} of Season {self.seasonNumber} ({self.tconst})"
 
-class Principal(models.Model):
+class Principals(models.Model):
     workas_Id = models.AutoField(primary_key=True)
     tconst = models.CharField(max_length=10)  # This might be a ForeignKey to another table
     ordering = models.IntegerField()
@@ -93,10 +93,31 @@ class Principal(models.Model):
     img_url_asset = models.CharField(max_length=255, blank=True, null=True)
 
     class Meta:
-        db_table = 'Principal'  
+        db_table = 'Principals'  
 
     def __str__(self):
         return f"{self.category} - {self.nconst}"
+    
+# /// AN DEN VGAINOUN LATHOI ALLOU TO PARAKATO THA SVISTEI ///
+
+class Workas(models.Model):
+    workas_Id = models.AutoField(primary_key=True)
+    tconst = models.CharField(max_length=10)  # This might be a ForeignKey to another table
+    ordering = models.IntegerField()
+    nconst = models.CharField(max_length=10)  # This might also be a ForeignKey
+    category = models.CharField(max_length=25, blank=True, null=True)
+    job = models.CharField(max_length=255, blank=True, null=True)
+    characters = models.CharField(max_length=255, blank=True, null=True)
+    img_url_asset = models.CharField(max_length=255, blank=True, null=True)
+
+    class Meta:
+        db_table = 'workas'  
+
+    def __str__(self):
+        return f"{self.category} - {self.nconst}"
+
+
+# ////////////////////////////////////////////////////////////
 
 class Rating(models.Model):
     tconst = models.CharField(max_length=10, primary_key=True)

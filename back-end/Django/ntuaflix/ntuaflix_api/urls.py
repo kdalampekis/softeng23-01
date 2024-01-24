@@ -2,7 +2,12 @@ from django.urls import path, include
 from .views import *
 
 urlpatterns = [
+
+    path('admin/resetall', reset_all),
+
     path('admin/', include('ntuaflix_api.administrator.urls')),
+
+    
 
     # ///////////////////////////   END POINTS NECESSARY           ////////////////////////////
 
