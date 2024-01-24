@@ -252,42 +252,39 @@ class SearchByName(APIView):
 
 
 
-<<<<<<< HEAD
 # ////////////////////////////////////////////////////////////////////////
 # ///////////////   ADMIN FUNCTIONALITIES   //////////////////////////////
     
-@csrf_exempt
-@require_http_methods(["POST"])
-def upload_titlebasics(request):
-    try:
-        file = request.FILES['file']
-        if not file.name.endswith('.tsv'):
-            return JsonResponse({'error': 'File is not TSV format'}, status=400)
+# @csrf_exempt
+# @require_http_methods(["POST"])
+# def upload_titlebasics(request):
+#     try:
+#         file = request.FILES['file']
+#         if not file.name.endswith('.tsv'):
+#             return JsonResponse({'error': 'File is not TSV format'}, status=400)
 
-        file_data = file.read().decode('utf-8')
-        io_string = io.StringIO(file_data)
-        reader = csv.DictReader(io_string, delimiter='\t')
+#         file_data = file.read().decode('utf-8')
+#         io_string = io.StringIO(file_data)
+#         reader = csv.DictReader(io_string, delimiter='\t')
 
-        for row in reader:
-            # Process each row and save it to the database
-            TitleBasic.objects.create(
-                tconst=row.get('tconst', '').strip(),
-                titleType=row.get('titleType', '').strip(),
-                primaryTitle=row.get('primaryTitle', '').strip(),
-                originalTitle=row.get('originalTitle', '').strip(),
-                isAdult=int(row['isAdult']) if row['isAdult'] else 0,
-                startYear=int(row['startYear']) if row['startYear'] else None,
-                endYear=int(row['endYear']) if row['endYear'] else None,
-                runtimeMinutes=int(row['runtimeMinutes']) if row['runtimeMinutes'] else None,
-                genres=row.get('genres', '').strip(),
-                img_url_asset=row.get('img_url_asset', '').strip()
-            )
+#         for row in reader:
+#             # Process each row and save it to the database
+#             TitleBasic.objects.create(
+#                 tconst=row.get('tconst', '').strip(),
+#                 titleType=row.get('titleType', '').strip(),
+#                 primaryTitle=row.get('primaryTitle', '').strip(),
+#                 originalTitle=row.get('originalTitle', '').strip(),
+#                 isAdult=int(row['isAdult']) if row['isAdult'] else 0,
+#                 startYear=int(row['startYear']) if row['startYear'] else None,
+#                 endYear=int(row['endYear']) if row['endYear'] else None,
+#                 runtimeMinutes=int(row['runtimeMinutes']) if row['runtimeMinutes'] else None,
+#                 genres=row.get('genres', '').strip(),
+#                 img_url_asset=row.get('img_url_asset', '').strip()
+#             )
 
-        return JsonResponse({'message': 'File processed successfully'}, status=200)
-    except Exception as e:
-        return JsonResponse({'error': str(e)}, status=500)
-=======
->>>>>>> 5b84e6bc48335c5ff06d6967bd1fe0386aaf42ab
+#         return JsonResponse({'message': 'File processed successfully'}, status=200)
+#     except Exception as e:
+#         return JsonResponse({'error': str(e)}, status=500)
 
 
 

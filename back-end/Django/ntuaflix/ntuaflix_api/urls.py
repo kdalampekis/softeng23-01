@@ -55,7 +55,7 @@ urlpatterns = [
 
 
 
-    path('admin/upload/titlebasics', upload_titlebasics, name='upload_titlebasics'),
+    # path('admin/upload/titlebasics', upload_titlebasics, name='upload_titlebasics'),
     # ////////////////      ADMIN       ////////////////////////////////////
 
 
