@@ -14,6 +14,12 @@ from django.core.exceptions import ObjectDoesNotExist
 
 from django.db.models import Q
 
+from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.http import require_http_methods
+
+import csv
+import io
+from django.http import *
 
 from django.contrib.auth import authenticate, login
 
@@ -197,9 +203,6 @@ class SearchByGenre(APIView):
 
         return Response(serializer.data)
     
-
-
-
 class SearchByYear(APIView):
 
     def get(self, request, *args, **kwargs):
@@ -219,8 +222,6 @@ class SearchByYear(APIView):
 
         return Response(serializer.data)
     
-
-
 class SearchByName(APIView):
 
     def get(self, request, *args, **kwargs):
@@ -264,6 +265,55 @@ class SearchByName(APIView):
             return render(request, 'SearchByName.html')
 
         return Response(serializer.data)
+
+
+
+# ////////////////////////////////////////////////////////////////////////
+# ///////////////   ADMIN FUNCTIONALITIES   //////////////////////////////
+    
+@csrf_exempt
+@require_http_methods(["POST"])
+def upload_titlebasics(request):
+    try:
+        file = request.FILES['file']
+        if not file.name.endswith('.tsv'):
+            return JsonResponse({'error': 'File is not TSV format'}, status=400)
+
+        file_data = file.read().decode('utf-8')
+        io_string = io.StringIO(file_data)
+        reader = csv.DictReader(io_string, delimiter='\t')
+
+        for row in reader:
+            # Process and save each row to the database
+            # Example: TitleBasic.objects.create(**row)
+            pass
+
+        return JsonResponse({'message': 'File processed successfully'}, status=200)
+    except Exception as e:
+        return JsonResponse({'error': str(e)}, status=500)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 # /////////////     USER AUTHENTICATION     ///////////////
