@@ -24,8 +24,6 @@ IGNORE 1 LINES
     attributes,
     isOriginalTitle);
 
-
-
 LOAD DATA INFILE 'E:\\EPA\\NTUA\\ECE\\FLOWS\\FLOW_L\\Soft_Eng\\Data\\truncated_title.crew.tsv'
 INTO TABLE crew
 FIELDS TERMINATED BY '\t'
