@@ -1,24 +1,49 @@
 import React, {useState} from "react";
 import Header from "./Header";
 import "../styles.css";
-import RenderOptionContent from "../Functions/RenderOptionContent";
+import renderOptionContent from "../Functions/RenderOptionContent";
 import Footer from "./Footer";
 import UserOptions from "../constants/UserOptions";
-
+import DynamicHeader from "./DynamicHeader";
+import MoviesDisplay from "../Functions/MoviesDisplay";
+import useSearch from "../Functions/useSearch";
 
 
 export default function UserPage() {
     const [selectedFunctionality, setSelectedFunctionality] = useState(null);
-    const [inputValues, setInputValues] = useState({}); // Object to hold values for multiple inputs
-
+    const [inputValues, setInputValues] = useState({
+        genre: '',
+        numberOfMovies: '',
+        actor: '',
+        movieTitle: '',
+        movieYear: ''
+    });
     const [genre, setGenre] = useState('a genre');
     const [numberOfMovies, setNumberOfMovies] = useState('N');
     const [actor, setActor] = useState('actor/cast member');
     const [movieTitle, setMovieTitle] = useState("movie");
     const [movieYear, setMovieYear] = useState("year");
-
     const [searchButtonText, setSearchButtonText] = useState("Search");
 
+    const { moviesData, searchPerformed, handleSearch, updateSearchPerformed } = useSearch();
+
+
+    // Function to reset input fields
+    const resetInputFields = () => {
+        setInputValues({
+            genre: '',
+            numberOfMovies: '',
+            actor: '',
+            movieTitle: '',
+            movieYear: ''
+        });
+        // Reset additional state if necessary
+        setGenre('a genre');
+        setNumberOfMovies('N');
+        setActor('actor/cast member');
+        setMovieTitle('movie');
+        setMovieYear('year');
+    };
 
     const handleInputChange = (name, value) => {
         setInputValues(prevValues => ({
@@ -33,9 +58,9 @@ export default function UserPage() {
         else if (name === 'movieYear') setMovieYear(value || "year");
     };
 
+    // Changes the search-button text depending on the functionality
     const handleFunctionalityClick = (option) => {
         setSelectedFunctionality(option);
-        // setInputValues({});
         if (option === "Add a like/dislike to a movie") {
             setSearchButtonText("Add");
         }
@@ -45,110 +70,72 @@ export default function UserPage() {
         else setSearchButtonText("Search");
     };
 
-    const handleBackToOptions = () => {
-        setSelectedFunctionality(null);
-        setActor("actor/cast member")
-        setGenre("genre");
-        setNumberOfMovies("N");
-        setMovieYear("year");
+    // Function to handle "Exit" button click
+    const handleExit = () => {
         setSearchButtonText("Search");
+        setSelectedFunctionality(null);
+        updateSearchPerformed(false);
+        resetInputFields();
+    };
+
+    // Function to handle "Search Again" button click
+    const handleSearchAgain = () => {
+        updateSearchPerformed(false);
+        resetInputFields();
+    };
+
+    // Disables the search-button if the user has not filled all the inputs
+    const isSearchButtonDisabled = () => {
+        // return !inputValues.genre.trim() || !inputValues.numberOfMovies.trim();
     };
 
 
 
-    return(
-        <div>
-            <Header />
-            <h1 className={`message ${!selectedFunctionality ? 'home' : ''}`}>
-                {!selectedFunctionality && "How can Ntuaflix help you today?"}
+    return (
+        <div className="body">
+            <Header/>
+            <DynamicHeader
+                selectedFunctionality={selectedFunctionality}
+                numberOfMovies={numberOfMovies}
+                genre={genre}
+                actor={actor}
+                movieTitle={movieTitle}
+                movieYear={movieYear}
+            />
 
-                {selectedFunctionality === "The N highest rated movies in a genre" &&
-                    <span>
-                        Find the <span className="dynamic-content">{numberOfMovies} </span>
-                        highest rated movies in <span className="dynamic-content">{genre}</span>
-                    </span>
-                }
-
-                {selectedFunctionality === "Highest rated movie of an actor/cast member" && (
-                    <span>
-                        Highest rated movie of <span className="dynamic-content">{actor}</span>
-                    </span>
-                )}
-
-                {selectedFunctionality === "Add a like/dislike to a movie" && (
-                    <span>
-                        Add a like/dislike to <span className="dynamic-content">{movieTitle}</span>
-                    </span>
-                )}
-
-                {selectedFunctionality === "Most recent movie of an actor/cast member" && (
-                    <span>
-                        Most recent movie of <span className="dynamic-content">{actor}</span>
-                    </span>
-                )}
-
-                {selectedFunctionality === "The N highest rated movies of an actor/cast member" && (
-                    <span>
-                        Find the <span className="dynamic-content">{numberOfMovies} </span>
-                        highest rated movies of <span className="dynamic-content">{actor}</span>
-                    </span>
-                )}
-
-                {selectedFunctionality === "Search movies by actor/cast member" && (
-                    <span>
-                        Search movies with <span className="dynamic-content">{actor}</span>
-                    </span>
-                )}
-
-                {selectedFunctionality === "Search movies by genre" && (
-                    <span>
-                        Search <span className="dynamic-content">{genre}</span> movies
-                    </span>
-                )}
-
-                {selectedFunctionality === "Movie analytics" && (
-                    <span>
-                        Dive into the analytics of <span className="dynamic-content">{movieTitle}</span>
-                    </span>
-                )}
-
-                {selectedFunctionality === "Search movies by year" && (
-                    <span>
-                        Search movies published in <span className="dynamic-content">{movieYear}</span>
-                    </span>
-                )}
-
-                {selectedFunctionality === "Actor/cast member profile" && (
-                    <span>
-                        Dive into the profile of <span className="dynamic-content">{actor}</span>
-                    </span>
-                )}
-
-            </h1>
-
-
-            {!selectedFunctionality && (
-                <div className="functionalitiesContainer">
-                    {UserOptions.map((option, index) => (
-                        <button key={index} className="functionality" onClick={() => handleFunctionalityClick(option)}>
-                            {option}
-                        </button>
-                    ))}
-                </div>
+            {searchPerformed && (
+                <MoviesDisplay
+                    moviesData={moviesData}
+                    onSearchAgain={handleSearchAgain}
+                    onExit={handleExit}
+                />
             )}
 
-            {selectedFunctionality && (
-                <div className="buttonContainer">
-                    {RenderOptionContent(selectedFunctionality, inputValues, handleInputChange)}
-                    <button>{searchButtonText}</button>
-                    <button onClick={handleBackToOptions}>Go Back</button>
-                </div>
+            {/* If a search has NOT been performed, render options and search controls */}
+            {!searchPerformed && (
+                <>
+                    {!selectedFunctionality && (
+                        <div className="functionalitiesContainer">
+                            {UserOptions.map((option, index) => (
+                                <button key={index} className="functionality" onClick={() => handleFunctionalityClick(option)}>
+                                    {option}
+                                </button>
+                            ))}
+                        </div>
+                    )}
+
+                    {selectedFunctionality && (
+                        <div className="buttonContainer">
+                            {renderOptionContent(selectedFunctionality, inputValues, handleInputChange)}
+                            <button onClick={() => handleSearch(selectedFunctionality, inputValues)}
+                                    disabled={isSearchButtonDisabled()}>{searchButtonText}</button>
+                            <button onClick={handleExit}>Go Back</button>
+                        </div>
+                    )}
+                </>
             )}
 
-            <Footer role="user" />
+            <Footer role="user"/>
         </div>
     );
 }
-
-
-// export default UserPage;

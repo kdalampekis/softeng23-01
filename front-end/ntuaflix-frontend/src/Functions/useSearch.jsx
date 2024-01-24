@@ -97,7 +97,7 @@ const useSearch = () => {
 
         else if (selectedFunctionality === "Movie analytics" || selectedFunctionality === "Add a like/dislike to a movie") {
             try {
-                const movieDetails = await searchMovieByTitle(inputValues.movieTitle);
+                const movieDetails = await searchMovieByTitle(inputValues.title);
                 setMoviesData(movieDetails); // Adjust this according to the expected response format
                 setSearchPerformed(true);
                 console.log("Movie Details:", movieDetails);
