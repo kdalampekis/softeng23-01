@@ -4,4 +4,4 @@ from .models import *
 # Register your models here.
 admin.site.register(TitleObject)
 admin.site.register(NameObject)
-admin.site.register(User)
+# admin.site.register(User)

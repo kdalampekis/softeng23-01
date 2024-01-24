@@ -1,6 +1,6 @@
 # import bcrypt
 from django.db import models
-from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin
+from django.contrib.auth.models import AbstractUser, PermissionsMixin
 from django.utils import timezone
 
 class TitleObject(models.Model):
@@ -41,37 +41,9 @@ class NameObject(models.Model):
     def __str__(self):
         return self.primaryName
 
-class User(AbstractBaseUser):
-    userId=models.AutoField(primary_key=True)
-    username = models.CharField(max_length=255)
-    passwordHash = models.CharField(max_length=255)
-    email = models.EmailField()
-    dateOfBirth = models.DateField()
-    country = models.CharField(max_length=255)
-    gender = models.IntegerField()
-
-    is_active = models.BooleanField(default=True)
-    is_staff = models.BooleanField(default=False)
-    is_superuser = models.BooleanField(default=False)
-
-    last_login=models.DateTimeField(default=None)
-
-    date_joined = models.DateTimeField(default=timezone.now)
 
 
-    # USERNAME_FIELD = 'username'
-    # EMAIL_FIELD = 'email'
-    # REQUIRED_FIELDS = ['email']
 
-    class Meta:
-        db_table = 'user'
 
-    def __str__(self):
-        return self.username
 
-    # def set_password(self, raw_password):
-    #     self.passwordHash = bcrypt.hashpw(raw_password.encode('utf-8'), bcrypt.gensalt()).decode('utf-8')
-    #     self.save()
-
-    # def check_password(self, raw_password):
-    #     return bcrypt.checkpw(raw_password.encode('utf-8'), self.passwordHash.encode('utf-8'))
+    

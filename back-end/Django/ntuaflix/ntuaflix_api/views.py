@@ -113,36 +113,36 @@ class SearchNameView(APIView):
             return render(request, 'search_name.html')
 
 
-class NBestRatedGenre(APIView):
+# class NBestRatedGenre(APIView):
 
-    def get(self, request, *args, **kwargs):
-        # Retrieve query parameters
-        genre = request.GET.get('genre', None)
-        numberofmovies = request.GET.get('numberofmovies', None)
+#     def get(self, request, *args, **kwargs):
+#         # Retrieve query parameters
+#         genre = request.GET.get('genre', None)
+#         numberofmovies = request.GET.get('numberofmovies', None)
         
-        # Check if the 'genre' parameter is provided
-        if genre:
-            # Filter by genre
-            queryset = TitleObject.objects.filter(genres__icontains=genre)
+#         # Check if the 'genre' parameter is provided
+#         if genre:
+#             # Filter by genre
+#             queryset = TitleObject.objects.filter(genres__icontains=genre)
 
-            # If 'numberofmovies' is provided, cast it to an integer and get the top N movies
-            if numberofmovies:
-                try:
-                    numberofmovies = int(numberofmovies)
-                    queryset = queryset.order_by('-averageRating')[:numberofmovies]
-                except ValueError:
-                    # Handle the exception if 'numberofmovies' is not a valid integer
-                    return Response({"error": "numberofmovies must be an integer"}, status=400)
+#             # If 'numberofmovies' is provided, cast it to an integer and get the top N movies
+#             if numberofmovies:
+#                 try:
+#                     numberofmovies = int(numberofmovies)
+#                     queryset = queryset.order_by('-averageRating')[:numberofmovies]
+#                 except ValueError:
+#                     # Handle the exception if 'numberofmovies' is not a valid integer
+#                     return Response({"error": "numberofmovies must be an integer"}, status=400)
 
-            # Serialize the queryset
-            serializer = TitleObjectSerializer(queryset, many=True)
+#             # Serialize the queryset
+#             serializer = TitleObjectSerializer(queryset, many=True)
 
-            # Return the serialized data
-        else:
-            # If 'genre' is not provided, render the search criteria form
-            return render(request, 'NBestRatedGenre.html')
+#             # Return the serialized data
+#         else:
+#             # If 'genre' is not provided, render the search criteria form
+#             return render(request, 'NBestRatedGenre.html')
 
-        return Response(serializer.data)
+#         return Response(serializer.data)
 
 
 
@@ -252,6 +252,25 @@ class SearchByName(APIView):
 
 
 
+# ////////////////////////////////////////////////////////////////////////
+# ///////////////   ADMIN FUNCTIONALITIES   //////////////////////////////
+    
 
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.http import require_http_methods
+from django.db import transaction, DatabaseError
+
+def reset_all(request):
+    try:
+        with transaction.atomic():
+            # List all models that you want to reset
+            NameObject.objects.all().delete()
+            TitleObject.objects.all().delete()
+            # Add similar lines for all other models you have
+
+        return JsonResponse({"status": "OK"})
+    except DatabaseError as e:
+        return JsonResponse({"status": "failed", "reason": str(e)})
 
 

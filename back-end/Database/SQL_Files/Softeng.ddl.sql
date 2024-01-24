@@ -112,6 +112,18 @@ CREATE TABLE User_Like (
     PRIMARY KEY (tconst, userId)
 );
 
+CREATE TABLE Principals (
+	workas_Id int NOT NULL AUTO_INCREMENT,
+    tconst varchar(10) NOT NULL,
+    ordering int(10),
+    nconst varchar(10) NOT NULL,
+    category varchar(25),
+    job varchar(255),
+    characters varchar(255),
+    img_url_asset varchar(255),
+    PRIMARY KEY (workas_Id)
+);
+
 ALTER TABLE TitleAka ADD CONSTRAINT FK_TitleAka_TitleBasic FOREIGN KEY (tconst) REFERENCES TitleBasic (tconst);
 
 ALTER TABLE Crew ADD CONSTRAINT FK_Crew_TitleBasic FOREIGN KEY (tconst) REFERENCES TitleBasic (tconst);
