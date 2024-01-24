@@ -28,7 +28,7 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
-AUTH_USER_MODEL = 'ntuaflix_api.CustomUser'
+# AUTH_USER_MODEL = 'ntuaflix_api.CustomUser'
 
 # Application definition
 
