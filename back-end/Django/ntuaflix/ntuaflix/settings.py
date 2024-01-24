@@ -12,7 +12,6 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 
 from pathlib import Path
 
-
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -28,7 +27,6 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
-# AUTH_USER_MODEL = 'ntuaflix_api.CustomUser'
 
 # Application definition
 
@@ -36,8 +34,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework.authtoken', 
     'ntuaflix_api',
-
-
+    'ntuaflix_api.administrator',
     'corsheaders',
     'django.contrib.admin',
     'django.contrib.auth',
@@ -89,7 +86,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'soft_eng_2023',
         'USER': 'root',
-        'PASSWORD': '',
+        'PASSWORD': 'Stelios.181002',
         'HOST': 'localhost',  # Or an IP Address that your DB is hosted on
         'PORT': '3306', 
         # 'OPTIONS': {

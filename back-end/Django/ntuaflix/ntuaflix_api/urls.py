@@ -1,7 +1,8 @@
-from django.urls import path
+from django.urls import path, include
 from .views import *
+
 urlpatterns = [
-    # ... other url patterns ...
+    path('admin/', include('ntuaflix_api.administrator.urls')),
 
     # ///////////////////////////   END POINTS NECESSARY           ////////////////////////////
 
@@ -43,7 +44,6 @@ urlpatterns = [
 
     # 25th and 30th Requirement see in the first block of code (Necessary Endpoints)
 
-
     # //////////////////////////////////////////////////////////////////////////////////
 
 
@@ -52,9 +52,7 @@ urlpatterns = [
     # ////////////////      USER AUTHENTICATION     //////////////////////////
 
     
-    path('register/', register_user, name='register'),
-    path('login/', user_login, name='login'),
-    path('logout/', user_logout, name='logout'),
+
 
 
     path('admin/upload/titlebasics', upload_titlebasics, name='upload_titlebasics'),

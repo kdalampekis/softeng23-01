@@ -1,13 +1,13 @@
 const UserOptions = [
-    "The N highest rated movies in a genre", // COMPLETE
-    "Highest rated movie of an actor/cast member", // COMPLETE
+    "The N highest rated movies in a genre",
+    "Highest rated movie of an actor/cast member",
     "Add a like/dislike to a movie",
-    "Most recent movie of an actor/cast member", // COMPLETE
-    "The N highest rated movies of an actor/cast member", // TODO
-    "Search movies by actor/cast member", // TODO
-    "Search movies by genre", // TODO
+    "Most recent movie of an actor/cast member",
+    "The N highest rated movies of an actor/cast member",
+    "Search movies by actor/cast member",
+    "Search movies by genre",
     "Movie analytics",
-    "Search movies by year", // TODO
+    "Search movies by year",
     "Actor/cast member profile"
 ];
 
