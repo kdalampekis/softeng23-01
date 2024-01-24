@@ -1,7 +1,8 @@
-from django.urls import path
+from django.urls import path, include
 from .views import *
+
 urlpatterns = [
-    # ... other url patterns ...
+    path('admin/', include('ntuaflix_api.administrator.urls')),
 
     # ///////////////////////////   END POINTS NECESSARY           ////////////////////////////
 
