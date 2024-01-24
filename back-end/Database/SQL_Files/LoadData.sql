@@ -55,6 +55,19 @@ IGNORE 1 LINES
     job,
     characters,
     img_url_asset);
+    
+LOAD DATA INFILE 'E:\\EPA\\NTUA\\ECE\\FLOWS\\FLOW_L\\Soft_Eng\\Data\\truncated_title.principals.tsv'
+INTO TABLE principals
+FIELDS TERMINATED BY '\t'
+LINES TERMINATED BY '\n'
+IGNORE 1 LINES
+(tconst,
+	ordering,
+    nconst,
+    category,
+    job,
+    characters,
+    img_url_asset);
 
 LOAD DATA INFILE 'E:\\EPA\\NTUA\\ECE\\FLOWS\\FLOW_L\\Soft_Eng\\Data\\truncated_title.ratings.tsv'
 INTO TABLE rating
