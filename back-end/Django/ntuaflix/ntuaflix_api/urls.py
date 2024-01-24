@@ -43,6 +43,17 @@ urlpatterns = [
 
     # 25th and 30th Requirement see in the first block of code (Necessary Endpoints)
 
+
     # //////////////////////////////////////////////////////////////////////////////////
+
+
+
+
+    # ////////////////      USER AUTHENTICATION     //////////////////////////
+
+    
+    path('register/', register_user, name='register'),
+    path('login/', user_login, name='login'),
+    path('logout/', user_logout, name='logout'),
 
 ]
