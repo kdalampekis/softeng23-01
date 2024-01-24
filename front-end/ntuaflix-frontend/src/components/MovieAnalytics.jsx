@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import "../styles.css";
 
-const MovieAnalytics = ({ movie }) => {
+const MovieAnalytics = ({ movie, onSearchAgain, onExit }) => {
     return (
         <div className="movie-analytics">
             <div className="movie-header">
@@ -46,15 +46,17 @@ MovieAnalytics.propTypes = {
             regionAbbrev: PropTypes.string
         })),
         principals: PropTypes.arrayOf(PropTypes.shape({
-            nameID: PropTypes.number,
+            nameID: PropTypes.string, // Updated to string
             name: PropTypes.string,
-            category: PropTypes.string
+            category: PropTypes.string,
         })),
         rating: PropTypes.arrayOf(PropTypes.shape({
             avRating: PropTypes.number,
             nVotes: PropTypes.number
         }))
-    }).isRequired
+    }).isRequired,
+    onSearchAgain: PropTypes.func.isRequired,
+    onExit: PropTypes.func.isRequired
 };
 
 export default MovieAnalytics;

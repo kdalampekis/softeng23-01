@@ -215,3 +215,60 @@ footer p, .link {
 .moviesContainer {
     width: 90%;
 }
+
+.movie-analytics {
+    max-width: 800px;
+    margin: auto;
+    padding: 20px;
+    background: #f9f9f9;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.movie-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.movie-image {
+    max-width: 200px;
+    max-height: 300px;
+    object-fit: cover;
+    border-radius: 4px;
+    margin-right: 20px;
+}
+
+.movie-details h1 {
+    margin: 0;
+    color: #333;
+}
+
+.movie-details p {
+    margin: 5px 0;
+    color: #666;
+}
+
+.movie-additional-info {
+    display: flex;
+    justify-content: space-between;
+}
+
+.aka-titles, .principal-crew {
+    flex: 1;
+    margin-right: 20px;
+}
+
+.aka-titles ul, .principal-crew ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+.aka-titles li, .principal-crew li {
+    margin-bottom: 10px;
+    color: #333;
+}
+
+.aka-titles h2, .principal-crew h2 {
+    color: #007BFF;
+}

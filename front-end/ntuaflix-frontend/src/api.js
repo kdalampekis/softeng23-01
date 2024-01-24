@@ -99,11 +99,11 @@ export const searchMoviesByGenre = async (genre, number, toprated) => {
     }
 };
 
-export const searchMoviesByYear = async (year) => {
+export const searchMoviesByYear = async (movieYear) => {
     try {
         const response = await axios.get(`${BASE_URL}/SearchByYear/`, {
             params: {
-                year: year
+                year: movieYear
             }
         });
         return response.data;

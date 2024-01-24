@@ -17,7 +17,6 @@ const renderOptionContent = (option, inputValues, handleInputChange) => {
                         onChange={(e) => handleInputChange('genre', e.target.value)}
                         placeholder="Enter genre"
                     />
-                    <div>Content for N highest rated movies in a genre</div>
                 </div>
             );
         case "Highest rated movie of an actor/cast member":
@@ -29,7 +28,6 @@ const renderOptionContent = (option, inputValues, handleInputChange) => {
                         onChange={(e) => handleInputChange('actor', e.target.value)}
                         placeholder="Enter actor/cast member"
                     />
-                    <div>Content for Highest rated movie of an actor/cast member</div>
                 </div>
             );
         case "Add a like/dislike to a movie":
@@ -41,7 +39,6 @@ const renderOptionContent = (option, inputValues, handleInputChange) => {
                         onChange={(e) => handleInputChange('movieTitle', e.target.value)}
                         placeholder="Enter movie title"
                     />
-                    <div>Content for like/dislike to a movie</div>
                 </div>
             );
         case "Most recent movie of an actor/cast member":
@@ -53,7 +50,6 @@ const renderOptionContent = (option, inputValues, handleInputChange) => {
                         onChange={(e) => handleInputChange('actor', e.target.value)}
                         placeholder="Enter actor/cast member"
                     />
-                    <div>Content for Most recent movie of an actor/cast member</div>
                 </div>
             );
         case "The N highest rated movies of an actor/cast member":
@@ -71,7 +67,6 @@ const renderOptionContent = (option, inputValues, handleInputChange) => {
                         onChange={(e) => handleInputChange('actor', e.target.value)}
                         placeholder="Enter actor/cast member"
                     />
-                    <div>Content for N highest rated movies by actor/cast member</div>
                 </div>
             );
         case "Search movies by actor/cast member":
@@ -83,7 +78,6 @@ const renderOptionContent = (option, inputValues, handleInputChange) => {
                         onChange={(e) => handleInputChange('actor', e.target.value)}
                         placeholder="Enter actor/cast member"
                     />
-                    <div>Content for movie by actor/cast member</div>
                 </div>
             );
         case "Search movies by genre":
@@ -95,7 +89,6 @@ const renderOptionContent = (option, inputValues, handleInputChange) => {
                         onChange={(e) => handleInputChange('genre', e.target.value)}
                         placeholder="Enter genre"
                     />
-                    <div>Content for movie by genre</div>
                 </div>
             );
         case "Movie analytics":
@@ -107,7 +100,6 @@ const renderOptionContent = (option, inputValues, handleInputChange) => {
                         onChange={(e) => handleInputChange('movieTitle', e.target.value)}
                         placeholder="Enter movie title"
                     />
-                    <div>Content for Movie analytics</div>
                 </div>
             );
         case "Search movies by year":
@@ -119,7 +111,6 @@ const renderOptionContent = (option, inputValues, handleInputChange) => {
                         onChange={(e) => handleInputChange('movieYear', e.target.value)}
                         placeholder="Enter year"
                     />
-                    <div>Content for movie by year</div>
                 </div>
             );
         case "Actor/cast member profile":
@@ -131,7 +122,6 @@ const renderOptionContent = (option, inputValues, handleInputChange) => {
                         onChange={(e) => handleInputChange('actor', e.target.value)}
                         placeholder="Enter actor/cast member"
                     />
-                    <div>Content for Actor/cast member profile</div>
                 </div>
             );
         // Add cases for other options

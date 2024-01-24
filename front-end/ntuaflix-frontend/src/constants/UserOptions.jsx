@@ -7,7 +7,7 @@ const UserOptions = [
     "Search movies by actor/cast member", // COMPLETE
     "Search movies by genre", // COMPLETE
     "Movie analytics", // COMPLETE QUERY, TODO: go to the movie page
-    "Search movies by year", // Something wrong with the query
+    "Search movies by year", // COMPLETE
     "Actor/cast member profile" // TODO
 ];
 

@@ -3,12 +3,13 @@ import PropTypes from 'prop-types';
 import "../styles.css";
 import {useState} from "react";
 
-const Movie = ({ title, genres, year, image }) => {
+const Movie = ({ title, genres, year, onClick }) => {
     const [hover, setHover] = useState(false);
 
     return (
         <div
             className="functionality movie"
+            onClick={onClick}
             onMouseEnter={() => setHover(true)}
             onMouseLeave={() => setHover(false)}
         >
@@ -22,7 +23,8 @@ const Movie = ({ title, genres, year, image }) => {
 Movie.propTypes = {
     title: PropTypes.string.isRequired,
     genres: PropTypes.arrayOf(PropTypes.string),
-    year: PropTypes.number, // Updated to expect a number
+    year: PropTypes.number,
+    onClick: PropTypes.func
 };
 
 export default Movie;

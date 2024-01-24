@@ -86,7 +86,7 @@ const useSearch = () => {
 
         else if (selectedFunctionality === "Search movies by year") {
             try {
-                const movies = await searchMoviesByYear(inputValues.year);
+                const movies = await searchMoviesByYear(inputValues.movieYear);
                 setMoviesData(movies);
                 setSearchPerformed(true);
                 console.log("Movies:", movies);
@@ -97,10 +97,10 @@ const useSearch = () => {
 
         else if (selectedFunctionality === "Movie analytics" || selectedFunctionality === "Add a like/dislike to a movie") {
             try {
-                const movieDetails = await searchMovieByTitle(inputValues.title);
-                setMoviesData(movieDetails); // Adjust this according to the expected response format
+                const movie = await searchMovieByTitle(inputValues.movieTitle);
+                setMoviesData(movie);
                 setSearchPerformed(true);
-                console.log("Movie Details:", movieDetails);
+                console.log("Movie Details:", movie);
             } catch (error) {
                 console.error("Error fetching movie details:", error);
             }

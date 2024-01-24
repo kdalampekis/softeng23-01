@@ -7,6 +7,7 @@ import UserOptions from "../constants/UserOptions";
 import DynamicHeader from "./DynamicHeader";
 import MoviesDisplay from "../Functions/MoviesDisplay";
 import useSearch from "../Functions/useSearch";
+import MovieAnalytics from "./MovieAnalytics";
 
 
 export default function UserPage() {
@@ -26,7 +27,12 @@ export default function UserPage() {
     const [searchButtonText, setSearchButtonText] = useState("Search");
 
     const { moviesData, searchPerformed, handleSearch, updateSearchPerformed } = useSearch();
+    const [selectedMovie, setSelectedMovie] = useState(null);
 
+    // Callback to set the selected movie from MoviesDisplay
+    const handleMovieSelect = (movie) => {
+        setSelectedMovie(movie);
+    };
 
     // Function to reset input fields
     const resetInputFields = () => {
@@ -76,12 +82,14 @@ export default function UserPage() {
         setSelectedFunctionality(null);
         updateSearchPerformed(false);
         resetInputFields();
+        setSelectedMovie(null); // Reset the selected movie
     };
 
     // Function to handle "Search Again" button click
     const handleSearchAgain = () => {
         updateSearchPerformed(false);
         resetInputFields();
+        setSelectedMovie(null); // Reset the selected movie
     };
 
     // Disables the search-button if the user has not filled all the inputs
@@ -103,12 +111,18 @@ export default function UserPage() {
                 movieYear={movieYear}
             />
 
-            {searchPerformed && (
-                <MoviesDisplay
-                    moviesData={moviesData}
-                    onSearchAgain={handleSearchAgain}
-                    onExit={handleExit}
-                />
+            {/* Conditional rendering based on whether a movie is selected */}
+            {!selectedMovie ? (
+                searchPerformed && (
+                    <MoviesDisplay
+                        moviesData={moviesData}
+                        onSearchAgain={handleSearchAgain}
+                        onExit={handleExit}
+                        onSelectMovie={handleMovieSelect}
+                    />
+                )
+            ) : (
+                <MovieAnalytics movie={selectedMovie} onSearchAgain={handleSearchAgain} onExit={handleExit} />
             )}
 
             {/* If a search has NOT been performed, render options and search controls */}
@@ -132,7 +146,15 @@ export default function UserPage() {
                             <button onClick={handleExit}>Go Back</button>
                         </div>
                     )}
+
                 </>
+            )}
+
+            {searchPerformed && (
+                <div className="buttonContainer">
+                    <button onClick={handleSearchAgain}>Search Again</button>
+                    <button onClick={handleExit}>Exit</button>
+                </div>
             )}
 
             <Footer role="user"/>
