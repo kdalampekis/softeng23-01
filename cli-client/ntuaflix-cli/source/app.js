@@ -1,10 +1,9 @@
 import React from 'react';
-import {Text} from 'ink';
-
-export default function App({name = 'Stranger'}) {
-	return (
-		<Text>
-			Hello, <Text color="green">{name}</Text>
-		</Text>
-	);
+import { Text } from 'ink';
+export default function App({
+								name = 'Ntuaflix CLI'
+							}) {
+	return /*#__PURE__*/React.createElement(Text, null, "$", /*#__PURE__*/React.createElement(Text, {
+		color: "green"
+	}, name));
 }

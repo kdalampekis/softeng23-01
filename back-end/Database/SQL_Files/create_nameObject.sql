@@ -1,5 +1,4 @@
-DROP TABLE IF EXISTS nameObject;
-CREATE TABLE nameObject AS
+CREATE TABLE IF NOT EXISTS nameObject AS
 SELECT
     na.nconst,
     na.primaryName,
@@ -15,6 +14,3 @@ LEFT JOIN
     workas wa ON wa.nconst = na.nconst
 GROUP BY
 	na.nconst;
-    
-
-select * from nameObject;
