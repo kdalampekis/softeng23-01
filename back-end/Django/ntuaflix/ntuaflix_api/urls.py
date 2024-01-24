@@ -57,8 +57,8 @@ urlpatterns = [
     path('logout/', user_logout, name='logout'),
 
 
-
+    path('admin/upload/titlebasics', upload_titlebasics, name='upload_titlebasics'),
     # ////////////////      ADMIN       ////////////////////////////////////
-    
+
 
 ]

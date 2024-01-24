@@ -284,9 +284,19 @@ def upload_titlebasics(request):
         reader = csv.DictReader(io_string, delimiter='\t')
 
         for row in reader:
-            # Process and save each row to the database
-            # Example: TitleBasic.objects.create(**row)
-            pass
+            # Process each row and save it to the database
+            TitleBasic.objects.create(
+                tconst=row.get('tconst', '').strip(),
+                titleType=row.get('titleType', '').strip(),
+                primaryTitle=row.get('primaryTitle', '').strip(),
+                originalTitle=row.get('originalTitle', '').strip(),
+                isAdult=int(row['isAdult']) if row['isAdult'] else 0,
+                startYear=int(row['startYear']) if row['startYear'] else None,
+                endYear=int(row['endYear']) if row['endYear'] else None,
+                runtimeMinutes=int(row['runtimeMinutes']) if row['runtimeMinutes'] else None,
+                genres=row.get('genres', '').strip(),
+                img_url_asset=row.get('img_url_asset', '').strip()
+            )
 
         return JsonResponse({'message': 'File processed successfully'}, status=200)
     except Exception as e:
