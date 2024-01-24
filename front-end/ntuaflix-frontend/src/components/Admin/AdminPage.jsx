@@ -25,7 +25,7 @@ export default function AdminPage() {
     }
 
     return (
-        <div>
+        <div className="body">
             <Header/>
             <h1 className={`message`}>{message}</h1>
             {!selectedFunctionality && (
