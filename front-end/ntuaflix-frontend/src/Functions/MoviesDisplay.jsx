@@ -14,7 +14,6 @@ const MoviesDisplay = ({ moviesData, onSearchAgain, onExit }) => {
                             title={movie.originalTitle}
                             genres={movie.genres}
                             year={movie.startYear}
-                            image={movie.img_url_asset}
                         />
                     ))
                 }

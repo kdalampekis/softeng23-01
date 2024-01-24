@@ -70,8 +70,6 @@ button {
 }
 
 button:hover {
-    /*background: linear-gradient(to right, var(--gradient1), var(--gradient2));*/
-    /*border: 2px solid white;*/
     background: var(--button);
     color: white;
 }
@@ -138,13 +136,11 @@ input, .inputContainer .styled-select {
     border-radius: 10px;
     width: 10rem;
     height: 10rem;
-    display: flex;
-    justify-content: center;
-    align-items: center;
     text-align: center;
     color: white;
     background: black;
 }
+
 
 .functionality button {
     background-color: black;
@@ -165,6 +161,7 @@ input, .inputContainer .styled-select {
     align-items: center;
     gap: 20px;
     padding: 20px 10px;
+    color: white;
 }
 
 footer {
@@ -201,33 +198,20 @@ footer p, .link {
     color: transparent;
 }
 
-
-
 .movie {
-    background-color: white;
-    color: black;
-    border: 1px solid #ddd;
-    padding: 10px;
-    margin-bottom: 15px;
+    height: 12rem;
+    width: 20rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    border: 2px solid white;
 }
 
-.movie img {
-    width: 100%;
-    max-width: 200px;
-    height: auto;
-    display: block;
-    margin-bottom: 10px;
+.movie h3, p {
+    padding: 5px;
 }
 
-.movie h3 {
-    margin: 0;
-    font-size: 1.2em;
-}
 
-.movie p {
-    margin: 5px 0;
-}
-
-.moviesContainer > p {
-    color: white;
+.moviesContainer {
+    width: 90%;
 }

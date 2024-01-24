@@ -1,8 +1,9 @@
 import axios from 'axios';
+import {findByLabelText} from "@testing-library/react";
 
-const BASE_URL = 'http://127.0.0.1:8000/ntuaflix_api';
+const BASE_URL = 'http://127.0.0.1:9876/ntuaflix_api';
 
-export const searchByGenre = async (genre, number) => {
+export const searchNBestRatedGenre = async (genre, number) => {
     try {
         const response = await axios.get(`${BASE_URL}/SearchByGenre/`, {
             params: {
@@ -50,3 +51,82 @@ export const searchByActorNewest = async (actorName) => {
         throw error;
     }
 };
+
+export const searchByActorNTopRated = async (actorName, numberOfMovies) => {
+    try {
+        const response = await axios.get(`${BASE_URL}/SearchByName/`, {
+            params: {
+                name: actorName,
+                toprated: 'true',
+                number: numberOfMovies
+            }
+        });
+        return response.data;
+    } catch (error) {
+        console.error('Error:', error);
+        throw error;
+    }
+};
+
+export const searchMoviesByActor = async (actorName) => {
+    try {
+        const response = await axios.get(`${BASE_URL}/SearchByName/`, {
+            params: {
+                name: actorName
+                // No 'toprated' or 'newest' parameter here
+            }
+        });
+        return response.data;
+    } catch (error) {
+        console.error('Error:', error);
+        throw error;
+    }
+};
+
+export const searchMoviesByGenre = async (genre, number, toprated) => {
+    try {
+        const response = await axios.get(`${BASE_URL}/SearchByGenre/`, {
+            params: {
+                genre: genre,
+                number: number,
+                toprated: toprated,
+            }
+        });
+        return response.data;
+    } catch (error) {
+        console.error('Error:', error);
+        throw error;
+    }
+};
+
+export const searchMoviesByYear = async (year) => {
+    try {
+        const response = await axios.get(`${BASE_URL}/SearchByYear/`, {
+            params: {
+                year: year
+            }
+        });
+        return response.data;
+    } catch (error) {
+        console.error('Error:', error);
+        throw error;
+    }
+};
+
+// api.js
+// api.js
+export const searchMovieByTitle = async (movieTitle) => {
+    try {
+        const response = await axios.get(`${BASE_URL}/searchtitle/`, {
+            params: {
+                title: movieTitle
+            }
+        });
+        return response.data;
+    } catch (error) {
+        console.error('Error:', error);
+        throw error;
+    }
+};
+
+
