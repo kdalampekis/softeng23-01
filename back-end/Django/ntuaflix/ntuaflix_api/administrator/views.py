@@ -2,17 +2,18 @@ from django.shortcuts import render
 from django.http import JsonResponse
 import csv
 from .forms import *
-
-from django.http import JsonResponse
-from django.db import DatabaseError, connections
-from django.core.exceptions import ValidationError
-
 from .models import *
-
-from django.http import JsonResponse
+from django.core.exceptions import ValidationError
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_http_methods
 from django.db import transaction, DatabaseError
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.views import APIView
+from django.shortcuts import get_object_or_404
+from django.contrib.auth.models import User
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import permission_required
 
 
 def UploadTitleBasics(request):
@@ -319,10 +320,8 @@ def UploadTitleRatings(request):
     return render(request, 'upload.html', {'form': form})
 
 
+# /////////////////////////////////////////////////////////////////////////////////////////////
 
-
-
-# //////////////////////////////////////////////////////////////////////////////////////////////
 
 def health_check(request):
     try:
@@ -340,5 +339,53 @@ def health_check(request):
         return JsonResponse({"status": "failed", "dataconnection": connection_string})
 
 
+# /////////////////////////////////////////////////////////////////////////////////////////////
 
 
+@csrf_exempt
+@login_required
+@permission_required(IsAuthenticated)  # Replace 'your_app_name' with the actual app name.
+def add_user(request, username, password):
+    if request.method == 'POST':
+        # Handle POST request to activate the user
+        try:
+            # Retrieve the user by username
+            user = User.objects.get(username=username)
+
+            # Check if the authenticated user is a superuser or has the required permissions.
+            # You can customize this condition based on your specific permission requirements.
+            if request.user.is_superuser:
+                # Set is_active to True
+                user.is_active = True
+                user.set_password(password)
+                user.save()
+
+                return JsonResponse({"detail": "User activated successfully."}, status=200)
+            else:
+                return JsonResponse({"detail": "Permission denied."}, status=403)
+
+        except User.DoesNotExist:
+            return JsonResponse({"detail": "User not found."}, status=404)
+    else:
+        return JsonResponse({"detail": "Only POST requests are allowed."}, status=405)
+
+
+# # @csrf_exempt
+# # @require_http_methods(["POST"])
+# def reset_all(request):
+#     try:
+#         with transaction.atomic():
+#             # List all models that you want to reset
+#             TitleAka.objects.all().delete()
+#             Principals.objects.all().delete()
+#             Workas.objects.all().delete()
+#             Names.objects.all().delete()
+#             Episode.objects.all().delete()
+#             Rating.objects.all().delete()
+#             Crew.objects.all().delete()
+#             TitleBasic.objects.all().delete()
+#              # Add similar lines for all other models you have
+
+#         return JsonResponse({"status": "OK BASIC SQL TABLES "})
+#     except DatabaseError as e:
+#         return JsonResponse({"status": "failed", "reason": str(e)})
