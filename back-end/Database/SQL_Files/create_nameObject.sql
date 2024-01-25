@@ -1,3 +1,4 @@
+DROP TABLE IF EXISTS nameObject;
 CREATE TABLE IF NOT EXISTS nameObject AS
 SELECT
     na.nconst,
