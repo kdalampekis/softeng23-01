@@ -126,7 +126,6 @@ def UploadNames(request):
     return render(request, 'administrator/upload_names.html', {'form': form})
 
 
-
 def UploadPrincipals(request):
     if request.method == 'POST':
         form = UploadPrincipalsForm(request.POST, request.FILES)
@@ -137,25 +136,23 @@ def UploadPrincipals(request):
 
             next(reader, None)  # Skip the header row
 
-            for row in reader:
+            for row_number, row in enumerate(reader, start=1):  # Start numbering from 1
                 tconst, ordering, nconst, category, job, characters, img_url_asset = row
-                
-                # Assuming 'ordering' is an integer and should be converted.
-                # Adjust field conversions as needed.
-                Principals.objects.update_or_create(
-                    workas_Id=int(ordering),
-                    defaults={
-                        'tconst': tconst,
-                        'ordering': int(ordering),
-                        'nconst': nconst,
-                        'category': category if category != '\\N' else None,
-                        'job': job if job != '\\N' else None,
-                        'characters': characters if characters != '\\N' else None,
-                        'img_url_asset': img_url_asset if img_url_asset != '\\N' else None,
-                    }
-                )
+                if not Principals.objects.filter(tconst=tconst, ordering=int(ordering)).exists(): 
+                    Principals.objects.update_or_create(
+                        tconst =tconst,
+                        ordering = int(ordering),
+                        nconst = nconst,
+                        defaults={                        
+                            'category': category if category != '\\N' else None,
+                            'job': job if job != '\\N' else None,
+                            'characters': characters if characters != '\\N' else None,
+                            'img_url_asset': img_url_asset if img_url_asset != '\\N' else None,
+                        }
+                    )
+                print(f"Processed row number: {row_number}")
 
-            return JsonResponse({'status': 'success'})
+            return JsonResponse({'status': 'success', 'processed_rows': row_number})
         else:
             return JsonResponse({'status': 'error', 'message': 'Form is not valid'}, status=400)
     else:
@@ -164,10 +161,67 @@ def UploadPrincipals(request):
     return render(request, 'administrator/upload_principals.html', {'form': form})
 
 
+def UploadRating(request):
+    if request.method == 'POST':
+        form = UploadRatingForm(request.POST, request.FILES)
+        if form.is_valid():
+            file = form.cleaned_data['tsv_file']
+            decoded_file = file.read().decode('utf-8').splitlines()
+            reader = csv.reader(decoded_file, delimiter='\t')
+
+            next(reader, None)  # Skip the header row
+
+            for row_number, row in enumerate(reader, start=1):  # Start numbering from 1
+                tconst, averageRating, numVotes = row
+                
+                # Convert fields as necessary and handle potential null values
+                Rating.objects.update_or_create(
+                    tconst=tconst,
+                    defaults={
+                        'averageRating': float(averageRating) if averageRating != '\\N' else None,
+                        'numVotes': int(numVotes) if numVotes != '\\N' else None,
+                    }
+                )
+                print(f"Processed row number: {row_number}")
+
+            return JsonResponse({'status': 'success', 'processed_rows': row_number})
+        else:
+            return JsonResponse({'status': 'error', 'message': 'Form is not valid'}, status=400)
+    else:
+        form = UploadRatingForm()
+
+    return render(request, 'administrator/upload_rating.html', {'form': form})
 
 
+def UploadCrew(request):
+    if request.method == 'POST':
+        form = UploadCrewForm(request.POST, request.FILES)
+        if form.is_valid():
+            file = form.cleaned_data['tsv_file']
+            decoded_file = file.read().decode('utf-8').splitlines()
+            reader = csv.reader(decoded_file, delimiter='\t')
 
+            next(reader, None)  # Skip the header row
 
+            for row_number, row in enumerate(reader, start=1):  # Start numbering from 1
+                tconst, directors, writers = row
+
+                Crew.objects.update_or_create(
+                    tconst=tconst,
+                    defaults={
+                        'directors': directors if directors != '\\N' else None,
+                        'writers': writers if writers != '\\N' else None,
+                    }
+                )
+                print(f"Processed row number: {row_number}")
+
+            return JsonResponse({'status': 'success', 'processed_rows': row_number})
+        else:
+            return JsonResponse({'status': 'error', 'message': 'Form is not valid'}, status=400)
+    else:
+        form = UploadCrewForm()
+
+    return render(request, 'administrator/upload_crew.html', {'form': form})
 
 
 
@@ -188,90 +242,5 @@ def health_check(request):
     except (DatabaseError, ValidationError):
         connection_string = "Database connection failed"  # Customize as needed
         return JsonResponse({"status": "failed", "dataconnection": connection_string})
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-# # @csrf_exempt
-# # @require_http_methods(["POST"])
-# def reset_all(request):
-#     try:
-#         with transaction.atomic():
-#             # List all models that you want to reset
-#             TitleAka.objects.all().delete()
-#             Principals.objects.all().delete()
-#             Workas.objects.all().delete()
-#             Names.objects.all().delete()
-#             Episode.objects.all().delete()
-#             Rating.objects.all().delete()
-#             Crew.objects.all().delete()
-#             TitleBasic.objects.all().delete()
-#              # Add similar lines for all other models you have
-
-#         return JsonResponse({"status": "OK BASIC SQL TABLES "})
-#     except DatabaseError as e:
-#         return JsonResponse({"status": "failed", "reason": str(e)})
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 

@@ -9,3 +9,14 @@ class UploadTitleAkasForm(forms.Form):
 class UploadNamesForm(forms.Form):
     tsv_file = forms.FileField(label='Upload TSV file')
 
+class UploadRatingForm(forms.Form):
+    tsv_file = forms.FileField(label='Upload TSV file')
+
+class UploadPrincipalsForm(forms.Form):
+    tsv_file = forms.FileField(label='Upload TSV file')
+
+class UploadCrewForm(forms.Form):
+    tsv_file = forms.FileField(label='Upload TSV file')
+
+# class UploadPrincipalsForm(forms.Form):
+#     tsv_file = forms.FileField(label='Upload TSV file')
