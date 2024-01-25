@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import "../styles.css";
+import "../../styles.css";
 
 const MovieAnalytics = ({ movie, onSearchAgain, onExit }) => {
     return (
@@ -13,7 +13,7 @@ const MovieAnalytics = ({ movie, onSearchAgain, onExit }) => {
                     <strong>Also known as: </strong>
                     <span>
                         {movie.titlesAkas.map((aka, index) => (
-                            <span key={aka.akaTitle}>
+                            <span key={`${aka.akaTitle}-${index}`}>
                                 {index > 0 && ", "}
                                 {aka.akaTitle} ({aka.regionAbbrev.trim() || 'General'})
                             </span>
@@ -24,7 +24,7 @@ const MovieAnalytics = ({ movie, onSearchAgain, onExit }) => {
                     <strong>Principal crew: </strong>
                     <span>
                         {movie.principals.map((person, index) => (
-                            <span key={index}>
+                            <span key={`${person.nameID}-${index}`}>
                                 {index > 0 && ", "}
                                 {person.name} ({person.category})
                             </span>

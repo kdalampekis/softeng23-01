@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, { useState } from "react";
 import Header from "./Header";
 import "../styles.css";
 import renderOptionContent from "../Functions/RenderOptionContent";
@@ -7,8 +7,9 @@ import UserOptions from "../constants/UserOptions";
 import DynamicHeader from "./DynamicHeader";
 import MoviesDisplay from "../Functions/MoviesDisplay";
 import useSearch from "../Functions/useSearch";
-import MovieAnalytics from "./MovieAnalytics";
-
+import MovieAnalytics from "./Items/MovieAnalytics";
+import ActorsDisplay from "../Functions/ActorsDisplay";
+import ActorAnalytics from "./Items/ActorAnalytics"; // Import ActorAnalytics if you've created it
 
 export default function UserPage() {
     const [selectedFunctionality, setSelectedFunctionality] = useState(null);
@@ -26,15 +27,18 @@ export default function UserPage() {
     const [movieYear, setMovieYear] = useState("year");
     const [searchButtonText, setSearchButtonText] = useState("Search");
 
-    const { moviesData, searchPerformed, handleSearch, updateSearchPerformed } = useSearch();
+    const { moviesData, actorsData, searchPerformed, handleSearch, updateSearchPerformed } = useSearch();
     const [selectedMovie, setSelectedMovie] = useState(null);
+    const [selectedActor, setSelectedActor] = useState(null);
 
-    // Callback to set the selected movie from MoviesDisplay
     const handleMovieSelect = (movie) => {
         setSelectedMovie(movie);
     };
 
-    // Function to reset input fields
+    const handleActorSelect = (actor) => {
+        setSelectedActor(actor);
+    };
+
     const resetInputFields = () => {
         setInputValues({
             genre: '',
@@ -43,7 +47,6 @@ export default function UserPage() {
             movieTitle: '',
             movieYear: ''
         });
-        // Reset additional state if necessary
         setGenre('a genre');
         setNumberOfMovies('N');
         setActor('actor/cast member');
@@ -56,53 +59,38 @@ export default function UserPage() {
             ...prevValues,
             [name]: value
         }));
-
-        if (name === 'genre') setGenre(value || 'genre');
-        else if (name === 'numberOfMovies') setNumberOfMovies(value || 'N');
-        else if (name === 'actor') setActor(value || "actor/cast member");
-        else if (name === 'movieTitle') setMovieTitle(value || "movie");
-        else if (name === 'movieYear') setMovieYear(value || "year");
+        // Update state based on input name
     };
 
-    // Changes the search-button text depending on the functionality
     const handleFunctionalityClick = (option) => {
         setSelectedFunctionality(option);
-        if (option === "Add a like/dislike to a movie") {
-            setSearchButtonText("Add");
-        }
-        else if (option === "Movie analytics" || option === "Actor/cast member profile") {
-            setSearchButtonText("Dive")
-        }
-        else setSearchButtonText("Search");
+        setSearchButtonText(option === "Add a like/dislike to a movie" ? "Add" : "Search");
     };
 
-    // Function to handle "Exit" button click
     const handleExit = () => {
         setSearchButtonText("Search");
         setSelectedFunctionality(null);
         updateSearchPerformed(false);
         resetInputFields();
-        setSelectedMovie(null); // Reset the selected movie
+        setSelectedMovie(null);
+        setSelectedActor(null);
     };
 
-    // Function to handle "Search Again" button click
     const handleSearchAgain = () => {
         updateSearchPerformed(false);
         resetInputFields();
-        setSelectedMovie(null); // Reset the selected movie
+        setSelectedMovie(null);
+        setSelectedActor(null);
     };
 
-    // Disables the search-button if the user has not filled all the inputs
     const isSearchButtonDisabled = () => {
-        // return !inputValues.genre.trim() || !inputValues.numberOfMovies.trim();
+        // Logic to determine if the search button should be disabled
     };
-
-
 
     return (
         <div className="body">
-            <Header/>
-            {!selectedMovie && (
+            <Header />
+            {!selectedMovie && !selectedActor && (
                 <DynamicHeader
                     selectedFunctionality={selectedFunctionality}
                     numberOfMovies={numberOfMovies}
@@ -113,21 +101,28 @@ export default function UserPage() {
                 />
             )}
 
-            {/* Conditional rendering based on whether a movie is selected */}
-            {!selectedMovie ? (
+            {!selectedActor && !selectedMovie ? (
                 searchPerformed && (
-                    <MoviesDisplay
-                        moviesData={moviesData}
-                        onSearchAgain={handleSearchAgain}
-                        onExit={handleExit}
-                        onSelectMovie={handleMovieSelect}
-                    />
+                    selectedFunctionality === "Actor/cast member profile" ? (
+                        <ActorsDisplay
+                            actorsData={actorsData}
+                            onSelectActor={handleActorSelect}
+                        />
+                    ) : (
+                        <MoviesDisplay
+                            moviesData={moviesData}
+                            onSearchAgain={handleSearchAgain}
+                            onExit={handleExit}
+                            onSelectMovie={handleMovieSelect}
+                        />
+                    )
                 )
+            ) : selectedActor ? (
+                <ActorAnalytics actor={selectedActor} onSearchAgain={handleSearchAgain} onExit={handleExit} />
             ) : (
                 <MovieAnalytics movie={selectedMovie} onSearchAgain={handleSearchAgain} onExit={handleExit} />
             )}
 
-            {/* If a search has NOT been performed, render options and search controls */}
             {!searchPerformed && (
                 <>
                     {!selectedFunctionality && (
@@ -139,7 +134,6 @@ export default function UserPage() {
                             ))}
                         </div>
                     )}
-
                     {selectedFunctionality && (
                         <div className="buttonContainer">
                             {renderOptionContent(selectedFunctionality, inputValues, handleInputChange)}
@@ -148,7 +142,6 @@ export default function UserPage() {
                             <button onClick={handleExit}>Go Back</button>
                         </div>
                     )}
-
                 </>
             )}
 
@@ -159,7 +152,7 @@ export default function UserPage() {
                 </div>
             )}
 
-            <Footer role="user"/>
+            <Footer role="user" />
         </div>
     );
 }

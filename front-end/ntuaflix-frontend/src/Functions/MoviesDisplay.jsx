@@ -1,6 +1,6 @@
 import React, {useState} from 'react';
 import PropTypes from 'prop-types';
-import Movie from "../components/Movie"; // Adjust the path as necessary
+import Movie from "../components/Items/Movie"; // Adjust the path as necessary
 
 const MoviesDisplay = ({ moviesData, onSearchAgain, onExit, onSelectMovie }) => {
     return (

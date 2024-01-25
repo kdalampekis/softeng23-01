@@ -113,13 +113,25 @@ export const searchMoviesByYear = async (movieYear) => {
     }
 };
 
-// api.js
-// api.js
 export const searchMovieByTitle = async (movieTitle) => {
     try {
         const response = await axios.get(`${BASE_URL}/searchtitle/`, {
             params: {
                 title: movieTitle
+            }
+        });
+        return response.data;
+    } catch (error) {
+        console.error('Error:', error);
+        throw error;
+    }
+};
+
+export const searchByActorName = async (actorName) => {
+    try {
+        const response = await axios.get(`${BASE_URL}/searchname/`, {
+            params: {
+                name: actorName
             }
         });
         return response.data;
