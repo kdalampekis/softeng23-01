@@ -51,4 +51,4 @@ class NameObjectSerializer(serializers.ModelSerializer):
         category=obj.category.split(', ') if obj.category else []
 
         return [{'titleID':titleID,'category':category} for titleID,category in zip(titleID,category)]
-    
+

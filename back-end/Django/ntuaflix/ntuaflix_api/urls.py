@@ -3,11 +3,11 @@ from .views import *
 
 urlpatterns = [
 
-    path('admin/resetall', reset_all),
-
+    
     path('admin/', include('ntuaflix_api.administrator.urls')),
 
-    
+    path('admin/resetall', reset_all),
+
 
     # ///////////////////////////   END POINTS NECESSARY           ////////////////////////////
 
@@ -48,6 +48,9 @@ urlpatterns = [
 
 
     # 25th and 30th Requirement see in the first block of code (Necessary Endpoints)
+
+
+    path('NameProfile/', NameProfileView.as_view(), name='name-profile'),
 
     # //////////////////////////////////////////////////////////////////////////////////
 

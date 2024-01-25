@@ -20,6 +20,7 @@ class TitleObject(models.Model):
     primaryName=models.CharField(max_length=255, blank=True, null=True)
 
     class Meta:
+        manage: False
         db_table = 'titleObject'  # Use the exact table name from the database
 
     def __str__(self):
@@ -36,10 +37,25 @@ class NameObject(models.Model):
     category = models.TextField(blank=True, null=True)  # Aggregated regions
 
     class Meta:
+        manage: False
         db_table = 'nameObject'  # Use the exact table name from the database
 
     def __str__(self):
         return self.primaryName
+
+
+
+class NameProfile(models.Model):
+    ActorName = models.CharField(max_length=50, primary_key=True)
+    ActorNconst = models.CharField(max_length=20, blank=True, null=True)
+    AllGenres = models.CharField(max_length=255, blank=True, null=True)
+
+    class Meta:
+        manage: False
+        db_table = 'nameProfile'  # Use the exact table name from the database
+
+    def __str__(self):
+        return self.ActorName
 
 
 

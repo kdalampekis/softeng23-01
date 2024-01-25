@@ -56,8 +56,6 @@ class Names(models.Model):
     def __str__(self):
         return self.primaryName or 'Unknown Name'
 
-
-
 class Crew(models.Model):
     tconst = models.CharField(max_length=10, primary_key=True)
     directors = models.CharField(max_length=255, blank=True, null=True)
@@ -68,7 +66,6 @@ class Crew(models.Model):
 
     def __str__(self):
         return f"Crew for {self.tconst}"
-
 
 class Episode(models.Model):
     tconst = models.CharField(max_length=10, primary_key=True)
@@ -115,7 +112,6 @@ class Workas(models.Model):
 
     def __str__(self):
         return f"{self.category} - {self.nconst}"
-
 
 # ////////////////////////////////////////////////////////////
 

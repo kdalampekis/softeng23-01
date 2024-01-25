@@ -1,5 +1,4 @@
 from rest_framework import generics
-from .models import TitleObject,NameObject
 from .serializers import TitleObjectSerializer,NameObjectSerializer
 from django.shortcuts import render
 from .forms import TitleSearchForm
@@ -7,7 +6,8 @@ from rest_framework.views import APIView
 # from rest_framework_csv.renderers import CSVRenderer
 from rest_framework.response import Response
 from django.db.models import Q
-
+from collections import Counter
+from .models import *
 
 class TitleBasicList(generics.ListAPIView):
     serializer_class = TitleObjectSerializer
@@ -40,8 +40,6 @@ class SearchTitleView(APIView):
             # Render the search form if no query is provided
             return render(request, 'search_title.html')
 
-
-
 class FilteredTitleObjectsView(APIView):
 
     def get(self, request, *args, **kwargs):
@@ -73,14 +71,6 @@ class FilteredTitleObjectsView(APIView):
         # Return the response
         return Response(serializer.data)
 
-
-
-
-
-
-
-
-
 class NameObjectView(generics.ListAPIView):
     serializer_class = NameObjectSerializer
 
@@ -99,8 +89,6 @@ class NameBiography(generics.ListAPIView):
         nameID = self.kwargs.get('nameID')
         return NameObject.objects.filter(nconst=nameID)
 
-
-
 class SearchNameView(APIView):
     def get_search_by_name(self, request):
         name_query = request.GET.get('name', None)
@@ -111,40 +99,6 @@ class SearchNameView(APIView):
         else:
             # Render the search form if no query is provided
             return render(request, 'search_name.html')
-
-
-# class NBestRatedGenre(APIView):
-
-#     def get(self, request, *args, **kwargs):
-#         # Retrieve query parameters
-#         genre = request.GET.get('genre', None)
-#         numberofmovies = request.GET.get('numberofmovies', None)
-        
-#         # Check if the 'genre' parameter is provided
-#         if genre:
-#             # Filter by genre
-#             queryset = TitleObject.objects.filter(genres__icontains=genre)
-
-#             # If 'numberofmovies' is provided, cast it to an integer and get the top N movies
-#             if numberofmovies:
-#                 try:
-#                     numberofmovies = int(numberofmovies)
-#                     queryset = queryset.order_by('-averageRating')[:numberofmovies]
-#                 except ValueError:
-#                     # Handle the exception if 'numberofmovies' is not a valid integer
-#                     return Response({"error": "numberofmovies must be an integer"}, status=400)
-
-#             # Serialize the queryset
-#             serializer = TitleObjectSerializer(queryset, many=True)
-
-#             # Return the serialized data
-#         else:
-#             # If 'genre' is not provided, render the search criteria form
-#             return render(request, 'NBestRatedGenre.html')
-
-#         return Response(serializer.data)
-
-
 
 class SearchByGenre(APIView):
 
@@ -181,9 +135,6 @@ class SearchByGenre(APIView):
             return render(request, 'SearchByGenre.html')
 
         return Response(serializer.data)
-    
-
-
 
 class SearchByYear(APIView):
 
@@ -203,8 +154,6 @@ class SearchByYear(APIView):
             return render(request, 'SearchByYear.html')
 
         return Response(serializer.data)
-    
-
 
 class SearchByName(APIView):
 
@@ -250,7 +199,38 @@ class SearchByName(APIView):
 
         return Response(serializer.data)
 
+class NameProfileView(APIView):
 
+    def get(self, request, *args, **kwargs):
+
+        name = request.GET.get('name', '')  # Default to an empty string if not provided
+
+        actors_genre_percentages = {}
+
+        if name:
+            filtered_profiles = NameProfile.objects.filter(ActorName__icontains=name)
+
+            for profile in filtered_profiles:
+                if profile.AllGenres:
+                    # Split the genres and strip whitespace from each genre individually
+                    genres = [genre.strip() for genre in profile.AllGenres.split(',')]
+                    # Count each genre
+                    genre_counts = Counter(genres)
+
+                    # Calculate the total number of genre occurrences
+                    total_genres = sum(genre_counts.values())
+
+                    # Calculate the percentage for each genre
+                    genre_percentages = {genre: (count / total_genres) * 100 for genre, count in genre_counts.items()}
+                    
+                    # Assign the result to the actor's name
+                    actors_genre_percentages[profile.ActorName] = genre_percentages
+
+            # Return the percentages as JSON or render your template
+            return JsonResponse(actors_genre_percentages)
+
+        else:
+            return render(request, 'UserProfile.html')
 
 # ////////////////////////////////////////////////////////////////////////
 # ///////////////   ADMIN FUNCTIONALITIES   //////////////////////////////
@@ -260,6 +240,9 @@ from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_http_methods
 from django.db import transaction, DatabaseError
+import MySQLdb
+
+from .administrator.models import *
 
 def reset_all(request):
     try:
@@ -267,10 +250,22 @@ def reset_all(request):
             # List all models that you want to reset
             NameObject.objects.all().delete()
             TitleObject.objects.all().delete()
+            TitleAka.objects.all().delete()
+            Principals.objects.all().delete()
+            Workas.objects.all().delete()
+            Names.objects.all().delete()
+            Episode.objects.all().delete()
+            Rating.objects.all().delete()
+            Crew.objects.all().delete()
+            TitleBasic.objects.all().delete()
             # Add similar lines for all other models you have
 
-        return JsonResponse({"status": "OK"})
+        return JsonResponse({"status": "OK Everything"})
     except DatabaseError as e:
         return JsonResponse({"status": "failed", "reason": str(e)})
+
+
+
+
 
 
