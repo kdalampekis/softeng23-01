@@ -102,14 +102,16 @@ export default function UserPage() {
     return (
         <div className="body">
             <Header/>
-            <DynamicHeader
-                selectedFunctionality={selectedFunctionality}
-                numberOfMovies={numberOfMovies}
-                genre={genre}
-                actor={actor}
-                movieTitle={movieTitle}
-                movieYear={movieYear}
-            />
+            {!selectedMovie && (
+                <DynamicHeader
+                    selectedFunctionality={selectedFunctionality}
+                    numberOfMovies={numberOfMovies}
+                    genre={genre}
+                    actor={actor}
+                    movieTitle={movieTitle}
+                    movieYear={movieYear}
+                />
+            )}
 
             {/* Conditional rendering based on whether a movie is selected */}
             {!selectedMovie ? (

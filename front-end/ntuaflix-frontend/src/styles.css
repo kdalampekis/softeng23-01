@@ -182,18 +182,12 @@ footer p, .link {
 
 .link:hover {
     color: white;
-    /*text-decoration: underline;*/
 }
 
 .dynamic-content {
-    /* Define your gradient */
     background: linear-gradient(45deg, var(--gradient1), var(--gradient2));
-
-    /* Clip the background to the text */
     -webkit-background-clip: text;
     background-clip: text;
-
-    /* Make the text transparent to show the background */
     -webkit-text-fill-color: transparent;
     color: transparent;
 }
@@ -216,59 +210,83 @@ footer p, .link {
     width: 90%;
 }
 
+/* ... (existing styles) */
+
 .movie-analytics {
-    max-width: 800px;
-    margin: auto;
+    border: 2px solid white;
+    border-radius: 10px;
+    background: black;
+    color: white;
     padding: 20px;
-    background: #f9f9f9;
-    border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
 }
 
-.movie-header {
-    display: flex;
-    align-items: center;
-    margin-bottom: 20px;
+.movie-analytics {
+    margin: 4rem 4rem;
 }
 
-.movie-image {
-    max-width: 200px;
-    max-height: 300px;
-    object-fit: cover;
-    border-radius: 4px;
-    margin-right: 20px;
+.movie-analytics h1 {
+    /*text-align: center;*/
+    margin: 1rem 0 2rem 0;
 }
 
-.movie-details h1 {
-    margin: 0;
-    color: #333;
+.movie-details {
 }
 
-.movie-details p {
-    margin: 5px 0;
-    color: #666;
+.movie-analytics h2 {
+    text-align: left;
 }
 
-.movie-additional-info {
-    display: flex;
-    justify-content: space-between;
+.movie-analytics p {
+    letter-spacing: 1px;
+    line-height: 25px;
 }
 
-.aka-titles, .principal-crew {
-    flex: 1;
-    margin-right: 20px;
+.movie-info {
+
 }
 
+
+/* Additional styling as per your design preferences */
+
+.addLikeButtons {
+    text-align: left;
+}
+
+.addLikeButtons button {
+    background-color: #353535;
+    border-color: black;
+}
+
+.addLikeButtons button:hover {
+    background-color: gray;
+    color: black;
+}
+
+.movie-analytics {
+    /*... existing styles ...*/
+    overflow: hidden; /* This will hide any content that overflows the container's bounds */
+}
+
+.movie-analytics .movie-info span,
+.movie-analytics .aka-titles li,
+.movie-analytics .principal-crew li {
+    /* Ensure that text does not break awkwardly */
+    word-wrap: break-word; /* This allows long words to wrap and go to the next line */
+    white-space: normal; /* This ensures that whitespace such as spaces and new lines are handled normally */
+}
+
+/* To make sure list items do not break out of their containers */
 .aka-titles ul, .principal-crew ul {
-    list-style-type: none;
-    padding: 0;
+    padding: 0; /* Remove padding to ensure list aligns with container edges */
+    margin: 0; /* Remove margin to ensure list aligns with container edges */
 }
 
 .aka-titles li, .principal-crew li {
-    margin-bottom: 10px;
-    color: #333;
+    /* Ensures list items break onto the next line within their container */
+    display: inline; /* This makes the list items flow like inline text */
+    margin-right: 5px; /* Adds a small margin to the right of each item for separation */
 }
 
-.aka-titles h2, .principal-crew h2 {
-    color: #007BFF;
+.movie-analytics strong {
+    font-size: 1.25rem;
 }

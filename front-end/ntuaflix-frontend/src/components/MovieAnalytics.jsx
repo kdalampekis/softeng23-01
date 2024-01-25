@@ -5,35 +5,43 @@ import "../styles.css";
 const MovieAnalytics = ({ movie, onSearchAgain, onExit }) => {
     return (
         <div className="movie-analytics">
-            <div className="movie-header">
-                <img src={movie.img_url_asset} alt={movie.originalTitle} className="movie-image"/>
-                <div className="movie-details">
-                    <h1>{movie.originalTitle} ({movie.startYear})</h1>
-                    <p><strong>Genres:</strong> {movie.genres.join(', ')}</p>
-                    <p><strong>Rating:</strong> {movie.rating[0].avRating} ({movie.rating[0].nVotes} votes)</p>
-                </div>
+            <h1 className="dynamic-content movie-header">{movie.originalTitle} ({movie.startYear})</h1>
+            <div className="movie-details">
+                <p><strong>Genres:</strong> {movie.genres.join(', ')}</p>
+                <p><strong>Rating:</strong> {movie.rating[0].avRating} ({movie.rating[0].nVotes} votes)</p>
+                <p className="movie-info">
+                    <strong>Also known as: </strong>
+                    <span>
+                        {movie.titlesAkas.map((aka, index) => (
+                            <span key={aka.akaTitle}>
+                                {index > 0 && ", "}
+                                {aka.akaTitle} ({aka.regionAbbrev.trim() || 'General'})
+                            </span>
+                        ))}
+                    </span>
+                </p>
+                <p className="movie-info">
+                    <strong>Principal crew: </strong>
+                    <span>
+                        {movie.principals.map((person, index) => (
+                            <span key={index}>
+                                {index > 0 && ", "}
+                                {person.name} ({person.category})
+                            </span>
+                        ))}
+                    </span>
+                </p>
             </div>
-            <div className="movie-additional-info">
-                <div className="aka-titles">
-                    <h2>Also Known As</h2>
-                    <ul>
-                        {movie.titlesAkas.map(aka => (
-                            <li key={aka.akaTitle}>{aka.akaTitle} ({aka.regionAbbrev.trim() || 'General'})</li>
-                        ))}
-                    </ul>
-                </div>
-                <div className="principal-crew">
-                    <h2>Principal Crew</h2>
-                    <ul>
-                        {movie.principals.map(person => (
-                            <li key={person.nameID}>{person.name} - {person.category}</li>
-                        ))}
-                    </ul>
-                </div>
+            <div className="buttonContainer addLikeButtons">
+                <button>Like</button>
+                <button>Dislike</button>
             </div>
         </div>
     );
 };
+
+// PropTypes and default export are the same as before...
+
 
 MovieAnalytics.propTypes = {
     movie: PropTypes.shape({
