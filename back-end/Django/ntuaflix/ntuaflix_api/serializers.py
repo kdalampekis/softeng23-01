@@ -14,8 +14,8 @@ class TitleObjectSerializer(serializers.ModelSerializer):
     
     def get_titlesAkas(self, obj):
         # Split the titles and regions by ', ' and zip them into tuples
-        akaTitle = obj.titles.split(', ') if obj.titles else []
-        regionAbbrev = obj.regions.split(', ') if obj.regions else []
+        akaTitle = obj.titles.split(',') if obj.titles else []
+        regionAbbrev = obj.regions.split(',') if obj.regions else []
         # Combine the titles and regions into a list of dictionaries
         return [{'akaTitle': akaTitle, 'regionAbbrev': regionAbbrev} for akaTitle, regionAbbrev in zip(akaTitle, regionAbbrev)]
 
@@ -25,9 +25,9 @@ class TitleObjectSerializer(serializers.ModelSerializer):
     
     def get_principals(self, obj):
         # Split the titles and regions by ', ' and zip them into tuples
-        nameID = obj.nconsts.split(', ') if obj.nconsts else []
-        name = obj.primaryName.split(', ') if obj.primaryName else []
-        category= obj.categories.split(', ') if obj.categories else []
+        nameID = obj.nconsts.split(',') if obj.nconsts else []
+        name = obj.primaryName.split(',') if obj.primaryName else []
+        category= obj.categories.split(',') if obj.categories else []
         # Combine the titles and regions into a list of dictionaries
         return [{'nameID': nameID, 'name': name, 'category':category} for nameID, name,category in zip(nameID, name,category)]
 
@@ -43,7 +43,7 @@ class NameObjectSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = NameObject
-        fields = ['nconst','primaryName','imgUrl','birthYear','deathYear','primaryProfession','titleID','category','nameTitles']
+        fields = ['nconst','primaryName','imgUrl','birthYear','deathYear','primaryProfession','nameTitles']
 
     def get_nameTitles(self,obj):
         titleID=obj.titleID.split(', ') if obj.titleID else []

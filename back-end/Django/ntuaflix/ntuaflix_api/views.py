@@ -89,8 +89,9 @@ class NameBiography(generics.ListAPIView):
         nameID = self.kwargs.get('nameID')
         return NameObject.objects.filter(nconst=nameID)
 
+
 class SearchNameView(APIView):
-    def get_search_by_name(self, request):
+    def get(self, request, *args, **kwargs):
         name_query = request.GET.get('name', None)
         if name_query:
             name_objects = NameObject.objects.filter(primaryName__icontains=name_query)
@@ -99,6 +100,7 @@ class SearchNameView(APIView):
         else:
             # Render the search form if no query is provided
             return render(request, 'search_name.html')
+
 
 class SearchByGenre(APIView):
 
@@ -230,7 +232,7 @@ class NameProfileView(APIView):
             return JsonResponse(actors_genre_percentages)
 
         else:
-            return render(request, 'UserProfile.html')
+            return render(request, 'NameProfile.html')
 
 # ////////////////////////////////////////////////////////////////////////
 # ///////////////   ADMIN FUNCTIONALITIES   //////////////////////////////

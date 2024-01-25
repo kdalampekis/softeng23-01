@@ -80,7 +80,7 @@ class Episode(models.Model):
         return f"Episode {self.episodeNumber} of Season {self.seasonNumber} ({self.tconst})"
 
 class Principals(models.Model):
-    workas_Id = models.AutoField(primary_key=True)
+    # workas_Id = models.AutoField(primary_key=True)
     tconst = models.CharField(max_length=10)  # This might be a ForeignKey to another table
     ordering = models.IntegerField()
     nconst = models.CharField(max_length=10)  # This might also be a ForeignKey
