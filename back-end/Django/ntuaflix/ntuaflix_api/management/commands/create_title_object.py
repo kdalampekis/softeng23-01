@@ -20,14 +20,15 @@ class Command(BaseCommand):
                     tb.startYear,
                     tb.endYear,
                     tb.genres,
-                    GROUP_CONCAT(DISTINCT COALESCE((ta.title, ',') AS titles,  -- SQLite uses comma as default, but specifying it for clarity
-                    GROUP_CONCAT(COALESCE(ta.region, ' '), ',') AS regions
+                    GROUP_CONCAT(COALESCE(ta.title, ', ')) AS titles,
+                    GROUP_CONCAT(IFNULL(ta.region, ' '), ', ') AS regions
                 FROM
                     titlebasic tb
                 JOIN
                     titleaka ta ON tb.tconst = ta.tconst
                 GROUP BY
                     tb.tconst, tb.titleType, tb.originalTitle, tb.img_url_asset, tb.startYear, tb.endYear;
+
 
 
                 """,

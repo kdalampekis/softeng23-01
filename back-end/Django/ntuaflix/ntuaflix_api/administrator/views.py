@@ -66,9 +66,9 @@ def UploadTitleAkas(request):
 
             next(reader, None)  # Skip the header row
 
-            for row in reader:
+            for row_number, row in enumerate(reader, start=1):
                 tconst, ordering, title, region, language, types, attributes, isOriginalTitle = row
-                if not TitleAka.objects.filter(tconst=tconst).exists():
+                if not TitleAka.objects.filter(tconst=tconst,ordering=int(ordering)).exists():
                 # Create and save TitleAka instance
                     TitleAka.objects.create(
                         tconst=tconst,
@@ -80,7 +80,7 @@ def UploadTitleAkas(request):
                         attributes=attributes if attributes != '\\N' else None,
                         isOriginalTitle=int(isOriginalTitle)
                     )
-
+                print(f"Processed row number: {row_number}")
             return JsonResponse({'status': 'success'})
         else:
             return JsonResponse({'status': 'error', 'message': 'Form is not valid'}, status=400)
