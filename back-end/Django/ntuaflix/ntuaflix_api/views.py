@@ -23,12 +23,12 @@ class SignUpAPIView(APIView):
     permission_classes = [AllowAny]
 
     def post(self, request):
-        username = request.POST.get('username')
-        password = request.POST.get('password')
-        email = request.POST.get('email')
-        first_name = request.POST.get('first_name')
-        last_name = request.POST.get('last_name')
-
+        username = request.data.get('username')
+        password = request.data.get('password')
+        email = request.data.get('email')
+        first_name = request.data.get('firstname')
+        last_name = request.data.get('lastname')
+        print(username, last_name)
         # Create a new user with the provided information
         user = User.objects.create_user(username=username, password=password, email=email, first_name=first_name, last_name=last_name, is_active=False, is_superuser = False)
 
@@ -55,7 +55,11 @@ class LoginApiView(APIView):
             login(request, user)
             # Manually generate or retrieve the authentication token
             token, created = Token.objects.get_or_create(user=user)
-            return Response({'token': token.key})
+            response_data = {
+                'token': token.key,
+                'is_superuser': user.is_superuser
+            }
+            return Response(response_data)
         else:
             return Response({"error": "Invalid credentials"}, status=400)
 

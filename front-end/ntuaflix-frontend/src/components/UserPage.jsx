@@ -11,6 +11,7 @@ import MovieAnalytics from "./Items/MovieAnalytics";
 import ActorsDisplay from "../Functions/ActorsDisplay";
 import ActorAnalytics from "./Items/ActorAnalytics"; // Import ActorAnalytics if you've created it
 
+
 export default function UserPage() {
     const [selectedFunctionality, setSelectedFunctionality] = useState(null);
     const [inputValues, setInputValues] = useState({
@@ -43,6 +44,7 @@ export default function UserPage() {
         "Search movies by year": ['movieYear'],
         "Actor/cast member profile": ['actor'],
     };
+
     const isSearchButtonDisabled = () => {
         if (!selectedFunctionality) return true;
 
