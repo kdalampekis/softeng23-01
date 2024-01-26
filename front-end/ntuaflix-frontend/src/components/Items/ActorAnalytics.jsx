@@ -1,44 +1,88 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import "../../styles.css";
+import { searchMovieByTitleID } from "../../api";
+
 const ActorAnalytics = ({ actor, onSearchAgain, onExit }) => {
-    // Function to handle converting 'knownForTitles' array to a string
-    const knownForTitlesString = (titles) => {
-        return titles.map(title => title.trim()).join(', ');
-    };
+    const [filmography, setFilmography] = useState([]);
+    const fullImageUrl = actor.imgUrl ? actor.imgUrl.replace('{width_variable}', 'w300') : null;
+
+    useEffect(() => {
+        let isMounted = true; // flag to handle async operations for mounted component only
+
+        const fetchMovieTitles = async () => {
+            try {
+                const filmographyWithTitles = await Promise.all(
+                    actor.nameTitles.map(async (title) => {
+                        const response = await searchMovieByTitleID(title.titleID);
+                        const movieDetails = response[0]; // Assuming the response is an array
+                        console.log("movieDetails: ", movieDetails);
+                        return {
+                            ...title,
+                            movieTitle: movieDetails?.originalTitle || 'Title not found',
+                        };
+                    })
+                );
+                if (isMounted) {
+                    setFilmography(filmographyWithTitles);
+                }
+            } catch (error) {
+                if (isMounted) {
+                    console.error('Error fetching movie titles:', error);
+                }
+            }
+        };
+
+        fetchMovieTitles();
+
+        // Cleanup function to set isMounted false when the component unmounts
+        return () => {
+            isMounted = false;
+        };
+    }, [actor.nameTitles]); // Add the missing dependency array here
 
     return (
-        <div className="actor-analytics">
-            <div className="actor-header">
-                <h1 className="dynamic-content">{actor.primaryName}</h1>
-                <div className="actor-details">
-                    <p><strong>Profession:</strong> {actor.primaryProfession.join(', ')}</p>
-                    <p><strong>Known For:</strong> {knownForTitlesString(actor.knownForTitles)}</p>
+        <div className="actor-analytics-container">
+            <div className="actor-analytics-content">
+                <h1 className="actor-header">{actor.primaryName}</h1>
+                <p><strong className="dynamic-content">Profession:</strong> {actor.primaryProfession.split(',').join(', ')}</p>
+                <p><strong className="dynamic-content">Birth Year:</strong> {actor.birthYear}</p>
+                <p><strong className="dynamic-content">Death Year:</strong> {actor.deathYear}</p>
+                <p className="actor-info">
+                    <strong className="dynamic-content">Filmography: </strong>
+                    <span>
+                        {filmography.map((movie, index) => (
+                            <span key={`${movie.titleID}-${index}`}>
+                                {index > 0 && ", "}
+                                {movie.movieTitle} ({movie.category})
+                            </span>
+                        ))}
+                    </span>
+                </p>
+            </div>
+            {fullImageUrl && (
+                <div className="actor-analytics-image-container">
+                    <img src={fullImageUrl} alt={actor.primaryName} className="actor-analytics-image"/>
                 </div>
-            </div>
-            <div className="actor-additional-info">
-                <p><strong>Birth Year:</strong> {actor.birthYear}</p>
-                {actor.deathYear && <p><strong>Death Year:</strong> {actor.deathYear}</p>}
-            </div>
-            <div className="buttonContainer">
-                <button onClick={onSearchAgain}>Search Again</button>
-                <button onClick={onExit}>Exit</button>
-            </div>
+            )}
         </div>
     );
 };
 
 ActorAnalytics.propTypes = {
     actor: PropTypes.shape({
-        nconst: PropTypes.string.isRequired,
         primaryName: PropTypes.string.isRequired,
+        imgUrl: PropTypes.string,
         birthYear: PropTypes.number,
         deathYear: PropTypes.number,
-        primaryProfession: PropTypes.arrayOf(PropTypes.string),
-        knownForTitles: PropTypes.arrayOf(PropTypes.string)
+        primaryProfession: PropTypes.string,
+        nameTitles: PropTypes.arrayOf(PropTypes.shape({
+            titleID: PropTypes.string,
+            category: PropTypes.string
+        }))
     }).isRequired,
-    onSearchAgain: PropTypes.func.isRequired,
-    onExit: PropTypes.func.isRequired
+    onSearchAgain: PropTypes.func,
+    onExit: PropTypes.func
 };
 
 export default ActorAnalytics;

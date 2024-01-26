@@ -38,8 +38,8 @@ const MovieAnalytics = ({ movie, onSearchAgain, onExit }) => {
                 </p>
                 {!hasImage && (
                     <div className="buttonContainer addLikeButtons noImage">
-                        <button onClick={onSearchAgain}>Like</button>
-                        <button onClick={onExit}>Dislike</button>
+                        <button>Like</button>
+                        <button>Dislike</button>
                     </div>
                 )}
             </div>
@@ -49,8 +49,8 @@ const MovieAnalytics = ({ movie, onSearchAgain, onExit }) => {
                         <img src={fullImageUrl} alt={movie.originalTitle} className="movie-analytics-image"/>
                     </div>
                     <div className="buttonContainer addLikeButtons">
-                        <button onClick={onSearchAgain}>Like</button>
-                        <button onClick={onExit}>Dislike</button>
+                        <button>Like</button>
+                        <button>Dislike</button>
                     </div>
                 </div>
             )}

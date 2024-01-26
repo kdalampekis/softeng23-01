@@ -141,4 +141,12 @@ export const searchByActorName = async (actorName) => {
     }
 };
 
-
+export const searchMovieByTitleID = async (titleID) => {
+    try {
+        const response = await axios.get(`${BASE_URL}/title/${titleID.toString()}/`);
+        return response.data;
+    } catch (error) {
+        console.error('Error:', error);
+        throw error;
+    }
+};

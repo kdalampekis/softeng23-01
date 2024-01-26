@@ -214,7 +214,7 @@ footer p, .link {
 
 /* ... (existing styles) */
 
-.movie-analytics-container {
+.movie-analytics-container, .actor-analytics-container {
     display: flex;
     width: 90%;
     justify-content: space-between;
@@ -228,42 +228,40 @@ footer p, .link {
     /*align-items: flex-start;*/
 }
 
-.movie-analytics-content {
+.movie-analytics-content, .actor-analytics-content {
     flex: 3;
     padding: 20px;
     height: 100%;
     overflow: hidden;
 }
 
-.movie-analytics-image-container {
+.movie-analytics-image-container, .actor-analytics-image-container {
     flex: 1; /* Takes up 1/4 of the space */
     display: flex;
     align-items: center; /* Center the image vertically */
     justify-content: center; /* Center the image horizontally */
     padding: 10px; /* Add some spacing around the image */
-    /*border: 2px solid white;*/
     margin: 1rem;
 }
 
-.movie-analytics-image {
+.movie-analytics-image, .actor-analytics-image {
     width: 100%; /* The image will take the full width of the image container */
     height: 40vh; /* Maintain aspect ratio */
     object-fit: contain; /* Ensure the image is contained within its element */
-    border-radius: 4px; /* Optional: if you want rounded corners */
 }
 
 
-.movie-analytics-content h1 {
+.movie-analytics-content h1, .actor-analytics-content h1 {
     margin: 1rem 0 2rem 0;
     font-size: 2.5rem;
 }
 
 
-.movie-analytics-content h2 {
+.movie-analytics-content h2, .actor-analytics-content h2 {
     text-align: left;
 }
 
-.movie-analytics-content p {
+.movie-analytics-content p, .actor-analytics-content p {
     letter-spacing: 1px;
     line-height: 25px;
 }
@@ -325,8 +323,9 @@ footer p, .link {
     width: 33.33%; /* Image takes up 1/3 of the container */
     height: 100%; /* Image takes full height of the container */
     object-fit: cover; /* Cover the area without stretching the image */
-    border-radius: 4px; /* Optional: if you want rounded corners */
+    border-radius: 10px; /* Optional: if you want rounded corners */
 }
+
 
 .actor-details, .movie-details {
     display: flex;

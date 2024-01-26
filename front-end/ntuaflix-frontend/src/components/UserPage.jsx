@@ -31,6 +31,30 @@ export default function UserPage() {
     const [selectedMovie, setSelectedMovie] = useState(null);
     const [selectedActor, setSelectedActor] = useState(null);
 
+    const functionalityInputRequirements = {
+        "The N highest rated movies in a genre": ['numberOfMovies', 'genre'],
+        "Highest rated movie of an actor/cast member": ['actor'],
+        "Add a like/dislike to a movie": ['movieTitle'],
+        "Most recent movie of an actor/cast member": ['actor'],
+        "The N highest rated movies of an actor/cast member": ['numberOfMovies', 'actor'],
+        "Search movies by actor/cast member": ['actor'],
+        "Search movies by genre": ['genre'],
+        "Movie analytics": ['movieTitle'],
+        "Search movies by year": ['movieYear'],
+        "Actor/cast member profile": ['actor'],
+    };
+    const isSearchButtonDisabled = () => {
+        if (!selectedFunctionality) return true;
+
+        const requiredInputs = functionalityInputRequirements[selectedFunctionality];
+        if (!requiredInputs) return true;
+
+        return requiredInputs.some(input => !inputValues[input]);
+    };
+
+
+
+
     const handleMovieSelect = (movie) => {
         setSelectedMovie(movie);
     };
@@ -87,9 +111,11 @@ export default function UserPage() {
         setSelectedActor(null);
     };
 
-    const isSearchButtonDisabled = () => {
-        // Logic to determine if the search button should be disabled
+    const handleGoBack = () => {
+        setSelectedMovie(null);
+        setSelectedActor(null);
     };
+
 
     return (
         <div className="body">
@@ -152,6 +178,9 @@ export default function UserPage() {
             {searchPerformed && (
                 <div className="buttonContainer">
                     <button onClick={handleSearchAgain}>Search Again</button>
+                    {selectedMovie || selectedActor && (
+                        <button onClick={handleGoBack}>Go Back</button>
+                    )}
                     <button onClick={handleExit}>Exit</button>
                 </div>
             )}
