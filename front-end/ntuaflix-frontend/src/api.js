@@ -1,5 +1,6 @@
 import axios from 'axios';
-import {findByLabelText} from "@testing-library/react";
+;
+
 
 const BASE_URL = 'http://127.0.0.1:9876/ntuaflix_api';
 
@@ -150,3 +151,5 @@ export const searchMovieByTitleID = async (titleID) => {
         throw error;
     }
 };
+
+
