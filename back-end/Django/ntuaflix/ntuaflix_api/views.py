@@ -1,7 +1,7 @@
+from django.http import JsonResponse
 from rest_framework import generics
 from .serializers import TitleObjectSerializer,NameObjectSerializer
 from django.shortcuts import render
-from .forms import TitleSearchForm
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from django.db.models import Q
@@ -62,7 +62,10 @@ class LoginApiView(APIView):
 class TitleBasicList(generics.ListAPIView):
     serializer_class = TitleObjectSerializer
     queryset = TitleObject.objects.all()
+<<<<<<< HEAD
+=======
     # renderer_classes = (CSVRenderer, )
+>>>>>>> 00acb6e5279f0db9bbeb0b6c49a35b4d854ddd6e
 
     def get_title(self):
         serializer_class = TitleObjectSerializer
@@ -280,6 +283,9 @@ class NameProfileView(APIView):
             return JsonResponse(actors_genre_percentages)
 
         else:
+<<<<<<< HEAD
+            return render(request, 'NameProfile.html')
+=======
             return render(request, 'UserProfile.html')
 
 # ////////////////////////////////////////////////////////////////////////
@@ -319,3 +325,4 @@ def reset_all(request):
 
 
 
+>>>>>>> 00acb6e5279f0db9bbeb0b6c49a35b4d854ddd6e
