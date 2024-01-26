@@ -11,11 +11,11 @@ const Actor = ({ actor, onClick }) => {
 
     // Check if imgUrl exists, and replace {width_variable} with a valid width if it does
     const fullImageUrl = imgUrl ? imgUrl.replace('{width_variable}', 'w300') : '';
-    const hasImage = Boolean(fullImageUrl); // Now this is correctly placed after fullImageUrl initialization
+    const hasImage = Boolean(fullImageUrl);
 
     return (
         <div
-            className={`actor ${!hasImage ? 'full-width' : ''}`} // Use backticks for template literals
+            className={`actor ${!hasImage ? 'full-width' : ''}`}
             onClick={onClick}
             onMouseEnter={() => setHover(true)}
             onMouseLeave={() => setHover(false)}

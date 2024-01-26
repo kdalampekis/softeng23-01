@@ -129,7 +129,7 @@ input, .inputContainer .styled-select {
     margin-top: 5rem;
 }
 
-.functionality, .actor {
+.functionality, .actor, .movie {
     border: 2px solid var(--button); /* Example border */
     padding: 10px;
     margin: 4px 0;
@@ -141,7 +141,7 @@ input, .inputContainer .styled-select {
     background: black;
 }
 
-.actor {
+.actor, .movie {
     /* Use flexbox for the layout */
     display: flex;
     flex-direction: row; /* Align children horizontally */
@@ -208,15 +208,6 @@ footer p, .link {
     color: transparent;
 }
 
-.movie {
-    height: 12rem;
-    width: 20rem;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    border: 2px solid white;
-}
-
 .movie h3, p {
     padding: 5px;
 }
@@ -242,8 +233,6 @@ footer p, .link {
     font-size: 2.5rem;
 }
 
-.movie-details {
-}
 
 .movie-analytics h2 {
     text-align: left;
@@ -254,9 +243,6 @@ footer p, .link {
     line-height: 25px;
 }
 
-.movie-info {
-
-}
 
 
 /* Additional styling as per your design preferences */
@@ -305,18 +291,14 @@ footer p, .link {
 }
 
 
-/* styles.css */
-
-
-
-.actor-image {
+.actor-image, .movie-image {
     width: 33.33%; /* Image takes up 1/3 of the container */
     height: 100%; /* Image takes full height of the container */
     object-fit: cover; /* Cover the area without stretching the image */
     border-radius: 4px; /* Optional: if you want rounded corners */
 }
 
-.actor-details {
+.actor-details, .movie-details {
     display: flex;
     flex-direction: column; /* Stack name and profession vertically */
     align-items: center; /* Center the text horizontally */
@@ -330,8 +312,10 @@ footer p, .link {
     text-align: center; /* Center the text */
 }
 
-/* When there is no image, the actor details should take up the whole width */
-.actor-details.full-width {
+
+/* When there is no image, the details should take up the whole width */
+.actor-details.full-width, .movie-details.full-width {
     width: 100%; /* Text takes up full width when there's no image */
 }
+
 
