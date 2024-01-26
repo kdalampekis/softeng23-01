@@ -9,4 +9,3 @@ admin.site.register(Crew)
 admin.site.register(Episode)
 admin.site.register(Principals)
 admin.site.register(Rating)
-

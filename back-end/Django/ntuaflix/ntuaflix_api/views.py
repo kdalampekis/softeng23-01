@@ -1,9 +1,8 @@
+from django.http import JsonResponse
 from rest_framework import generics
 from .serializers import TitleObjectSerializer,NameObjectSerializer
 from django.shortcuts import render
-from .forms import TitleSearchForm
 from rest_framework.views import APIView
-# from rest_framework_csv.renderers import CSVRenderer
 from rest_framework.response import Response
 from django.db.models import Q
 from collections import Counter
@@ -12,7 +11,6 @@ from .models import *
 class TitleBasicList(generics.ListAPIView):
     serializer_class = TitleObjectSerializer
     queryset = TitleObject.objects.all()
-    # renderer_classes = (CSVRenderer, ) 
 
     def get_title(self):
         serializer_class = TitleObjectSerializer
@@ -233,41 +231,3 @@ class NameProfileView(APIView):
 
         else:
             return render(request, 'NameProfile.html')
-
-# ////////////////////////////////////////////////////////////////////////
-# ///////////////   ADMIN FUNCTIONALITIES   //////////////////////////////
-    
-
-from django.http import JsonResponse
-from django.views.decorators.csrf import csrf_exempt
-from django.views.decorators.http import require_http_methods
-from django.db import transaction, DatabaseError
-import MySQLdb
-
-from .administrator.models import *
-
-def reset_all(request):
-    try:
-        with transaction.atomic():
-            # List all models that you want to reset
-            NameObject.objects.all().delete()
-            TitleObject.objects.all().delete()
-            TitleAka.objects.all().delete()
-            Principals.objects.all().delete()
-            Workas.objects.all().delete()
-            Names.objects.all().delete()
-            Episode.objects.all().delete()
-            Rating.objects.all().delete()
-            Crew.objects.all().delete()
-            TitleBasic.objects.all().delete()
-            # Add similar lines for all other models you have
-
-        return JsonResponse({"status": "OK Everything"})
-    except DatabaseError as e:
-        return JsonResponse({"status": "failed", "reason": str(e)})
-
-
-
-
-
-
