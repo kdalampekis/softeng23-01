@@ -224,6 +224,8 @@ footer p, .link {
     color: white;
     margin: auto;
     margin-top: 2rem;
+    /*flex-wrap: wrap;*/
+    /*align-items: flex-start;*/
 }
 
 .movie-analytics-content {
@@ -245,7 +247,7 @@ footer p, .link {
 
 .movie-analytics-image {
     width: 100%; /* The image will take the full width of the image container */
-    height: auto; /* Maintain aspect ratio */
+    height: 40vh; /* Maintain aspect ratio */
     object-fit: contain; /* Ensure the image is contained within its element */
     border-radius: 4px; /* Optional: if you want rounded corners */
 }
@@ -277,6 +279,16 @@ footer p, .link {
 .addLikeButtons button {
     background-color: #353535;
     border-color: black;
+}
+
+.noImage {
+    text-align: left;
+    margin-left: 0;
+    margin-top: 2rem;
+}
+
+.noImage button:first-child {
+    margin-left: 0;
 }
 
 .addLikeButtons button:hover {
@@ -332,7 +344,7 @@ footer p, .link {
 
 
 /* When there is no image, the details should take up the whole width */
-.actor-details.full-width, .movie-details.full-width {
+.actor-details.full-width, .movie-details.full-width, .movie-analytics-content.full-width {
     width: 100%; /* Text takes up full width when there's no image */
 }
 
