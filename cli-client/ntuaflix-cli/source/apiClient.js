@@ -3,18 +3,18 @@ import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
 
-const BASE_URL = 'http://127.0.0.1:8000/ntuaflix_api';  // Replace with your actual Django server's URL
+const BASE_URL = 'http://127.0.0.1:9876/ntuaflix_api';  // Replace with your actual Django server's URL
 
 
 async function login(username, password) {
 	try {
-		const response = await axios.post('http://127.0.0.1:8000/ntuaflix_api/login', {
+		const response = await axios.post('http://127.0.0.1:9876/ntuaflix_api/login/',new URLSearchParams({
 			username,
 			password
-		});
+		}));
 
 		if (response.status === 200) {
-			const token = response.data.accessToken;
+			const token = response.data.token;
 			const homeDirectory = path.dirname(fileURLToPath(import.meta.url));
 			fs.writeFileSync(`${homeDirectory}/softeng20bAPI.token`, token);
 			console.log('Login successful');
@@ -26,16 +26,28 @@ async function login(username, password) {
 	}
 }
 
-async function logout(apiKey) {
-	const url = 'http://127.0.0.1:8000/ntuaflix_api/logout';
+async function logout() {
 	try {
-		const response = await axios.post(url, {}, { headers: { 'x-observatory-auth': apiKey } });
+		const __filename = fileURLToPath(import.meta.url);
+		const currentDir = path.dirname(__filename);
+		const tokenFileName = 'softeng20bAPI.token';
+		const tokenFilePath = path.join(currentDir, tokenFileName);
+
+		const token = fs.readFileSync(tokenFilePath, 'utf-8').trim();
+
+		const response = await axios.post(
+			'http://127.0.0.1:9876/ntuaflix_api/logout/',
+			{},
+			{
+				headers: {
+					'Authorization': `Token ${token}`,
+				},
+			}
+		);
 
 		if (response.status === 200) {
-			const tokenFilePath = path.join(process.env.HOME, '/softeng20bAPI.token');
-			if (fs.existsSync(tokenFilePath)) {
-				fs.unlinkSync(tokenFilePath);
-			}
+			// Delete the token file upon successful logout
+			fs.unlinkSync(tokenFilePath);
 			console.log('Logout successful');
 		} else {
 			console.log('Logout failed');
@@ -45,19 +57,75 @@ async function logout(apiKey) {
 	}
 }
 
-async function adduser(username) {
-	// Implement the 'user' API call here
+
+async function adduser(username, password) {
+	try {
+		// Read the token from the saved file
+		const homeDirectory = path.dirname(fileURLToPath(import.meta.url));
+		const token = fs.readFileSync(`${homeDirectory}/softeng20bAPI.token`, 'utf8').trim();
+		console.log(token);
+		// Set the API endpoint URL
+		const apiUrl = `http://127.0.0.1:9876/ntuaflix_api/admin/usermod/${username}/${password}/`;
+
+		// Create the request headers with the token
+		const headers = {
+			'Authorization': `${token}`,
+			'Content-Type': 'application/json',
+		};
+		console.log(headers);
+
+		// Make the POST request with the headers
+		const response = await axios.post(apiUrl, null, { headers: headers });
+		if (response.status === 200) {
+			console.log('User added successfully');
+		} else {
+			console.log('Failed to add user');
+		}
+	} catch (error) {
+		console.error('Error:', error.message);
+	}
 }
 
+
 async function user(username) {
-	// Implement the 'user' API call here
+	try {
+		const response = await axios.get(`http://127.0.0.1:9876/admin/users/${username}`);
+
+		if (response.status === 200) {
+			console.log(response.data); // Assuming the server sends user details
+		} else {
+			console.log('User not found');
+		}
+	} catch (error) {
+		console.error('Error:', error.message);
+	}
 }
 async function healthcheck() {
-	// Implement the 'healthcheck' API call here
+	try {
+		const response = await axios.get('http://127.0.0.1:9876/admin/healthcheck');
+
+		if (response.status === 200) {
+			console.log('Health check passed');
+		} else {
+			console.log('Health check failed');
+		}
+	} catch (error) {
+		console.error('Error:', error.message);
+	}
 }
 
 async function resetall() {
-	// Implement the 'resetall' API call here
+	try {
+		const response = await axios.post('http://127.0.0.1:9876/admin/resetall');
+
+		if (response.status === 200) {
+			console.log('Reset all successful');
+		} else {
+			console.log('Failed to reset all');
+		}
+	} catch (error) {
+		console.error('Error:', error.message);
+	}
 }
 
 async function newtitles(filename) {
