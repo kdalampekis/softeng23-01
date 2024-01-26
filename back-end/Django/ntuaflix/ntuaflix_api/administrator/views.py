@@ -5,11 +5,49 @@ from .forms import *
 from .models import *
 from django.core.exceptions import ValidationError
 from django.views.decorators.csrf import csrf_exempt
+<<<<<<< HEAD
 from django.db import DatabaseError
 from rest_framework.permissions import IsAuthenticated
+=======
+from django.views.decorators.http import require_http_methods
+from django.db import transaction, DatabaseError
+from rest_framework.decorators import api_view
+from rest_framework.views import APIView
+from django.shortcuts import get_object_or_404
+>>>>>>> 00acb6e5279f0db9bbeb0b6c49a35b4d854ddd6e
 from django.contrib.auth.models import User
-from django.contrib.auth.decorators import login_required
-from django.contrib.auth.decorators import permission_required
+
+
+
+@csrf_exempt
+def add_user(request, username, password):
+    if request.method == 'POST':
+        superuser_token = User.objects.filter(is_superuser=True).values_list('auth_token', flat=True).first()
+        token = request.META.get('HTTP_AUTHORIZATION')
+        print(token)
+# Check if the authenticated user is a superuser
+        if token == superuser_token:
+            try:
+                # Retrieve the user by username
+                user = User.objects.get(username=username)
+
+                # Check if the user is not active
+                if not user.is_active:
+                    # Set is_active to True
+                    user.is_active = True
+                    user.set_password(password)
+                    user.save()
+
+                    return JsonResponse({"detail": "User activated successfully."}, status=200)
+                else:
+                    return JsonResponse({"detail": "User is already active."}, status=400)
+
+            except User.DoesNotExist:
+                return JsonResponse({"detail": "User not found."}, status=404)
+        else:
+            return JsonResponse({"detail": "Permission denied. You don't have administrator privileges."}, status=403)
+    else:
+        return JsonResponse({"detail": "Only GET requests are allowed."}, status=405)
 
 
 def UploadTitleBasics(request):
@@ -360,6 +398,7 @@ def health_check(request):
         return JsonResponse({"status": "failed", "dataconnection": connection_string})
 
 
+<<<<<<< HEAD
 # def reset_all(request):
 #     try:
 #         with transaction.atomic():
@@ -378,3 +417,7 @@ def health_check(request):
 #         return JsonResponse({"status": "OK"})
 #     except DatabaseError as e:
 #         return JsonResponse({"status": "failed", "reason": str(e)})
+=======
+
+
+>>>>>>> 00acb6e5279f0db9bbeb0b6c49a35b4d854ddd6e

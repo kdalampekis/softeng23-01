@@ -79,7 +79,6 @@ button:hover {
 }
 
 .buttonContainer {
-    /*border: 2px solid white;*/
     margin-top: 2.5rem;
     text-align: center;
 }
@@ -129,7 +128,7 @@ input, .inputContainer .styled-select {
     margin-top: 5rem;
 }
 
-.functionality {
+.functionality, .actor, .movie {
     border: 2px solid var(--button); /* Example border */
     padding: 10px;
     margin: 4px 0;
@@ -141,17 +140,29 @@ input, .inputContainer .styled-select {
     background: black;
 }
 
-
-.functionality button {
-    background-color: black;
+.actor, .movie {
+    /* Use flexbox for the layout */
+    display: flex;
+    flex-direction: row; /* Align children horizontally */
+    align-items: center; /* Center children vertically */
+    justify-content: start; /* Align children to the start of the container */
+    border: 2px solid white;
+    height: 12rem; /* Keep the height as specified */
+    width: 20rem; /* Keep the width as specified */
+    /*padding: 10px; !* Optional: Add padding for some space inside the container *!*/
 }
 
-.functionality:hover {
+.functionality:hover, .movie:hover, .actor:hover {
     background: linear-gradient(to right, var(--gradient1), var(--gradient2));
     border: 2px solid white;
 }
 
-.functionalitiesContainer {
+.actor:hover .actor-image, .movie:hover .movie-image {
+    border: 2px solid black;
+    box-shadow: 0 2px 5px 5px black;
+}
+
+.functionalitiesContainer, .moviesContainer, .actorsContainer {
     margin: 3rem auto;
     width: 70%;
     display: flex;
@@ -162,6 +173,10 @@ input, .inputContainer .styled-select {
     gap: 20px;
     padding: 20px 10px;
     color: white;
+}
+
+.moviesContainer, .actorsContainer {
+    width: 90%;
 }
 
 footer {
@@ -182,29 +197,14 @@ footer p, .link {
 
 .link:hover {
     color: white;
-    /*text-decoration: underline;*/
 }
 
 .dynamic-content {
-    /* Define your gradient */
     background: linear-gradient(45deg, var(--gradient1), var(--gradient2));
-
-    /* Clip the background to the text */
     -webkit-background-clip: text;
     background-clip: text;
-
-    /* Make the text transparent to show the background */
     -webkit-text-fill-color: transparent;
     color: transparent;
-}
-
-.movie {
-    height: 12rem;
-    width: 20rem;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    border: 2px solid white;
 }
 
 .movie h3, p {
@@ -212,63 +212,139 @@ footer p, .link {
 }
 
 
-.moviesContainer {
+/* ... (existing styles) */
+
+.movie-analytics-container, .actor-analytics-container {
+    display: flex;
     width: 90%;
-}
-
-.movie-analytics {
-    max-width: 800px;
-    margin: auto;
-    padding: 20px;
-    background: #f9f9f9;
-    border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-}
-
-.movie-header {
-    display: flex;
-    align-items: center;
-    margin-bottom: 20px;
-}
-
-.movie-image {
-    max-width: 200px;
-    max-height: 300px;
-    object-fit: cover;
-    border-radius: 4px;
-    margin-right: 20px;
-}
-
-.movie-details h1 {
-    margin: 0;
-    color: #333;
-}
-
-.movie-details p {
-    margin: 5px 0;
-    color: #666;
-}
-
-.movie-additional-info {
-    display: flex;
     justify-content: space-between;
+    border: 2px solid white;
+    border-radius: 10px;
+    background: black;
+    color: white;
+    margin: auto;
+    margin-top: 2rem;
+    /*flex-wrap: wrap;*/
+    /*align-items: flex-start;*/
 }
 
-.aka-titles, .principal-crew {
-    flex: 1;
-    margin-right: 20px;
+.movie-analytics-content, .actor-analytics-content {
+    flex: 3;
+    padding: 20px;
+    height: 100%;
+    overflow: hidden;
 }
 
+.movie-analytics-image-container, .actor-analytics-image-container {
+    flex: 1; /* Takes up 1/4 of the space */
+    display: flex;
+    align-items: center; /* Center the image vertically */
+    justify-content: center; /* Center the image horizontally */
+    padding: 10px; /* Add some spacing around the image */
+    margin: 1rem;
+}
+
+.movie-analytics-image, .actor-analytics-image {
+    width: 100%; /* The image will take the full width of the image container */
+    height: 40vh; /* Maintain aspect ratio */
+    object-fit: contain; /* Ensure the image is contained within its element */
+}
+
+
+.movie-analytics-content h1, .actor-analytics-content h1 {
+    margin: 1rem 0 2rem 0;
+    font-size: 2.5rem;
+}
+
+
+.movie-analytics-content h2, .actor-analytics-content h2 {
+    text-align: left;
+}
+
+.movie-analytics-content p, .actor-analytics-content p {
+    letter-spacing: 1px;
+    line-height: 25px;
+}
+
+
+
+/* Additional styling as per your design preferences */
+
+.addLikeButtons {
+    margin: .25rem;
+}
+
+.addLikeButtons button {
+    background-color: #353535;
+    border-color: black;
+}
+
+.noImage {
+    text-align: left;
+    margin-left: 0;
+    margin-top: 2rem;
+}
+
+.noImage button:first-child {
+    margin-left: 0;
+}
+
+.addLikeButtons button:hover {
+    background-color: gray;
+    color: black;
+}
+
+.movie-analytics-content .movie-info span,
+.movie-analytics-content .aka-titles li,
+.movie-analytics-content .principal-crew li {
+    /* Ensure that text does not break awkwardly */
+    word-wrap: break-word; /* This allows long words to wrap and go to the next line */
+    white-space: normal; /* This ensures that whitespace such as spaces and new lines are handled normally */
+}
+
+/* To make sure list items do not break out of their containers */
 .aka-titles ul, .principal-crew ul {
-    list-style-type: none;
-    padding: 0;
+    padding: 0; /* Remove padding to ensure list aligns with container edges */
+    margin: 0; /* Remove margin to ensure list aligns with container edges */
 }
 
 .aka-titles li, .principal-crew li {
-    margin-bottom: 10px;
-    color: #333;
+    /* Ensures list items break onto the next line within their container */
+    display: inline; /* This makes the list items flow like inline text */
+    margin-right: 5px; /* Adds a small margin to the right of each item for separation */
 }
 
-.aka-titles h2, .principal-crew h2 {
-    color: #007BFF;
+.movie-analytics-content strong {
+    font-size: 1.25rem;
 }
+
+
+.actor-image, .movie-image {
+    width: 33.33%; /* Image takes up 1/3 of the container */
+    height: 100%; /* Image takes full height of the container */
+    object-fit: cover; /* Cover the area without stretching the image */
+    border-radius: 10px; /* Optional: if you want rounded corners */
+}
+
+
+.actor-details, .movie-details {
+    display: flex;
+    flex-direction: column; /* Stack name and profession vertically */
+    align-items: center; /* Center the text horizontally */
+    justify-content: center; /* Center the text vertically */
+    width: 66.66%; /* Text takes up the remaining 2/3 of the container */
+    height: 100%; /* Take full height of the container */
+    padding-left: 10px; /* Add some space between the image and the text */
+}
+
+.actor-name, .actor-profession {
+    text-align: center; /* Center the text */
+}
+
+
+/* When there is no image, the details should take up the whole width */
+.actor-details.full-width, .movie-details.full-width, .movie-analytics-content.full-width {
+    width: 100%; /* Text takes up full width when there's no image */
+}
+
+

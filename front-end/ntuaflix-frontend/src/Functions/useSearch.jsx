@@ -7,9 +7,11 @@ import {searchMoviesByActor} from "../api";
 import {searchMoviesByGenre} from "../api";
 import {searchMoviesByYear} from "../api";
 import {searchMovieByTitle} from "../api";
+import {searchByActorName} from "../api";
 
 const useSearch = () => {
     const [moviesData, setMoviesData] = useState([]);
+    const [actorsData, setActorsData] = useState([]);
     const [searchPerformed, setSearchPerformed] = useState(false);
 
     // Function to update searchPerformed state
@@ -18,6 +20,9 @@ const useSearch = () => {
     };
 
     const handleSearch = useCallback(async (selectedFunctionality, inputValues) => {
+        setMoviesData([]);
+        setActorsData([]);
+
         if (selectedFunctionality === "The N highest rated movies in a genre") {
             try {
                 const movies = await searchNBestRatedGenre(inputValues.genre, inputValues.numberOfMovies);
@@ -105,11 +110,21 @@ const useSearch = () => {
                 console.error("Error fetching movie details:", error);
             }
         }
-        // Add more cases as needed
-    }, []);
+        else if (selectedFunctionality === "Actor/cast member profile") {
+            try {
+                const actors = await searchByActorName(inputValues.actor);
+                setActorsData(actors);
+                setSearchPerformed(true);
+                console.log("Actor Details:", actors);
+            } catch (error) {
+                console.error("Error fetching actors:", error);
+            }
+        }
+        // ... other functionality cases
+    }, []);// Add more cases as needed
 
     // Return this function along with other values
-    return { moviesData, searchPerformed, handleSearch, updateSearchPerformed };
+    return { moviesData, actorsData, searchPerformed, handleSearch, updateSearchPerformed };
 };
 
 export default useSearch;

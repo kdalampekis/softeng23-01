@@ -39,10 +39,10 @@ deactivate nondestructive
 if [ "$OSTYPE" = "cygwin" ] || [ "$OSTYPE" = "msys" ] ; then
     # transform D:\path\to\venv to /d/path/to/venv on MSYS
     # and to /cygdrive/d/path/to/venv on Cygwin
-    export VIRTUAL_ENV=$(cygpath "E:\EPA\NTUA\ECE\FLOWS\FLOW_L\Soft_Eng\Semester_Project\Project_Ntuaflix_2023\softeng23-01\back-end\Django\ntua_env")
+    export VIRTUAL_ENV=$(cygpath "/Users/kostasbekis/WebstormProjects/softeng23-01/back-end/Django/ntua_env")
 else
     # use the path as-is
-    export VIRTUAL_ENV="E:\EPA\NTUA\ECE\FLOWS\FLOW_L\Soft_Eng\Semester_Project\Project_Ntuaflix_2023\softeng23-01\back-end\Django\ntua_env"
+    export VIRTUAL_ENV="/Users/kostasbekis/WebstormProjects/softeng23-01/back-end/Django/ntua_env"
 fi
 
 _OLD_VIRTUAL_PATH="$PATH"
