@@ -124,7 +124,7 @@ const useSearch = () => {
     }, []);// Add more cases as needed
 
     // Return this function along with other values
-    return { moviesData, searchPerformed, handleSearch, updateSearchPerformed };
+    return { moviesData, actorsData, searchPerformed, handleSearch, updateSearchPerformed };
 };
 
 export default useSearch;

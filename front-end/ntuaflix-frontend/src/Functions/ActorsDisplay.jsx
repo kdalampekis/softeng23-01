@@ -1,18 +1,18 @@
+// ActorsDisplay.js
+
 import React from 'react';
 import PropTypes from 'prop-types';
 import Actor from '../components/Items/Actor';
 
 const ActorsDisplay = ({ actorsData, onSelectActor }) => {
     return (
-        <div className="functionalitiesContainer actorsContainer">
+        <div className="actorsContainer">
             {actorsData.length === 0
                 ? <p>No actors found.</p>
                 : actorsData.map((actor, index) => (
                     <Actor
                         key={`${actor.nconst}-${index}`}
-                        name={actor.primaryName}
-                        knownFor={actor.knownForTitles.join(', ')}
-                        profession={actor.primaryProfession}
+                        actor={actor}
                         onClick={() => onSelectActor(actor)}
                     />
                 ))

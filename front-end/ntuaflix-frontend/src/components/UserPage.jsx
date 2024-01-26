@@ -59,7 +59,11 @@ export default function UserPage() {
             ...prevValues,
             [name]: value
         }));
-        // Update state based on input name
+        if (name === 'genre') setGenre(value || 'genre');
+        else if (name === 'numberOfMovies') setNumberOfMovies(value || 'N');
+        else if (name === 'actor') setActor(value || "actor/cast member");
+        else if (name === 'movieTitle') setMovieTitle(value || "movie");
+        else if (name === 'movieYear') setMovieYear(value || "year");
     };
 
     const handleFunctionalityClick = (option) => {

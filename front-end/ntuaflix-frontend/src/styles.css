@@ -129,7 +129,7 @@ input, .inputContainer .styled-select {
     margin-top: 5rem;
 }
 
-.functionality {
+.functionality, .actor {
     border: 2px solid var(--button); /* Example border */
     padding: 10px;
     margin: 4px 0;
@@ -141,17 +141,29 @@ input, .inputContainer .styled-select {
     background: black;
 }
 
-
-.functionality button {
-    background-color: black;
+.actor {
+    /* Use flexbox for the layout */
+    display: flex;
+    flex-direction: row; /* Align children horizontally */
+    align-items: center; /* Center children vertically */
+    justify-content: start; /* Align children to the start of the container */
+    border: 2px solid white;
+    height: 12rem; /* Keep the height as specified */
+    width: 20rem; /* Keep the width as specified */
+    /*padding: 10px; !* Optional: Add padding for some space inside the container *!*/
 }
 
-.functionality:hover {
+.functionality:hover, .movie:hover, .actor:hover {
     background: linear-gradient(to right, var(--gradient1), var(--gradient2));
     border: 2px solid white;
 }
 
-.functionalitiesContainer {
+.actor:hover .actor-image, .movie:hover .movie-image {
+    border: 2px solid black;
+    box-shadow: 0 2px 5px 5px black;
+}
+
+.functionalitiesContainer, .moviesContainer, .actorsContainer {
     margin: 3rem auto;
     width: 70%;
     display: flex;
@@ -162,6 +174,10 @@ input, .inputContainer .styled-select {
     gap: 20px;
     padding: 20px 10px;
     color: white;
+}
+
+.moviesContainer, .actorsContainer {
+    width: 90%;
 }
 
 footer {
@@ -206,10 +222,6 @@ footer p, .link {
 }
 
 
-.moviesContainer {
-    width: 90%;
-}
-
 /* ... (existing styles) */
 
 .movie-analytics {
@@ -227,6 +239,7 @@ footer p, .link {
 .movie-analytics h1 {
     /*text-align: center;*/
     margin: 1rem 0 2rem 0;
+    font-size: 2.5rem;
 }
 
 .movie-details {
@@ -290,3 +303,35 @@ footer p, .link {
 .movie-analytics strong {
     font-size: 1.25rem;
 }
+
+
+/* styles.css */
+
+
+
+.actor-image {
+    width: 33.33%; /* Image takes up 1/3 of the container */
+    height: 100%; /* Image takes full height of the container */
+    object-fit: cover; /* Cover the area without stretching the image */
+    border-radius: 4px; /* Optional: if you want rounded corners */
+}
+
+.actor-details {
+    display: flex;
+    flex-direction: column; /* Stack name and profession vertically */
+    align-items: center; /* Center the text horizontally */
+    justify-content: center; /* Center the text vertically */
+    width: 66.66%; /* Text takes up the remaining 2/3 of the container */
+    height: 100%; /* Take full height of the container */
+    padding-left: 10px; /* Add some space between the image and the text */
+}
+
+.actor-name, .actor-profession {
+    text-align: center; /* Center the text */
+}
+
+/* When there is no image, the actor details should take up the whole width */
+.actor-details.full-width {
+    width: 100%; /* Text takes up full width when there's no image */
+}
+

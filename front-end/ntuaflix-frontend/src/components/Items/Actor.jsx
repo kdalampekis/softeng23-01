@@ -1,21 +1,43 @@
-import React from 'react';
+// Actor.js
+
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import "../../styles.css";
 
-const Actor = ({ name, knownFor, profession, onClick }) => {
+const Actor = ({ actor, onClick }) => {
+    const [hover, setHover] = useState(false);
+    const { primaryName, primaryProfession, imgUrl } = actor;
+    const professions = primaryProfession.split(',');
+
+    // Check if imgUrl exists, and replace {width_variable} with a valid width if it does
+    const fullImageUrl = imgUrl ? imgUrl.replace('{width_variable}', 'w300') : '';
+    const hasImage = Boolean(fullImageUrl); // Now this is correctly placed after fullImageUrl initialization
+
     return (
-        <div className="functionality movie" onClick={onClick}>
-            <h3 className="actor-name">{name}</h3>
-            <p className="actor-known-for">Known for: {knownFor}</p>
-            <p className="actor-profession">Profession: {profession.join(', ')}</p>
+        <div
+            className={`actor ${!hasImage ? 'full-width' : ''}`} // Use backticks for template literals
+            onClick={onClick}
+            onMouseEnter={() => setHover(true)}
+            onMouseLeave={() => setHover(false)}
+        >
+            {hasImage && (
+                <img src={fullImageUrl} alt={primaryName} className="actor-image" />
+            )}
+            <div className={`actor-details ${!hasImage ? 'full-width' : ''}`}>
+                <h3 className={`actor-name ${hover ? 'hover' : 'dynamic-content'}`}>{primaryName}</h3>
+                <p className="actor-profession">{professions.join(', ')}</p>
+            </div>
         </div>
     );
 };
 
 Actor.propTypes = {
-    name: PropTypes.string.isRequired,
-    knownFor: PropTypes.string,
-    profession: PropTypes.arrayOf(PropTypes.string),
+    actor: PropTypes.shape({
+        primaryName: PropTypes.string.isRequired,
+        primaryProfession: PropTypes.string,
+        imgUrl: PropTypes.string, // imgUrl can be null, so the component should handle that case
+        titleID: PropTypes.string
+    }),
     onClick: PropTypes.func
 };
 

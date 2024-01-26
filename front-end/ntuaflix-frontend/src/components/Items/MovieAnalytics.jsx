@@ -5,12 +5,12 @@ import "../../styles.css";
 const MovieAnalytics = ({ movie, onSearchAgain, onExit }) => {
     return (
         <div className="movie-analytics">
-            <h1 className="dynamic-content movie-header">{movie.originalTitle} ({movie.startYear})</h1>
+            <h1 className=" movie-header">{movie.originalTitle} ({movie.startYear})</h1>
             <div className="movie-details">
-                <p><strong>Genres:</strong> {movie.genres.join(', ')}</p>
-                <p><strong>Rating:</strong> {movie.rating[0].avRating} ({movie.rating[0].nVotes} votes)</p>
+                <p><strong className="dynamic-content">Genres:</strong> {movie.genres.join(', ')}</p>
+                <p><strong className="dynamic-content">Rating:</strong> {movie.rating[0].avRating} ({movie.rating[0].nVotes} votes)</p>
                 <p className="movie-info">
-                    <strong>Also known as: </strong>
+                    <strong className="dynamic-content">Also known as: </strong>
                     <span>
                         {movie.titlesAkas.map((aka, index) => (
                             <span key={`${aka.akaTitle}-${index}`}>
@@ -21,7 +21,7 @@ const MovieAnalytics = ({ movie, onSearchAgain, onExit }) => {
                     </span>
                 </p>
                 <p className="movie-info">
-                    <strong>Principal crew: </strong>
+                    <strong className="dynamic-content">Principal crew: </strong>
                     <span>
                         {movie.principals.map((person, index) => (
                             <span key={`${person.nameID}-${index}`}>
