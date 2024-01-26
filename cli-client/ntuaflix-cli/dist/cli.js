@@ -120,7 +120,7 @@ async function executeCommand() {
     case 'newnames':
       await newnames(cli.flags.filename);
       break;
-    case 'se2301 newcrew':
+    case 'newcrew':
       await newcrew(cli.flags.filename);
       break;
     case 'newepisode':

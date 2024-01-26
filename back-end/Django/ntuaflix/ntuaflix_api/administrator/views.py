@@ -17,10 +17,11 @@ from django.contrib.auth.models import User
 @csrf_exempt
 def add_user(request, username, password):
     if request.method == 'POST':
+        superuser_token = User.objects.filter(is_superuser=True).values_list('auth_token', flat=True).first()
         token = request.META.get('HTTP_AUTHORIZATION')
         print(token)
 # Check if the authenticated user is a superuser
-        if token == '03150708863ff8b595f5c235a44ac6904e5d3bcb':
+        if token == superuser_token:
             try:
                 # Retrieve the user by username
                 user = User.objects.get(username=username)

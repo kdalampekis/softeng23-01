@@ -135,7 +135,7 @@ async function executeCommand() {
 			await newnames(cli.flags.filename);
 			break;
 
-		case 'se2301 newcrew':
+		case 'newcrew':
 			await newcrew(cli.flags.filename);
 			break;
 
