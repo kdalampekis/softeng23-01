@@ -51,10 +51,43 @@ const cli = meow(`
 
 	importMeta: import.meta,
 	flags: {
-		titleID: {
-			type: 'string',  // Adjust the type if necessary
+		username: {
+			type: 'string',
 		},
-	},
+		password: {
+			type: 'string',
+		},
+		apikey: {
+			type: 'string',
+		},
+		filename: {
+			type: 'string',
+		},
+		titleID: {
+			type: 'string',
+		},
+		titlepart: {
+			type: 'string',
+		},
+		genre: {
+			type: 'string',
+		},
+		min: {
+			type: 'string',
+		},
+		from: {
+			type: 'string',
+		},
+		to: {
+			type: 'string',
+		},
+		nameid: {
+			type: 'string',
+		},
+		name: {
+			type: 'string',
+		},
+	}
 });
 
 async function executeCommand() {
@@ -63,6 +96,10 @@ async function executeCommand() {
 
 	switch (command) {
 		case 'login':
+			if (!cli.flags.username || !cli.flags.password) {
+				console.error('Username and password are required for login.');
+				return;
+			}
 			await login(cli.flags.username, cli.flags.password);
 			break;
 
@@ -98,7 +135,7 @@ async function executeCommand() {
 			await newnames(cli.flags.filename);
 			break;
 
-		case 'se2301 newcrew':
+		case 'newcrew':
 			await newcrew(cli.flags.filename);
 			break;
 

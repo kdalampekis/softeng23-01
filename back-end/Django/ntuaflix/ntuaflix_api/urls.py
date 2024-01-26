@@ -3,14 +3,17 @@ from .views import *
 
 urlpatterns = [
 
-    
+
     path('admin/', include('ntuaflix_api.administrator.urls')),
 
     path('admin/resetall', reset_all),
 
 
-    # ///////////////////////////   END POINTS NECESSARY           ////////////////////////////
 
+    # ///////////////////////////   END POINTS NECESSARY           ////////////////////////////
+    path('login/', LoginApiView.as_view(), name = 'login'),
+    path('logout/', LogoutApiView.as_view(), name = 'logout'),
+    path('signup/', SignUpAPIView.as_view(), name = 'signup'),
     path('title/', TitleBasicList.as_view(), name='title-basic-list'),
 
     path('title/<str:titleID>/', TitleDetailView.as_view(), name='title-detail'), #30th Requirement
@@ -19,7 +22,7 @@ urlpatterns = [
 
         # /////////////////     FILTERS     ////////////////////////////////////////
     path('bygenre/', FilteredTitleObjectsView.as_view(), name='filtered-title-objects'),
-    
+
 
         # /////////////////     NAMES     ////////////////////////////////////////
 
@@ -36,14 +39,14 @@ urlpatterns = [
 
     # ///////////////////////////   BELOW ARE ENDPOINTS FROM REQUIREMENTS    ////////////////////
 
-    # 17th Requirement and 1st Requirement   
+    # 17th Requirement and 1st Requirement
     path('SearchByGenre/', SearchByGenre.as_view(), name='SearchByGenre'),
-    
-    # 18th Requirement 
+
+    # 18th Requirement
     path('SearchByYear/', SearchByYear.as_view(), name='SearchByYear'),
 
-    
-    # 4,5,6,16th Requirement Requirement    
+
+    # 4,5,6,16th Requirement Requirement
     path('SearchByName/', SearchByName.as_view(), name='SearchByName'),
 
 
@@ -59,7 +62,7 @@ urlpatterns = [
 
     # ////////////////      USER AUTHENTICATION     //////////////////////////
 
-    
+
 
 
 

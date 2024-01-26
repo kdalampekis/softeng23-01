@@ -2,16 +2,16 @@ import axios from 'axios';
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
-const BASE_URL = 'http://127.0.0.1:8000/ntuaflix_api'; // Replace with your actual Django server's URL
+const BASE_URL = 'http://127.0.0.1:9876/ntuaflix_api'; // Replace with your actual Django server's URL
 
 async function login(username, password) {
   try {
-    const response = await axios.post('http://127.0.0.1:8000/ntuaflix_api/login', {
+    const response = await axios.post('http://127.0.0.1:9876/ntuaflix_api/login/', new URLSearchParams({
       username,
       password
-    });
+    }));
     if (response.status === 200) {
-      const token = response.data.accessToken;
+      const token = response.data.token;
       const homeDirectory = path.dirname(fileURLToPath(import.meta.url));
       fs.writeFileSync(`${homeDirectory}/softeng20bAPI.token`, token);
       console.log('Login successful');
@@ -22,19 +22,21 @@ async function login(username, password) {
     console.error('Error:', error.message);
   }
 }
-async function logout(apiKey) {
-  const url = 'http://127.0.0.1:8000/ntuaflix_api/logout';
+async function logout() {
   try {
-    const response = await axios.post(url, {}, {
+    const __filename = fileURLToPath(import.meta.url);
+    const currentDir = path.dirname(__filename);
+    const tokenFileName = 'softeng20bAPI.token';
+    const tokenFilePath = path.join(currentDir, tokenFileName);
+    const token = fs.readFileSync(tokenFilePath, 'utf-8').trim();
+    const response = await axios.post('http://127.0.0.1:9876/ntuaflix_api/logout/', {}, {
       headers: {
-        'x-observatory-auth': apiKey
+        'Authorization': `Token ${token}`
       }
     });
     if (response.status === 200) {
-      const tokenFilePath = path.join(process.env.HOME, '/softeng20bAPI.token');
-      if (fs.existsSync(tokenFilePath)) {
-        fs.unlinkSync(tokenFilePath);
-      }
+      // Delete the token file upon successful logout
+      fs.unlinkSync(tokenFilePath);
       console.log('Logout successful');
     } else {
       console.log('Logout failed');
@@ -43,38 +45,228 @@ async function logout(apiKey) {
     console.error('Error:', error.message);
   }
 }
-async function adduser(username) {
-  // Implement the 'user' API call here
+async function adduser(username, password) {
+  try {
+    // Read the token from the saved file
+    const homeDirectory = path.dirname(fileURLToPath(import.meta.url));
+    const token = fs.readFileSync(`${homeDirectory}/softeng20bAPI.token`, 'utf8').trim();
+    console.log(token);
+    // Set the API endpoint URL
+    const apiUrl = `http://127.0.0.1:9876/ntuaflix_api/admin/usermod/${username}/${password}/`;
+
+    // Create the request headers with the token
+    const headers = {
+      'Authorization': `${token}`,
+      'Content-Type': 'application/json'
+    };
+    console.log(headers);
+
+    // Make the POST request with the headers
+    const response = await axios.post(apiUrl, null, {
+      headers: headers
+    });
+    if (response.status === 200) {
+      console.log('User added successfully');
+    } else {
+      console.log('Failed to add user');
+    }
+  } catch (error) {
+    console.error('Error:', error.message);
+  }
 }
 async function user(username) {
-  // Implement the 'user' API call here
+  try {
+    const response = await axios.get(`http://127.0.0.1:9876/ntuaflix_api/admin/users/${username}`);
+    if (response.status === 200) {
+      console.log(response.data); // Assuming the server sends user details
+    } else {
+      console.log('User not found');
+    }
+  } catch (error) {
+    console.error('Error:', error.message);
+  }
 }
 async function healthcheck() {
-  // Implement the 'healthcheck' API call here
+  try {
+    const response = await axios.get('http://127.0.0.1:9876/ntuaflix_api/admin/healthcheck');
+    if (response.status === 200) {
+      console.log('Health check passed');
+    } else {
+      console.log('Health check failed');
+    }
+  } catch (error) {
+    console.error('Error:', error.message);
+  }
 }
 async function resetall() {
-  // Implement the 'resetall' API call here
+  try {
+    const response = await axios.post('http://127.0.0.1:9876/ntuaflix_api/admin/resetall');
+    if (response.status === 200) {
+      console.log('Reset all successful');
+    } else {
+      console.log('Failed to reset all');
+    }
+  } catch (error) {
+    console.error('Error:', error.message);
+  }
+}
+function readFile(filePath) {
+  return new Promise((resolve, reject) => {
+    fs.readFile(filePath, (err, data) => {
+      if (err) {
+        reject(err);
+      } else {
+        resolve(new Blob([data]));
+      }
+    });
+  });
 }
 async function newtitles(filename) {
-  // Implement the 'newtitles' API call here
+  try {
+    const formData = new FormData();
+
+    // Assuming filename is a file path, read the file and append it to FormData
+    const file = await readFile(filename);
+    formData.append('tsv_file', file, filename);
+    const response = await axios.post('http://127.0.0.1:9876/ntuaflix_api/admin/upload/titlebasics/', formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data'
+      }
+    });
+    if (response.status === 200) {
+      console.log('API call successful:', response.data);
+    } else {
+      console.error('API call failed:', response.statusText);
+    }
+  } catch (error) {
+    console.error('Error:', error.message);
+  }
 }
 async function newakas(filename) {
-  // Implement the 'newakas' API call here
+  try {
+    const formData = new FormData();
+
+    // Assuming filename is a file path, read the file and append it to FormData
+    const file = await readFile(filename);
+    formData.append('tsv_file', file, filename);
+    const response = await axios.post('http://127.0.0.1:9876/ntuaflix_api/admin/upload/titleakas/', formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data'
+      }
+    });
+    if (response.status === 200) {
+      console.log('API call successful:', response.data);
+    } else {
+      console.error('API call failed:', response.statusText);
+    }
+  } catch (error) {
+    console.error('Error:', error.message);
+  }
 }
 async function newnames(filename) {
-  // Implement the 'newnames' API call here
+  try {
+    const formData = new FormData();
+
+    // Assuming filename is a file path, read the file and append it to FormData
+    const file = await readFile(filename);
+    formData.append('tsv_file', file, filename);
+    const response = await axios.post('http://127.0.0.1:9876/ntuaflix_api/admin/upload/namebasics/', formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data'
+      }
+    });
+    if (response.status === 200) {
+      console.log('API call successful:', response.data);
+    } else {
+      console.error('API call failed:', response.statusText);
+    }
+  } catch (error) {
+    console.error('Error:', error.message);
+  }
 }
 async function newcrew(filename) {
-  // Implement the 'newcrew' API call here
+  try {
+    const formData = new FormData();
+
+    // Assuming filename is a file path, read the file and append it to FormData
+    const file = await readFile(filename);
+    formData.append('tsv_file', file, filename);
+    const response = await axios.post('http://127.0.0.1:9876/ntuaflix_api/admin/upload/titlecrew/', formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data'
+      }
+    });
+    if (response.status === 200) {
+      console.log('API call successful:', response.data);
+    } else {
+      console.error('API call failed:', response.statusText);
+    }
+  } catch (error) {
+    console.error('Error:', error.message);
+  }
 }
 async function newepisode(filename) {
-  // Implement the 'newepisode' API call here
+  try {
+    const formData = new FormData();
+
+    // Assuming filename is a file path, read the file and append it to FormData
+    const file = await readFile(filename);
+    formData.append('tsv_file', file, filename);
+    const response = await axios.post('http://127.0.0.1:9876/ntuaflix_api/admin/upload/titleepisode/', formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data'
+      }
+    });
+    if (response.status === 200) {
+      console.log('API call successful:', response.data);
+    } else {
+      console.error('API call failed:', response.statusText);
+    }
+  } catch (error) {
+    console.error('Error:', error.message);
+  }
 }
 async function newprincipals(filename) {
-  // Implement the 'newprincipals' API call here
+  try {
+    const formData = new FormData();
+
+    // Assuming filename is a file path, read the file and append it to FormData
+    const file = await readFile(filename);
+    formData.append('tsv_file', file, filename);
+    const response = await axios.post('http://127.0.0.1:9876/ntuaflix_api/admin/upload/titleprincipals/', formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data'
+      }
+    });
+    if (response.status === 200) {
+      console.log('API call successful:', response.data);
+    } else {
+      console.error('API call failed:', response.statusText);
+    }
+  } catch (error) {
+    console.error('Error:', error.message);
+  }
 }
 async function newratings(filename) {
-  // Implement the 'newratings' API call here
+  try {
+    const formData = new FormData();
+
+    // Assuming filename is a file path, read the file and append it to FormData
+    const file = await readFile(filename);
+    formData.append('tsv_file', file, filename);
+    const response = await axios.post('http://127.0.0.1:9876/ntuaflix_api/admin/upload/titleratings/', formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data'
+      }
+    });
+    if (response.status === 200) {
+      console.log('API call successful:', response.data);
+    } else {
+      console.error('API call failed:', response.statusText);
+    }
+  } catch (error) {
+    console.error('Error:', error.message);
+  }
 }
 async function title(titleID) {
   console.log('Received titleID:', titleID); // Add this line to log the received titleID
