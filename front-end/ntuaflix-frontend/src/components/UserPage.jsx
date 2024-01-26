@@ -131,7 +131,7 @@ export default function UserPage() {
                 />
             )}
 
-            {!selectedActor && !selectedMovie ? (
+            {(!selectedActor && !selectedMovie) ? (
                 searchPerformed && (
                     selectedFunctionality === "Actor/cast member profile" ? (
                         <ActorsDisplay
@@ -178,7 +178,7 @@ export default function UserPage() {
             {searchPerformed && (
                 <div className="buttonContainer">
                     <button onClick={handleSearchAgain}>Search Again</button>
-                    {selectedMovie || selectedActor && (
+                    {(selectedMovie || selectedActor) && (
                         <button onClick={handleGoBack}>Go Back</button>
                     )}
                     <button onClick={handleExit}>Exit</button>

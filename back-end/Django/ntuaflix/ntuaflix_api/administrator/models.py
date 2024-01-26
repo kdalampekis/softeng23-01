@@ -29,7 +29,7 @@ class TitleBasic(models.Model):
 class TitleAka(models.Model):
     aka_Id = models.AutoField(primary_key=True)
     tconst = models.ForeignKey(TitleBasic, on_delete=models.CASCADE)  # ForeignKey
-    ordering = models.IntegerField(blank=True, null=True)
+    ordering = models.IntegerField()
     title = models.CharField(max_length=255, null=True)
     region = models.CharField(max_length=255, blank=True, null=True)
     language = models.CharField(max_length=255, blank=True, null=True)
@@ -73,16 +73,13 @@ class Crew(models.Model):
 
 
 class Episode(models.Model):
-    tconst = models.ForeignKey(TitleBasic, on_delete=models.CASCADE)  # ForeignKey
+    tconst = models.OneToOneField(TitleBasic, primary_key=True, on_delete=models.CASCADE)  # ForeignKey
     parentTconst = models.CharField(max_length=10)
     seasonNumber = models.IntegerField(blank=True, null=True)
     episodeNumber = models.IntegerField(blank=True, null=True)
 
     class Meta:
         db_table = 'Episode'
-        constraints = [
-            models.UniqueConstraint(fields=['tconst', 'parentTconst'], name='unique_tconst_parentTconst')
-        ]
 
     def __str__(self):
         return f"Episode {self.episodeNumber} of Season {self.seasonNumber} ({self.tconst})"
@@ -155,8 +152,9 @@ def UploadTitleObject(request):
             numVotes = titleRatings.numVotes
         except Rating.DoesNotExist:
             # Handle the case when Rating for the specified tconst does not exist
-            averageRating = None  # Set to None or another default value
-            numVotes = None  # Set to None or another default value
+            averageRating = None
+            numVotes = None
+            continue
         
         try:
             title_obj, created = TitleObject.objects.get_or_create(
@@ -184,6 +182,7 @@ def UploadTitleObject(request):
 
         except TitleBasic.MultipleObjectsReturned:
             print(f"Multiple records found for tconst: {tconst}, skipping.")
+            continue
 
 
 def UploadNameObject(request):
@@ -223,6 +222,7 @@ def UploadNameObject(request):
 
         except TitleBasic.MultipleObjectsReturned:
             print(f"Multiple records found for tconst: {nconst}, skipping.")
+            continue
 
         
 def UploadNameProfile(request):

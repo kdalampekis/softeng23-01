@@ -62,10 +62,6 @@ class LoginApiView(APIView):
 class TitleBasicList(generics.ListAPIView):
     serializer_class = TitleObjectSerializer
     queryset = TitleObject.objects.all()
-<<<<<<< HEAD
-=======
-    # renderer_classes = (CSVRenderer, )
->>>>>>> 00acb6e5279f0db9bbeb0b6c49a35b4d854ddd6e
 
     def get_title(self):
         serializer_class = TitleObjectSerializer
@@ -146,7 +142,7 @@ class SearchNameView(APIView):
     def get_search_by_name(self, request):
         name_query = request.GET.get('name', None)
         if name_query:
-            name_objects = NameObject.objects.filter(primaryName__icontains=name_query)
+            name_objects = NameObject.objects.filter(primaryName=name_query)
             serializer = NameObjectSerializer(name_objects, many=True)
             return Response(serializer.data)
         else:
@@ -283,46 +279,4 @@ class NameProfileView(APIView):
             return JsonResponse(actors_genre_percentages)
 
         else:
-<<<<<<< HEAD
             return render(request, 'NameProfile.html')
-=======
-            return render(request, 'UserProfile.html')
-
-# ////////////////////////////////////////////////////////////////////////
-# ///////////////   ADMIN FUNCTIONALITIES   //////////////////////////////
-
-
-from django.http import JsonResponse
-from django.views.decorators.csrf import csrf_exempt
-from django.views.decorators.http import require_http_methods
-from django.db import transaction, DatabaseError
-import MySQLdb
-
-from .administrator.models import *
-
-def reset_all(request):
-    try:
-        with transaction.atomic():
-            # List all models that you want to reset
-            NameObject.objects.all().delete()
-            TitleObject.objects.all().delete()
-            TitleAka.objects.all().delete()
-            Principals.objects.all().delete()
-            Workas.objects.all().delete()
-            Names.objects.all().delete()
-            Episode.objects.all().delete()
-            Rating.objects.all().delete()
-            Crew.objects.all().delete()
-            TitleBasic.objects.all().delete()
-            # Add similar lines for all other models you have
-
-        return JsonResponse({"status": "OK Everything"})
-    except DatabaseError as e:
-        return JsonResponse({"status": "failed", "reason": str(e)})
-
-
-
-
-
-
->>>>>>> 00acb6e5279f0db9bbeb0b6c49a35b4d854ddd6e

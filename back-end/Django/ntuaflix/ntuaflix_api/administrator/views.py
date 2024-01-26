@@ -5,16 +5,8 @@ from .forms import *
 from .models import *
 from django.core.exceptions import ValidationError
 from django.views.decorators.csrf import csrf_exempt
-<<<<<<< HEAD
 from django.db import DatabaseError
 from rest_framework.permissions import IsAuthenticated
-=======
-from django.views.decorators.http import require_http_methods
-from django.db import transaction, DatabaseError
-from rest_framework.decorators import api_view
-from rest_framework.views import APIView
-from django.shortcuts import get_object_or_404
->>>>>>> 00acb6e5279f0db9bbeb0b6c49a35b4d854ddd6e
 from django.contrib.auth.models import User
 
 
@@ -106,6 +98,9 @@ def UploadTitleBasics(request):
             return JsonResponse({'status': 'error', 'message': 'Form is not valid'}, status=400)
     else:
         form = BasicForm()
+    UploadNameProfile(request)
+    UploadNameObject(request)
+    UploadTitleObject(request)
     return render(request, 'upload.html', {'form': form})
 
 
@@ -150,6 +145,9 @@ def UploadTitleAkas(request):
             return JsonResponse({'status': 'error', 'message': 'Form is not valid'}, status=400)
     else:
         form = BasicForm()
+    UploadNameProfile(request)
+    UploadNameObject(request)
+    UploadTitleObject(request)
     return render(request, 'upload.html', {'form': form})
 
 
@@ -202,6 +200,9 @@ def UploadNameBasics(request):
             return JsonResponse({'status': 'error', 'message': 'Form is not valid'}, status=400)
     else:
         form = BasicForm()
+    UploadNameProfile(request)
+    UploadNameObject(request)
+    UploadTitleObject(request)
     return render(request, 'upload.html', {'form': form})
 
 
@@ -246,6 +247,9 @@ def UploadTitleCrew(request):
             return JsonResponse({'status': 'error', 'message': 'Form is not valid'}, status=400)
     else:
         form = BasicForm()
+    UploadNameProfile(request)
+    UploadNameObject(request)
+    UploadTitleObject(request)
     return render(request, 'upload.html', {'form': form})
 
 
@@ -291,6 +295,9 @@ def UploadTitleEpisode(request):
             return JsonResponse({'status': 'error', 'message': 'Form is not valid'}, status=400)
     else:
         form = BasicForm()
+    UploadNameProfile(request)
+    UploadNameObject(request)
+    UploadTitleObject(request)
     return render(request, 'upload.html', {'form': form})
 
 
@@ -332,6 +339,9 @@ def UploadTitlePrincipals(request):
             return JsonResponse({'status': 'error', 'message': 'Form is not valid'}, status=400)
     else:
         form = BasicForm()
+    UploadNameProfile(request)
+    UploadNameObject(request)
+    UploadTitleObject(request)
     return render(request, 'upload.html', {'form': form})
 
 
@@ -376,6 +386,9 @@ def UploadTitleRatings(request):
             return JsonResponse({'status': 'error', 'message': 'Form is not valid'}, status=400)
     else:
         form = BasicForm()
+    UploadNameProfile(request)
+    UploadNameObject(request)
+    UploadTitleObject(request)
     return render(request, 'upload.html', {'form': form})
 
 
@@ -398,7 +411,6 @@ def health_check(request):
         return JsonResponse({"status": "failed", "dataconnection": connection_string})
 
 
-<<<<<<< HEAD
 # def reset_all(request):
 #     try:
 #         with transaction.atomic():
@@ -417,7 +429,3 @@ def health_check(request):
 #         return JsonResponse({"status": "OK"})
 #     except DatabaseError as e:
 #         return JsonResponse({"status": "failed", "reason": str(e)})
-=======
-
-
->>>>>>> 00acb6e5279f0db9bbeb0b6c49a35b4d854ddd6e
