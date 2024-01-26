@@ -11,7 +11,7 @@ const Actor = ({ actor, onClick }) => {
 
     // Check if imgUrl exists, and replace {width_variable} with a valid width if it does
     const fullImageUrl = imgUrl ? imgUrl.replace('{width_variable}', 'w300') : '';
-    const hasImage = Boolean(fullImageUrl);
+    const hasImage = imgUrl && imgUrl !== "\\N";
 
     return (
         <div

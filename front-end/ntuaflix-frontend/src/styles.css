@@ -79,7 +79,6 @@ button:hover {
 }
 
 .buttonContainer {
-    /*border: 2px solid white;*/
     margin-top: 2.5rem;
     text-align: center;
 }
@@ -215,30 +214,54 @@ footer p, .link {
 
 /* ... (existing styles) */
 
-.movie-analytics {
+.movie-analytics-container {
+    display: flex;
+    width: 90%;
+    justify-content: space-between;
     border: 2px solid white;
     border-radius: 10px;
     background: black;
     color: white;
+    margin: auto;
+    margin-top: 2rem;
+}
+
+.movie-analytics-content {
+    flex: 3;
     padding: 20px;
+    height: 100%;
+    overflow: hidden;
 }
 
-.movie-analytics {
-    margin: 4rem 4rem;
+.movie-analytics-image-container {
+    flex: 1; /* Takes up 1/4 of the space */
+    display: flex;
+    align-items: center; /* Center the image vertically */
+    justify-content: center; /* Center the image horizontally */
+    padding: 10px; /* Add some spacing around the image */
+    /*border: 2px solid white;*/
+    margin: 1rem;
 }
 
-.movie-analytics h1 {
-    /*text-align: center;*/
+.movie-analytics-image {
+    width: 100%; /* The image will take the full width of the image container */
+    height: auto; /* Maintain aspect ratio */
+    object-fit: contain; /* Ensure the image is contained within its element */
+    border-radius: 4px; /* Optional: if you want rounded corners */
+}
+
+
+.movie-analytics-content h1 {
     margin: 1rem 0 2rem 0;
     font-size: 2.5rem;
 }
 
 
-.movie-analytics h2 {
+.movie-analytics-content h2 {
     text-align: left;
 }
 
-.movie-analytics p {
+.movie-analytics-content p {
     letter-spacing: 1px;
     line-height: 25px;
 }
@@ -248,7 +271,7 @@ footer p, .link {
 /* Additional styling as per your design preferences */
 
 .addLikeButtons {
-    text-align: left;
+    margin: .25rem;
 }
 
 .addLikeButtons button {
@@ -261,14 +284,9 @@ footer p, .link {
     color: black;
 }
 
-.movie-analytics {
-    /*... existing styles ...*/
-    overflow: hidden; /* This will hide any content that overflows the container's bounds */
-}
-
-.movie-analytics .movie-info span,
-.movie-analytics .aka-titles li,
-.movie-analytics .principal-crew li {
+.movie-analytics-content .movie-info span,
+.movie-analytics-content .aka-titles li,
+.movie-analytics-content .principal-crew li {
     /* Ensure that text does not break awkwardly */
     word-wrap: break-word; /* This allows long words to wrap and go to the next line */
     white-space: normal; /* This ensures that whitespace such as spaces and new lines are handled normally */
@@ -286,7 +304,7 @@ footer p, .link {
     margin-right: 5px; /* Adds a small margin to the right of each item for separation */
 }
 
-.movie-analytics strong {
+.movie-analytics-content strong {
     font-size: 1.25rem;
 }
 

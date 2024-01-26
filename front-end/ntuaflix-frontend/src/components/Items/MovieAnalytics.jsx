@@ -3,12 +3,16 @@ import PropTypes from 'prop-types';
 import "../../styles.css";
 
 const MovieAnalytics = ({ movie, onSearchAgain, onExit }) => {
+    const fullImageUrl = movie.img_url_asset ? movie.img_url_asset.replace('{width_variable}', 'w300') : null;
+
     return (
-        <div className="movie-analytics">
-            <h1 className=" movie-header">{movie.originalTitle} ({movie.startYear})</h1>
-            <div className="movie-details">
+        <div className="movie-analytics-container">
+            <div className="movie-analytics-content">
+                <h1 className=" movie-header">{movie.originalTitle} ({movie.startYear})</h1>
                 <p><strong className="dynamic-content">Genres:</strong> {movie.genres.join(', ')}</p>
-                <p><strong className="dynamic-content">Rating:</strong> {movie.rating[0].avRating} ({movie.rating[0].nVotes} votes)</p>
+                <p><strong
+                    className="dynamic-content">Rating:</strong> {movie.rating[0].avRating} ({movie.rating[0].nVotes} votes)
+                </p>
                 <p className="movie-info">
                     <strong className="dynamic-content">Also known as: </strong>
                     <span>
@@ -32,10 +36,17 @@ const MovieAnalytics = ({ movie, onSearchAgain, onExit }) => {
                     </span>
                 </p>
             </div>
-            <div className="buttonContainer addLikeButtons">
-                <button>Like</button>
-                <button>Dislike</button>
-            </div>
+            {fullImageUrl && (
+                <div>
+                    <div className="movie-analytics-image-container">
+                        <img src={fullImageUrl} alt={movie.originalTitle} className="movie-analytics-image"/>
+                    </div>
+                    <div className="buttonContainer addLikeButtons">
+                        <button>Like</button>
+                        <button>Dislike</button>
+                    </div>
+                </div>
+            )}
         </div>
     );
 };
