@@ -92,16 +92,15 @@ def UploadTitleBasics(request):
                     print(f"Multiple records found for tconst: {tconst}, skipping.")
 
                 print(f"Processed row number: {row_number-1}")
-                
+            UploadNameProfile(request)
+            UploadNameObject(request)
+            UploadTitleObject(request)
             return JsonResponse({'status': 'success', 'processed_rows': row_number-1})
         else:
             return JsonResponse({'status': 'error', 'message': 'Form is not valid'}, status=400)
     else:
         form = BasicForm()
-    UploadNameProfile(request)
-    UploadNameObject(request)
-    UploadTitleObject(request)
-    return render(request, 'upload.html', {'form': form})
+        return render(request, 'upload.html', {'form': form})
 
 
 def UploadTitleAkas(request):
@@ -139,16 +138,15 @@ def UploadTitleAkas(request):
                 )
 
                 print(f"Processed row number: {row_number-1}")
-                           
+            UploadNameProfile(request)
+            UploadNameObject(request)
+            UploadTitleObject(request)
             return JsonResponse({'status': 'success', 'processed_rows': row_number-1})
         else:
             return JsonResponse({'status': 'error', 'message': 'Form is not valid'}, status=400)
     else:
         form = BasicForm()
-    UploadNameProfile(request)
-    UploadNameObject(request)
-    UploadTitleObject(request)
-    return render(request, 'upload.html', {'form': form})
+        return render(request, 'upload.html', {'form': form})
 
 
 def UploadNameBasics(request):
@@ -195,15 +193,15 @@ def UploadNameBasics(request):
                     print(f"Multiple records found for nconst: {nconst}, skipping.")
                 
                 print(f"Processed row number: {row_number-1}")
+            UploadNameProfile(request)
+            UploadNameObject(request)
+            UploadTitleObject(request)
             return JsonResponse({'status': 'success', 'processed_rows': row_number-1})
         else:
             return JsonResponse({'status': 'error', 'message': 'Form is not valid'}, status=400)
     else:
         form = BasicForm()
-    UploadNameProfile(request)
-    UploadNameObject(request)
-    UploadTitleObject(request)
-    return render(request, 'upload.html', {'form': form})
+        return render(request, 'upload.html', {'form': form})
 
 
 def UploadTitleCrew(request):
@@ -242,15 +240,15 @@ def UploadTitleCrew(request):
                     print(f"Multiple records found for tconst: {tconst}, skipping.")
                 
                 print(f"Processed row number: {row_number-1}")
+            UploadNameProfile(request)
+            UploadNameObject(request)
+            UploadTitleObject(request)
             return JsonResponse({'status': 'success', 'processed_rows': row_number-1})
         else:
             return JsonResponse({'status': 'error', 'message': 'Form is not valid'}, status=400)
     else:
         form = BasicForm()
-    UploadNameProfile(request)
-    UploadNameObject(request)
-    UploadTitleObject(request)
-    return render(request, 'upload.html', {'form': form})
+        return render(request, 'upload.html', {'form': form})
 
 
 def UploadTitleEpisode(request):
@@ -290,15 +288,15 @@ def UploadTitleEpisode(request):
                     print(f"Multiple records found for tconst: {tconst}, skipping.")
                 
                 print(f"Processed row number: {row_number-1}")
+            UploadNameProfile(request)
+            UploadNameObject(request)
+            UploadTitleObject(request)
             return JsonResponse({'status': 'success', 'processed_rows': row_number-1})
         else:
             return JsonResponse({'status': 'error', 'message': 'Form is not valid'}, status=400)
     else:
         form = BasicForm()
-    UploadNameProfile(request)
-    UploadNameObject(request)
-    UploadTitleObject(request)
-    return render(request, 'upload.html', {'form': form})
+        return render(request, 'upload.html', {'form': form})
 
 
 def UploadTitlePrincipals(request):
@@ -334,15 +332,15 @@ def UploadTitlePrincipals(request):
                 )
 
                 print(f"Processed row number: {row_number-1}")
+            UploadNameProfile(request)
+            UploadNameObject(request)
+            UploadTitleObject(request)
             return JsonResponse({'status': 'success', 'processed_rows': row_number-1})
         else:
             return JsonResponse({'status': 'error', 'message': 'Form is not valid'}, status=400)
     else:
         form = BasicForm()
-    UploadNameProfile(request)
-    UploadNameObject(request)
-    UploadTitleObject(request)
-    return render(request, 'upload.html', {'form': form})
+        return render(request, 'upload.html', {'form': form})
 
 
 def UploadTitleRatings(request):
@@ -381,15 +379,15 @@ def UploadTitleRatings(request):
                     print(f"Multiple records found for tconst: {tconst}, skipping.")
                 
                 print(f"Processed row number: {row_number-1}")
+            UploadNameProfile(request)
+            UploadNameObject(request)
+            UploadTitleObject(request)
             return JsonResponse({'status': 'success', 'processed_rows': row_number-1})
         else:
             return JsonResponse({'status': 'error', 'message': 'Form is not valid'}, status=400)
     else:
         form = BasicForm()
-    UploadNameProfile(request)
-    UploadNameObject(request)
-    UploadTitleObject(request)
-    return render(request, 'upload.html', {'form': form})
+        return render(request, 'upload.html', {'form': form})
 
 
 # /////////////////////////////////////////////////////////////////////////////////////////////
