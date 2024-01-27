@@ -31,7 +31,6 @@ class SignUpAPIView(APIView):
 
         return Response({"detail": "User created successfully. Activation required."}, status=status.HTTP_201_CREATED)
 
-
 class LogoutApiView(APIView):
     def post(self, request, *args, **kwargs):
         # Logout the user (invalidate the token)
