@@ -42,11 +42,14 @@ const UploadComponent = () => {
             const formData = new FormData();
             formData.append('tsv_file', file);
             let response;
+            const token = localStorage.getItem('softeng20bAPI.token');
+            // Set up the headers with the auth token
 
             try {
                 if (type === "titlebasics") {
                     response = await axios.post(`${BASE_URL}/titlebasics/`, formData, {
                         headers: {
+                            'Authorization': `${token}`,
                             'Content-Type': 'multipart/form-data'
                         }
                     });
@@ -54,6 +57,7 @@ const UploadComponent = () => {
                 else if (type === "titleakas") {
                     response = await axios.post(`${BASE_URL}/titleakas/`, formData, {
                         headers: {
+                            'Authorization': `${token}`,
                             'Content-Type': 'multipart/form-data'
                         }
                     });
@@ -61,6 +65,7 @@ const UploadComponent = () => {
                 else if (type === "namebasics") {
                     response = await axios.post(`${BASE_URL}/namebasics/`, formData, {
                         headers: {
+                            'Authorization': `${token}`,
                             'Content-Type': 'multipart/form-data'
                         }
                     });
@@ -68,6 +73,7 @@ const UploadComponent = () => {
                 else if (type === "titlecrew") {
                     response = await axios.post(`${BASE_URL}/titlecrew/`, formData, {
                         headers: {
+                            'Authorization': `${token}`,
                             'Content-Type': 'multipart/form-data'
                         }
                     });
@@ -75,6 +81,7 @@ const UploadComponent = () => {
                 else if (type === "titleepisode") {
                     response = await axios.post(`${BASE_URL}/titleepisode/`, formData, {
                         headers: {
+                            'Authorization': `${token}`,
                             'Content-Type': 'multipart/form-data'
                         }
                     });
@@ -82,6 +89,7 @@ const UploadComponent = () => {
                 else if (type === "titleprincipals") {
                     response = await axios.post(`${BASE_URL}/titleprincipals/`, formData, {
                         headers: {
+                            'Authorization': `${token}`,
                             'Content-Type': 'multipart/form-data'
                         }
                     });
@@ -89,6 +97,7 @@ const UploadComponent = () => {
                 else if (type === "titleratings") {
                     response = await axios.post(`${BASE_URL}/titleratings/`, formData, {
                         headers: {
+                            'Authorization': `${token}`,
                             'Content-Type': 'multipart/form-data'
                         }
                     });

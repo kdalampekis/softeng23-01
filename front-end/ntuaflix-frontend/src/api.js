@@ -85,12 +85,18 @@ export const searchMoviesByActor = async (actorName) => {
 
 export const searchMoviesByGenre = async (genre, number, toprated) => {
     try {
+        const token = localStorage.getItem('softeng20bAPI.token');
+        // Set up the headers with the auth token
+        const headers = {
+            'Authorization': `Bearer ${token}`,
+        };
         const response = await axios.get(`${BASE_URL}/SearchByGenre/`, {
             params: {
                 genre: genre,
                 number: number,
                 toprated: toprated,
-            }
+            },
+            headers : headers,
         });
         return response.data;
     } catch (error) {
@@ -101,10 +107,16 @@ export const searchMoviesByGenre = async (genre, number, toprated) => {
 
 export const searchMoviesByYear = async (movieYear) => {
     try {
+        const token = localStorage.getItem('softeng20bAPI.token');
+        // Set up the headers with the auth token
+        const headers = {
+            'Authorization': `Bearer ${token}`,
+        };
         const response = await axios.get(`${BASE_URL}/SearchByYear/`, {
             params: {
                 year: movieYear
-            }
+            },
+            headers : headers
         });
         return response.data;
     } catch (error) {
@@ -115,10 +127,17 @@ export const searchMoviesByYear = async (movieYear) => {
 
 export const searchMovieByTitle = async (movieTitle) => {
     try {
+        const token = localStorage.getItem('softeng20bAPI.token');
+        // Set up the headers with the auth token
+        const headers = {
+            'Authorization': `Bearer ${token}`,
+        };
+
         const response = await axios.get(`${BASE_URL}/searchtitle/`, {
             params: {
                 title: movieTitle
-            }
+            },
+            headers: headers,
         });
         return response.data;
     } catch (error) {
@@ -129,10 +148,16 @@ export const searchMovieByTitle = async (movieTitle) => {
 
 export const searchByActorName = async (actorName) => {
     try {
+        const token = localStorage.getItem('softeng20bAPI.token');
+        // Set up the headers with the auth token
+        const headers = {
+            'Authorization': `Bearer ${token}`,
+        };
         const response = await axios.get(`${BASE_URL}/searchname/`, {
             params: {
                 name: actorName
-            }
+            },
+            headers : headers,
         });
         return response.data;
     } catch (error) {
@@ -143,7 +168,12 @@ export const searchByActorName = async (actorName) => {
 
 export const searchMovieByTitleID = async (titleID) => {
     try {
-        const response = await axios.get(`${BASE_URL}/title/${titleID.toString()}/`);
+        const token = localStorage.getItem('softeng20bAPI.token');
+        // Set up the headers with the auth token
+        const headers = {
+            'Authorization': `Bearer ${token}`,
+        };
+        const response = await axios.get(`${BASE_URL}/title/${titleID.toString()}/`,{headers : headers});
         return response.data;
     } catch (error) {
         console.error('Error:', error);
