@@ -3,20 +3,17 @@ from rest_framework import generics
 from .serializers import TitleObjectSerializer,NameObjectSerializer
 from django.shortcuts import render
 from rest_framework.views import APIView
-from rest_framework.response import Response
 from django.db.models import Q
 from collections import Counter
 from .models import *
 from rest_framework.authtoken.models import Token
 from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework.response import Response
-from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.authentication import TokenAuthentication
 from django.contrib.auth.models import User
 from django.shortcuts import get_object_or_404
 from rest_framework.permissions import AllowAny
-from django.contrib.auth import authenticate
 from django.contrib.auth import authenticate, login
 
 class SignUpAPIView(APIView):
@@ -143,10 +140,10 @@ class NameBiography(generics.ListAPIView):
         return NameObject.objects.filter(nconst=nameID)
 
 class SearchNameView(APIView):
-    def get_search_by_name(self, request):
+    def get(self, request):
         name_query = request.GET.get('name', None)
         if name_query:
-            name_objects = NameObject.objects.filter(primaryName=name_query)
+            name_objects = NameObject.objects.filter(primaryName__icontains=name_query)
             serializer = NameObjectSerializer(name_objects, many=True)
             return Response(serializer.data)
         else:
