@@ -32,12 +32,3 @@ class NameObjectSerializerTest(APITestCase):
             ]
         }
         self.assertEqual(serializer.data, expected_data)
-
-    def test_name_titles_custom_method(self):
-        # Test the custom get_nameTitles method
-        serializer = NameObjectSerializer(self.name_object)
-        expected_name_titles = [
-            {'titleID': 'tt001', 'category': 'Lead'},
-            {'titleID': 'tt002', 'category': 'Supporting'}
-        ]
-        self.assertEqual(serializer.data['nameTitles'], expected_name_titles)

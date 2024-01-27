@@ -76,7 +76,17 @@ async function adduser(username, password) {
 }
 async function user(username) {
   try {
-    const response = await axios.get(`http://127.0.0.1:9876/ntuaflix_api/admin/users/${username}`);
+    const homeDirectory = path.dirname(fileURLToPath(import.meta.url));
+    const token = fs.readFileSync(`${homeDirectory}/softeng20bAPI.token`, 'utf8').trim();
+    console.log(token);
+    const headers = {
+      'Authorization': `${token}`,
+      'Content-Type': 'application/json'
+    };
+    console.log(headers);
+    const response = await axios.get(`http://127.0.0.1:9876/ntuaflix_api/admin/users/${username}`, {
+      headers: headers
+    });
     if (response.status === 200) {
       console.log(response.data); // Assuming the server sends user details
     } else {
@@ -88,7 +98,17 @@ async function user(username) {
 }
 async function healthcheck() {
   try {
-    const response = await axios.get('http://127.0.0.1:9876/ntuaflix_api/admin/healthcheck');
+    const homeDirectory = path.dirname(fileURLToPath(import.meta.url));
+    const token = fs.readFileSync(`${homeDirectory}/softeng20bAPI.token`, 'utf8').trim();
+    console.log(token);
+    const headers = {
+      'Authorization': `${token}`,
+      'Content-Type': 'application/json'
+    };
+    console.log(headers);
+    const response = await axios.get('http://127.0.0.1:9876/ntuaflix_api/admin/healthcheck', {
+      headers: headers
+    });
     if (response.status === 200) {
       console.log('Health check passed');
     } else {
@@ -100,7 +120,17 @@ async function healthcheck() {
 }
 async function resetall() {
   try {
-    const response = await axios.post('http://127.0.0.1:9876/ntuaflix_api/admin/resetall');
+    const homeDirectory = path.dirname(fileURLToPath(import.meta.url));
+    const token = fs.readFileSync(`${homeDirectory}/softeng20bAPI.token`, 'utf8').trim();
+    console.log(token);
+    const headers = {
+      'Authorization': `${token}`,
+      'Content-Type': 'application/json'
+    };
+    console.log(headers);
+    const response = await axios.post('http://127.0.0.1:9876/ntuaflix_api/admin/resetall', {
+      headers: headers
+    });
     if (response.status === 200) {
       console.log('Reset all successful');
     } else {
@@ -128,8 +158,12 @@ async function newtitles(filename) {
     // Assuming filename is a file path, read the file and append it to FormData
     const file = await readFile(filename);
     formData.append('tsv_file', file, filename);
+    const homeDirectory = path.dirname(fileURLToPath(import.meta.url));
+    const token = fs.readFileSync(`${homeDirectory}/softeng20bAPI.token`, 'utf8').trim();
+    console.log(token);
     const response = await axios.post('http://127.0.0.1:9876/ntuaflix_api/admin/upload/titlebasics/', formData, {
       headers: {
+        'Authorization': `${token}`,
         'Content-Type': 'multipart/form-data'
       }
     });
@@ -149,8 +183,12 @@ async function newakas(filename) {
     // Assuming filename is a file path, read the file and append it to FormData
     const file = await readFile(filename);
     formData.append('tsv_file', file, filename);
+    const homeDirectory = path.dirname(fileURLToPath(import.meta.url));
+    const token = fs.readFileSync(`${homeDirectory}/softeng20bAPI.token`, 'utf8').trim();
+    console.log(token);
     const response = await axios.post('http://127.0.0.1:9876/ntuaflix_api/admin/upload/titleakas/', formData, {
       headers: {
+        'Authorization': `${token}`,
         'Content-Type': 'multipart/form-data'
       }
     });
@@ -170,8 +208,12 @@ async function newnames(filename) {
     // Assuming filename is a file path, read the file and append it to FormData
     const file = await readFile(filename);
     formData.append('tsv_file', file, filename);
+    const homeDirectory = path.dirname(fileURLToPath(import.meta.url));
+    const token = fs.readFileSync(`${homeDirectory}/softeng20bAPI.token`, 'utf8').trim();
+    console.log(token);
     const response = await axios.post('http://127.0.0.1:9876/ntuaflix_api/admin/upload/namebasics/', formData, {
       headers: {
+        'Authorization': `${token}`,
         'Content-Type': 'multipart/form-data'
       }
     });
@@ -191,8 +233,12 @@ async function newcrew(filename) {
     // Assuming filename is a file path, read the file and append it to FormData
     const file = await readFile(filename);
     formData.append('tsv_file', file, filename);
+    const homeDirectory = path.dirname(fileURLToPath(import.meta.url));
+    const token = fs.readFileSync(`${homeDirectory}/softeng20bAPI.token`, 'utf8').trim();
+    console.log(token);
     const response = await axios.post('http://127.0.0.1:9876/ntuaflix_api/admin/upload/titlecrew/', formData, {
       headers: {
+        'Authorization': `${token}`,
         'Content-Type': 'multipart/form-data'
       }
     });
@@ -212,8 +258,12 @@ async function newepisode(filename) {
     // Assuming filename is a file path, read the file and append it to FormData
     const file = await readFile(filename);
     formData.append('tsv_file', file, filename);
+    const homeDirectory = path.dirname(fileURLToPath(import.meta.url));
+    const token = fs.readFileSync(`${homeDirectory}/softeng20bAPI.token`, 'utf8').trim();
+    console.log(token);
     const response = await axios.post('http://127.0.0.1:9876/ntuaflix_api/admin/upload/titleepisode/', formData, {
       headers: {
+        'Authorization': `${token}`,
         'Content-Type': 'multipart/form-data'
       }
     });
@@ -233,8 +283,12 @@ async function newprincipals(filename) {
     // Assuming filename is a file path, read the file and append it to FormData
     const file = await readFile(filename);
     formData.append('tsv_file', file, filename);
+    const homeDirectory = path.dirname(fileURLToPath(import.meta.url));
+    const token = fs.readFileSync(`${homeDirectory}/softeng20bAPI.token`, 'utf8').trim();
+    console.log(token);
     const response = await axios.post('http://127.0.0.1:9876/ntuaflix_api/admin/upload/titleprincipals/', formData, {
       headers: {
+        'Authorization': `${token}`,
         'Content-Type': 'multipart/form-data'
       }
     });
@@ -254,8 +308,12 @@ async function newratings(filename) {
     // Assuming filename is a file path, read the file and append it to FormData
     const file = await readFile(filename);
     formData.append('tsv_file', file, filename);
+    const homeDirectory = path.dirname(fileURLToPath(import.meta.url));
+    const token = fs.readFileSync(`${homeDirectory}/softeng20bAPI.token`, 'utf8').trim();
+    console.log(token);
     const response = await axios.post('http://127.0.0.1:9876/ntuaflix_api/admin/upload/titleratings/', formData, {
       headers: {
+        'Authorization': `${token}`,
         'Content-Type': 'multipart/form-data'
       }
     });
@@ -270,10 +328,18 @@ async function newratings(filename) {
 }
 async function title(titleID) {
   console.log('Received titleID:', titleID); // Add this line to log the received titleID
-
+  const homeDirectory = path.dirname(fileURLToPath(import.meta.url));
+  const token = fs.readFileSync(`${homeDirectory}/softeng20bAPI.token`, 'utf8').trim();
+  console.log(token);
+  const headers = {
+    'Authorization': `${token}`,
+    'Content-Type': 'application/json'
+  };
   const url = `${BASE_URL}/title/${titleID}`;
   try {
-    const response = await axios.get(url);
+    const response = await axios.get(url, {
+      headers: headers
+    });
     if (response.status === 200) {
       console.log('Title details:', response.data);
     } else {
@@ -285,8 +351,17 @@ async function title(titleID) {
 }
 async function searchtitle(titlepart) {
   const url = `${BASE_URL}/searchtitle/?title=${encodeURIComponent(titlepart)}`;
+  const homeDirectory = path.dirname(fileURLToPath(import.meta.url));
+  const token = fs.readFileSync(`${homeDirectory}/softeng20bAPI.token`, 'utf8').trim();
+  console.log(token);
+  const headers = {
+    'Authorization': `${token}`,
+    'Content-Type': 'application/json'
+  };
   try {
-    const response = await axios.get(url);
+    const response = await axios.get(url, {
+      headers: headers
+    });
     if (response.status === 200) {
       console.log('Search results:', response.data);
     } else {
@@ -298,7 +373,13 @@ async function searchtitle(titlepart) {
 }
 async function bygenre(genre, minimumRating, yearFrom = null, yearTo = null) {
   let url = `${BASE_URL}/bygenre/?genre=${encodeURIComponent(genre)}&minimumrating=${minimumRating}`;
-
+  const homeDirectory = path.dirname(fileURLToPath(import.meta.url));
+  const token = fs.readFileSync(`${homeDirectory}/softeng20bAPI.token`, 'utf8').trim();
+  console.log(token);
+  const headers = {
+    'Authorization': `${token}`,
+    'Content-Type': 'application/json'
+  };
   // Append optional parameters if provided
   if (yearFrom !== null) {
     url += `&yearfrom=${yearFrom}`;
@@ -307,7 +388,9 @@ async function bygenre(genre, minimumRating, yearFrom = null, yearTo = null) {
     url += `&yearto=${yearTo}`;
   }
   try {
-    const response = await axios.get(url);
+    const response = await axios.get(url, {
+      headers: headers
+    });
     if (response.status === 200) {
       console.log('By Genre results:', response.data);
     } else {
@@ -319,8 +402,17 @@ async function bygenre(genre, minimumRating, yearFrom = null, yearTo = null) {
 }
 async function name(nameID) {
   const url = `${BASE_URL}/name/${nameID}`;
+  const homeDirectory = path.dirname(fileURLToPath(import.meta.url));
+  const token = fs.readFileSync(`${homeDirectory}/softeng20bAPI.token`, 'utf8').trim();
+  console.log(token);
+  const headers = {
+    'Authorization': `${token}`,
+    'Content-Type': 'application/json'
+  };
   try {
-    const response = await axios.get(url);
+    const response = await axios.get(url, {
+      headers: headers
+    });
     if (response.status === 200) {
       console.log('Name Biography:', response.data);
     } else {
@@ -332,8 +424,17 @@ async function name(nameID) {
 }
 async function searchname(name) {
   const url = `${BASE_URL}/searchname/?name=${encodeURIComponent(name)}`;
+  const homeDirectory = path.dirname(fileURLToPath(import.meta.url));
+  const token = fs.readFileSync(`${homeDirectory}/softeng20bAPI.token`, 'utf8').trim();
+  console.log(token);
+  const headers = {
+    'Authorization': `${token}`,
+    'Content-Type': 'application/json'
+  };
   try {
-    const response = await axios.get(url);
+    const response = await axios.get(url, {
+      headers: headers
+    });
     if (response.status === 200) {
       console.log('Search Name results:', response.data);
     } else {
