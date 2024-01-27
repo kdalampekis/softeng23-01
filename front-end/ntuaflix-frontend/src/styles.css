@@ -101,22 +101,78 @@ input, .inputContainer .styled-select {
     padding: 10px;
     margin: 10px 0;
     border-radius: 5px;
-    border: 1px solid #ddd;
+    border: 2px solid white;
     background-color: white;
     color: black;
     font-size: 16px;
     text-align: left;
 }
 
-input {
+input:not([type="file"]) {
     background-color: black; /* Black background */
     color: white; /* White text color */
     border: 2px solid white; /* White border, 2 pixels thick */
-    padding: 10px; /* Some padding inside the input field */
-    font-size: 16px; /* Slightly larger text size for better readability */
     border-radius: 10px;
-    /*text-align: center;*/
 }
+
+
+.fileInputContainer {
+    position: relative;
+    text-align: center;
+    margin-top: 3rem;
+}
+
+.custom-file-input {
+    width: 1px;
+    height: 1px;
+    opacity: 0;
+    overflow: hidden;
+    position: absolute;
+    z-index: -1;
+}
+
+.custom-file-label {
+    display: inline-block;
+    padding: 10px 20px;
+    margin: 10px 0;
+    color: white;
+    background-color: black;
+    border: 2px solid white;
+    border-radius: 10px;
+    cursor: pointer;
+    text-align: center;
+}
+
+input[type="file"] {
+    background-color: white;
+    border: 2px solid red;
+}
+
+
+/* You can style the label even further to match your screenshot */
+.custom-file-label:hover {
+    /* Style for hover state */
+}
+
+
+.no-file-selected {
+    /* Your specific styles for "no file selected" state */
+    border: 2px solid red; /* Example: dashed border */
+    color: grey; /* Example: grey text */
+    /* Any other styles you want to apply */
+}
+
+
+
+
+
+
+
+
+
+
+
+
 
 .buttonContainer {
     /*margin-top: 3rem;*/
@@ -126,34 +182,16 @@ input {
     margin-bottom: 2rem;
 }
 
-input:valid {
+input:not([type="file"]):valid {
     border: 2px solid lime; /* White border when there's a number */
 }
 
-input:invalid {
+input:not([type="file"]):invalid {
     border: 2px solid red; /* Red border when the input is empty or not a number */
 }
 
-input:focus {
+input:not([type="file"]):focus {
     border-color: white; /* Lime border when the input is focused */
-}
-
-
-
-
-/* Initial state when the input is empty */
-#movieInput {
-    border: 2px solid red; /* Red border when there is no value */
-}
-
-/* State when the input is not empty (using the :valid pseudo-class) */
-#movieInput:valid {
-    border: 2px solid white; /* White border when the value is not empty */
-}
-
-/* Override placeholder styles if needed */
-#movieInput::placeholder {
-    color: #CCCCCC; /* Placeholder color */
 }
 
 
