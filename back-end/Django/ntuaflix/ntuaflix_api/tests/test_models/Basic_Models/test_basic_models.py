@@ -51,7 +51,6 @@ class BasicModelsTest(TestCase):
             episodeNumber=2
         )
 
-
         self.principals = Principals.objects.create(
             tconst=self.title_basic,
             nconst=self.names,
@@ -67,13 +66,6 @@ class BasicModelsTest(TestCase):
             averageRating=8.5,
             numVotes=100
         )
-
-
-
-
-
-
-
 
     def test_title_object_creation(self):
         # Test that the title object is created correctly

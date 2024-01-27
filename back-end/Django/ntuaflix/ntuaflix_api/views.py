@@ -59,6 +59,7 @@ class LoginApiView(APIView):
         else:
             return Response({"error": "Invalid credentials"}, status=400)
 
+# Following on the link: title/
 class TitleBasicList(generics.ListAPIView):
     serializer_class = TitleObjectSerializer
     queryset = TitleObject.objects.all()
@@ -69,6 +70,7 @@ class TitleBasicList(generics.ListAPIView):
 
         return title
 
+# Following on the link: title/<str:titleID>/
 class TitleDetailView(generics.ListAPIView):
     serializer_class = TitleObjectSerializer
 
@@ -77,6 +79,7 @@ class TitleDetailView(generics.ListAPIView):
         titleID = self.kwargs.get('titleID')
         return TitleObject.objects.filter(tconst=titleID)
 
+# Following on the link: searchtitle/
 class SearchTitleView(APIView):
 
     def get(self, request):
@@ -199,7 +202,6 @@ class SearchByYear(APIView):
 
             # Return the serialized data
         else:
-            # If 'genre' is not provided, render the search criteria form
             return render(request, 'SearchByYear.html')
 
         return Response(serializer.data)

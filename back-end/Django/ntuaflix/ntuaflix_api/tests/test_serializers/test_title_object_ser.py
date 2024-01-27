@@ -12,14 +12,14 @@ class TitleObjectSerializerTest(TestCase):
             img_url_asset='url/to/image.jpg',
             startYear=2020,
             endYear=2021,
-            titles='Title1,Title2',
-            regions='US,UK',
+            titles='Title1, Title2',
+            regions='US, UK',
             genres='Comedy,Drama',
             averageRating=7.5,
             numVotes=100,
-            nconsts='nm0000001,nm0000002',
-            categories='Director,Actor',
-            primaryName='Name1,Name2'
+            nconsts='nm0000001, nm0000002',
+            categories='Director, Actor',
+            primaryName='Name1, Name2'
         )
 
     def test_title_object_serialization(self):
@@ -32,7 +32,7 @@ class TitleObjectSerializerTest(TestCase):
             'img_url_asset': 'url/to/image.jpg',
             'startYear': 2020,
             'endYear': 2021,
-            'genres': ['Comedy', 'Drama'],
+            'genres': ['Comedy','Drama'],
             'titlesAkas': [
                 {'akaTitle': 'Title1', 'regionAbbrev': 'US'},
                 {'akaTitle': 'Title2', 'regionAbbrev': 'UK'}
