@@ -6,10 +6,12 @@ import {useNavigate} from "react-router-dom";
 function Footer({role}) {
     const navigate = useNavigate();
     const handleLogout = () => {
-        // Perform any logout logic here (like clearing tokens, user data, etc.)
-
-        // Replace the current entry in the history stack with the login route
-        navigate('/', { replace: true });
+        // Clear the token from localStorage or sessionStorage
+        localStorage.removeItem('softeng20bAPI.token');
+        // Alternatively, you can use sessionStorage:
+        // sessionStorage.removeItem('softeng20bAPI.token');
+        // Redirect to the home page or any other desired page
+        navigate('/StartPages');
     };
 
     return <footer>

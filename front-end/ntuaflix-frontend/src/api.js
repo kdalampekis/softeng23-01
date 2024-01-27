@@ -1,5 +1,6 @@
 import axios from 'axios';
-import {findByLabelText} from "@testing-library/react";
+;
+
 
 const BASE_URL = 'http://127.0.0.1:9876/ntuaflix_api';
 
@@ -113,8 +114,6 @@ export const searchMoviesByYear = async (movieYear) => {
     }
 };
 
-// api.js
-// api.js
 export const searchMovieByTitle = async (movieTitle) => {
     try {
         const response = await axios.get(`${BASE_URL}/searchtitle/`, {
@@ -122,6 +121,30 @@ export const searchMovieByTitle = async (movieTitle) => {
                 title: movieTitle
             }
         });
+        return response.data;
+    } catch (error) {
+        console.error('Error:', error);
+        throw error;
+    }
+};
+
+export const searchByActorName = async (actorName) => {
+    try {
+        const response = await axios.get(`${BASE_URL}/searchname/`, {
+            params: {
+                name: actorName
+            }
+        });
+        return response.data;
+    } catch (error) {
+        console.error('Error:', error);
+        throw error;
+    }
+};
+
+export const searchMovieByTitleID = async (titleID) => {
+    try {
+        const response = await axios.get(`${BASE_URL}/title/${titleID.toString()}/`);
         return response.data;
     } catch (error) {
         console.error('Error:', error);

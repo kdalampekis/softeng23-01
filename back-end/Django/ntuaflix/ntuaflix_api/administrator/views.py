@@ -2,17 +2,44 @@ from django.shortcuts import render
 from django.http import JsonResponse
 import csv
 from .forms import *
-
-from django.http import JsonResponse
-from django.db import DatabaseError, connections
-from django.core.exceptions import ValidationError
-
 from .models import *
-
-from django.http import JsonResponse
+from django.core.exceptions import ValidationError
 from django.views.decorators.csrf import csrf_exempt
-from django.views.decorators.http import require_http_methods
-from django.db import transaction, DatabaseError
+from django.db import DatabaseError
+from rest_framework.permissions import IsAuthenticated
+from django.contrib.auth.models import User
+
+
+
+@csrf_exempt
+def add_user(request, username, password):
+    if request.method == 'POST':
+        superuser_token = User.objects.filter(is_superuser=True).values_list('auth_token', flat=True).first()
+        token = request.META.get('HTTP_AUTHORIZATION')
+        print(token)
+# Check if the authenticated user is a superuser
+        if token == superuser_token:
+            try:
+                # Retrieve the user by username
+                user = User.objects.get(username=username)
+
+                # Check if the user is not active
+                if not user.is_active:
+                    # Set is_active to True
+                    user.is_active = True
+                    user.set_password(password)
+                    user.save()
+
+                    return JsonResponse({"detail": "User activated successfully."}, status=200)
+                else:
+                    return JsonResponse({"detail": "User is already active."}, status=400)
+
+            except User.DoesNotExist:
+                return JsonResponse({"detail": "User not found."}, status=404)
+        else:
+            return JsonResponse({"detail": "Permission denied. You don't have administrator privileges."}, status=403)
+    else:
+        return JsonResponse({"detail": "Only GET requests are allowed."}, status=405)
 
 
 def UploadTitleBasics(request):
@@ -64,13 +91,16 @@ def UploadTitleBasics(request):
                 except TitleBasic.MultipleObjectsReturned:
                     print(f"Multiple records found for tconst: {tconst}, skipping.")
 
-                print(f"Processed row number: {row_number}")
-            return JsonResponse({'status': 'success', 'processed_rows': row_number})
+                print(f"Processed row number: {row_number-1}")
+            UploadNameProfile(request)
+            UploadNameObject(request)
+            UploadTitleObject(request)
+            return JsonResponse({'status': 'success', 'processed_rows': row_number-1})
         else:
             return JsonResponse({'status': 'error', 'message': 'Form is not valid'}, status=400)
     else:
         form = BasicForm()
-    return render(request, 'upload.html', {'form': form})
+        return render(request, 'upload.html', {'form': form})
 
 
 def UploadTitleAkas(request):
@@ -89,36 +119,34 @@ def UploadTitleAkas(request):
 
                 tconst, ordering, title, region, language, types, attributes, isOriginalTitle = row
 
-                # Use try-except to handle the case when the record already exists
-                try:
-                    title_aka, created = TitleAka.objects.get_or_create(
-                    tconst=tconst,
+                title = None if title == '\\N' else title
+                region = None if region == '\\N' else region
+                language = None if language == '\\N' else language
+                types = None if types == '\\N' else types
+                attributes = None if attributes == '\\N' else attributes
+                
+                
+                TitleAka.objects.create(
+                    tconst=TitleBasic.objects.get(tconst=tconst),
                     ordering=ordering,
-                    defaults={
-                        'title': title,
-                        'region': region,
-                        'language': language,
-                        'types': types,
-                        'attributes': attributes,
-                        'isOriginalTitle': isOriginalTitle,
-                    }
+                    title=title,
+                    region=region,
+                    language=language,
+                    types=types,
+                    attributes=attributes,
+                    isOriginalTitle=isOriginalTitle,
                 )
-                    if created:
-                        print(f"Created new record for tconst: {tconst}")
-                    else:
-                        print(f"Record for tconst {tconst} and ordering {ordering} already exists, skipping.")
 
-                except Exception as e:
-                    print(f"Error creating record for tconst: {tconst} and ordering {ordering}, {e}")
-
-                print(f"Processed row number: {row_number}")
-                                    
-            return JsonResponse({'status': 'success', 'processed_rows': row_number})
+                print(f"Processed row number: {row_number-1}")
+            UploadNameProfile(request)
+            UploadNameObject(request)
+            UploadTitleObject(request)
+            return JsonResponse({'status': 'success', 'processed_rows': row_number-1})
         else:
             return JsonResponse({'status': 'error', 'message': 'Form is not valid'}, status=400)
     else:
         form = BasicForm()
-    return render(request, 'upload.html', {'form': form})
+        return render(request, 'upload.html', {'form': form})
 
 
 def UploadNameBasics(request):
@@ -143,24 +171,37 @@ def UploadNameBasics(request):
                 knownForTitles = None if knownForTitles == '\\N' else knownForTitles
                 imgUrl = None if imgUrl == '\\N' else imgUrl
                 
-                Names.objects.get_or_create(
-                    nconst=nconst,
-                    defaults={
-                        'primaryName': primaryName,
-                        'birthYear': birthYear,
-                        'deathYear': deathYear,
-                        'primaryProfession': primaryProfession,
-                        'knownForTitles': knownForTitles,
-                        'imgUrl': imgUrl,
-                    }
-                )
-                print(f"Processed row number: {row_number}")
-            return JsonResponse({'status': 'success', 'processed_rows': row_number})
+                try:
+                    name_obj, created = Names.objects.get_or_create(
+                        nconst=nconst,
+                        defaults={
+                            'primaryName': primaryName,
+                            'birthYear': birthYear,
+                            'deathYear': deathYear,
+                            'primaryProfession': primaryProfession,
+                            'knownForTitles': knownForTitles,
+                            'imgUrl': imgUrl,
+                        }
+                    )
+
+                    if created:
+                        print(f"Created new record for nconst: {nconst}")
+                    else:
+                        print(f"Record for nconst {nconst} already exists, skipping.")
+
+                except TitleBasic.MultipleObjectsReturned:
+                    print(f"Multiple records found for nconst: {nconst}, skipping.")
+                
+                print(f"Processed row number: {row_number-1}")
+            UploadNameProfile(request)
+            UploadNameObject(request)
+            UploadTitleObject(request)
+            return JsonResponse({'status': 'success', 'processed_rows': row_number-1})
         else:
             return JsonResponse({'status': 'error', 'message': 'Form is not valid'}, status=400)
     else:
         form = BasicForm()
-    return render(request, 'upload.html', {'form': form})
+        return render(request, 'upload.html', {'form': form})
 
 
 def UploadTitleCrew(request):
@@ -170,6 +211,7 @@ def UploadTitleCrew(request):
             file = form.cleaned_data['tsv_file']
             decoded_file = file.read().decode('utf-8').splitlines()
             reader = csv.reader(decoded_file, delimiter='\t')
+            
             ignore_first_line = True
             for row_number, row in enumerate(reader, start=1):
                 if ignore_first_line:
@@ -180,20 +222,33 @@ def UploadTitleCrew(request):
                 directors = None if directors == '\\N' else directors
                 writers = None if writers == '\\N' else writers
                 
-                Crew.objects.get_or_create(
-                    tconst=tconst,
-                    defaults={
-                        'directors': directors,
-                        'writers': writers,
-                    }
-                )
-                print(f"Processed row number: {row_number}")
-            return JsonResponse({'status': 'success', 'processed_rows': row_number})
+                try:
+                    crew_obj, created = Crew.objects.get_or_create(
+                        tconst=TitleBasic.objects.get(tconst=tconst),
+                        defaults={
+                            'directors': directors,
+                            'writers': writers,
+                        }
+                    )
+
+                    if created:
+                        print(f"Created new record for tconst: {tconst}")
+                    else:
+                        print(f"Record for tconst {tconst} already exists, skipping.")
+
+                except TitleBasic.MultipleObjectsReturned:
+                    print(f"Multiple records found for tconst: {tconst}, skipping.")
+                
+                print(f"Processed row number: {row_number-1}")
+            UploadNameProfile(request)
+            UploadNameObject(request)
+            UploadTitleObject(request)
+            return JsonResponse({'status': 'success', 'processed_rows': row_number-1})
         else:
             return JsonResponse({'status': 'error', 'message': 'Form is not valid'}, status=400)
     else:
         form = BasicForm()
-    return render(request, 'upload.html', {'form': form})
+        return render(request, 'upload.html', {'form': form})
 
 
 def UploadTitleEpisode(request):
@@ -214,21 +269,34 @@ def UploadTitleEpisode(request):
                 seasonNumber = None if seasonNumber == '\\N' else seasonNumber
                 episodeNumber = None if episodeNumber == '\\N' else episodeNumber
                 
-                Episode.objects.get_or_create(
-                    tconst=tconst,
-                    defaults={
-                        'parentTconst': parentTconst,
-                        'seasonNumber': seasonNumber,
-                        'episodeNumber': episodeNumber,
-                    }
-                )
-                print(f"Processed row number: {row_number}")
-            return JsonResponse({'status': 'success', 'processed_rows': row_number})
+                try:
+                    episode_obj, created = Episode.objects.get_or_create(
+                        tconst=TitleBasic.objects.get(tconst=tconst),
+                        defaults={
+                            'parentTconst': parentTconst,
+                            'seasonNumber': seasonNumber,
+                            'episodeNumber': episodeNumber,
+                        }
+                    )
+
+                    if created:
+                        print(f"Created new record for tconst: {tconst}")
+                    else:
+                        print(f"Record for tconst {tconst} already exists, skipping.")
+
+                except TitleBasic.MultipleObjectsReturned:
+                    print(f"Multiple records found for tconst: {tconst}, skipping.")
+                
+                print(f"Processed row number: {row_number-1}")
+            UploadNameProfile(request)
+            UploadNameObject(request)
+            UploadTitleObject(request)
+            return JsonResponse({'status': 'success', 'processed_rows': row_number-1})
         else:
             return JsonResponse({'status': 'error', 'message': 'Form is not valid'}, status=400)
     else:
         form = BasicForm()
-    return render(request, 'upload.html', {'form': form})
+        return render(request, 'upload.html', {'form': form})
 
 
 def UploadTitlePrincipals(request):
@@ -253,36 +321,26 @@ def UploadTitlePrincipals(request):
                 characters = None if characters == '\\N' else characters
                 img_url_asset = None if img_url_asset == '\\N' else img_url_asset
 
-                # Use try-except to handle the case when the record already exists
-                try:
-                    principal, created = Principals.objects.get_or_create(
-                        tconst=tconst,
-                        ordering=ordering,
-                        defaults={
-                            'nconst': nconst,
-                            'category': category,
-                            'job': job,
-                            'characters': characters,
-                            'img_url_asset': img_url_asset,
-                        }
-                    )
+                Principals.objects.create(
+                    tconst=TitleBasic.objects.get(tconst=tconst),
+                    ordering=ordering,
+                    nconst=Names.objects.get(nconst=nconst),
+                    category=category,
+                    job=job,
+                    characters=characters,
+                    img_url_asset=img_url_asset,
+                )
 
-                    if created:
-                        print(f"Created new record for tconst: {tconst} and ordering: {ordering}")
-                    else:
-                        print(f"Record for tconst: {tconst} and ordering: {ordering} already exists, skipping.")
-
-                except Exception as e:
-                    print(f"Error creating record for tconst: {tconst} and ordering: {ordering}, {e}")
-
-                print(f"Processed row number: {row_number}")
-                
-            return JsonResponse({'status': 'success', 'processed_rows': row_number})
+                print(f"Processed row number: {row_number-1}")
+            UploadNameProfile(request)
+            UploadNameObject(request)
+            UploadTitleObject(request)
+            return JsonResponse({'status': 'success', 'processed_rows': row_number-1})
         else:
             return JsonResponse({'status': 'error', 'message': 'Form is not valid'}, status=400)
     else:
         form = BasicForm()
-    return render(request, 'upload.html', {'form': form})
+        return render(request, 'upload.html', {'form': form})
 
 
 def UploadTitleRatings(request):
@@ -303,26 +361,37 @@ def UploadTitleRatings(request):
                 averageRating = None if averageRating == '\\N' else averageRating
                 numVotes = None if numVotes == '\\N' else numVotes
                 
-                Rating.objects.get_or_create(
-                    tconst=tconst,
-                    defaults={
-                        'averageRating': averageRating,
-                        'numVotes': numVotes,
-                    }
-                )
-                print(f"Processed row number: {row_number}")
-            return JsonResponse({'status': 'success', 'processed_rows': row_number})
+                try:
+                    ratings_obj, created = Rating.objects.get_or_create(
+                        tconst=TitleBasic.objects.get(tconst=tconst),
+                        defaults={
+                            'averageRating': averageRating,
+                            'numVotes': numVotes,
+                        }
+                    )
+
+                    if created:
+                        print(f"Created new record for tconst: {tconst}")
+                    else:
+                        print(f"Record for tconst {tconst} already exists, skipping.")
+
+                except TitleBasic.MultipleObjectsReturned:
+                    print(f"Multiple records found for tconst: {tconst}, skipping.")
+                
+                print(f"Processed row number: {row_number-1}")
+            UploadNameProfile(request)
+            UploadNameObject(request)
+            UploadTitleObject(request)
+            return JsonResponse({'status': 'success', 'processed_rows': row_number-1})
         else:
             return JsonResponse({'status': 'error', 'message': 'Form is not valid'}, status=400)
     else:
         form = BasicForm()
-    return render(request, 'upload.html', {'form': form})
+        return render(request, 'upload.html', {'form': form})
 
 
+# /////////////////////////////////////////////////////////////////////////////////////////////
 
-
-
-# //////////////////////////////////////////////////////////////////////////////////////////////
 
 def health_check(request):
     try:
@@ -340,5 +409,21 @@ def health_check(request):
         return JsonResponse({"status": "failed", "dataconnection": connection_string})
 
 
+# def reset_all(request):
+#     try:
+#         with transaction.atomic():
+#             # List all models that you want to reset
+#             NameObject.objects.all().delete()
+#             TitleObject.objects.all().delete()
+#             TitleAka.objects.all().delete()
+#             Principals.objects.all().delete()
+#             Names.objects.all().delete()
+#             Episode.objects.all().delete()
+#             Rating.objects.all().delete()
+#             Crew.objects.all().delete()
+#             TitleBasic.objects.all().delete()
+#             # Add similar lines for all other models you have
 
-
+#         return JsonResponse({"status": "OK"})
+#     except DatabaseError as e:
+#         return JsonResponse({"status": "failed", "reason": str(e)})

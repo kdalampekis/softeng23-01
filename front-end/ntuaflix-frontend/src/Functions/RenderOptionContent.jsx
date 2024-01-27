@@ -1,6 +1,7 @@
-import React from "react";
+import React, {useState} from "react";
 
 const renderOptionContent = (option, inputValues, handleInputChange) => {
+
     switch(option) {
         case "The N highest rated movies in a genre":
             return (
@@ -10,12 +11,14 @@ const renderOptionContent = (option, inputValues, handleInputChange) => {
                         value={inputValues.numberOfMovies || ""}
                         onChange={(e) => handleInputChange('numberOfMovies', e.target.value)}
                         placeholder="Enter number of movies"
+                        required
                     />
                     <input
                         type="text"
                         value={inputValues.genre || ""}
                         onChange={(e) => handleInputChange('genre', e.target.value)}
                         placeholder="Enter genre"
+                        required
                     />
                 </div>
             );
@@ -27,6 +30,7 @@ const renderOptionContent = (option, inputValues, handleInputChange) => {
                         value={inputValues.actor || ""}
                         onChange={(e) => handleInputChange('actor', e.target.value)}
                         placeholder="Enter actor/cast member"
+                        required
                     />
                 </div>
             );
@@ -38,6 +42,7 @@ const renderOptionContent = (option, inputValues, handleInputChange) => {
                         value={inputValues.movieTitle || ""}
                         onChange={(e) => handleInputChange('movieTitle', e.target.value)}
                         placeholder="Enter movie title"
+                        required
                     />
                 </div>
             );
@@ -49,6 +54,7 @@ const renderOptionContent = (option, inputValues, handleInputChange) => {
                         value={inputValues.actor || ""}
                         onChange={(e) => handleInputChange('actor', e.target.value)}
                         placeholder="Enter actor/cast member"
+                        required
                     />
                 </div>
             );
@@ -60,12 +66,14 @@ const renderOptionContent = (option, inputValues, handleInputChange) => {
                         value={inputValues.numberOfMovies || ""}
                         onChange={(e) => handleInputChange('numberOfMovies', e.target.value)}
                         placeholder="Enter number of movies"
+                        required
                     />
                     <input
                         type="text"
                         value={inputValues.actor || ""}
                         onChange={(e) => handleInputChange('actor', e.target.value)}
                         placeholder="Enter actor/cast member"
+                        required
                     />
                 </div>
             );
@@ -77,6 +85,7 @@ const renderOptionContent = (option, inputValues, handleInputChange) => {
                         value={inputValues.actor || ""}
                         onChange={(e) => handleInputChange('actor', e.target.value)}
                         placeholder="Enter actor/cast member"
+                        required
                     />
                 </div>
             );
@@ -88,6 +97,7 @@ const renderOptionContent = (option, inputValues, handleInputChange) => {
                         value={inputValues.genre || ""}
                         onChange={(e) => handleInputChange('genre', e.target.value)}
                         placeholder="Enter genre"
+                        required
                     />
                 </div>
             );
@@ -99,6 +109,7 @@ const renderOptionContent = (option, inputValues, handleInputChange) => {
                         value={inputValues.movieTitle || ""}
                         onChange={(e) => handleInputChange('movieTitle', e.target.value)}
                         placeholder="Enter movie title"
+                        required
                     />
                 </div>
             );
@@ -110,6 +121,7 @@ const renderOptionContent = (option, inputValues, handleInputChange) => {
                         value={inputValues.movieYear || ""}
                         onChange={(e) => handleInputChange('movieYear', e.target.value)}
                         placeholder="Enter year"
+                        required
                     />
                 </div>
             );
@@ -121,6 +133,7 @@ const renderOptionContent = (option, inputValues, handleInputChange) => {
                         value={inputValues.actor || ""}
                         onChange={(e) => handleInputChange('actor', e.target.value)}
                         placeholder="Enter actor/cast member"
+                        required
                     />
                 </div>
             );

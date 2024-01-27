@@ -28,11 +28,12 @@ DEBUG = True
 ALLOWED_HOSTS = []
 
 
+
 # Application definition
 
 INSTALLED_APPS = [
     'rest_framework',
-    'rest_framework.authtoken', 
+    'rest_framework.authtoken',
     'ntuaflix_api',
     'ntuaflix_api.administrator',
     'corsheaders',
@@ -48,9 +49,10 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
-    'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'ntuaflix_api.middleware.DisableCSRFMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'corsheaders.middleware.CorsMiddleware',
@@ -97,7 +99,7 @@ DATABASES = {
 #         'USER': 'root',
 #         'PASSWORD': '',
 #         'HOST': 'localhost',  # Or an IP Address that your DB is hosted on
-#         'PORT': '3306', 
+#         'PORT': '3306',
 #         # 'OPTIONS': {
 #         #     'init_command': "SET sql_mode='STRICT_TRANS_TABLES'",
 #         # },      # The default MySQL port
@@ -110,6 +112,10 @@ REST_FRAMEWORK = {
         'rest_framework.renderers.BrowsableAPIRenderer',
         'rest_framework_csv.renderers.CSVRenderer',
     ),
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+            'rest_framework.authentication.TokenAuthentication',
+            # other authentication classes
+        ],
     # ... other settings ...
 }
 
@@ -157,3 +163,8 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 CORS_ORIGIN_ALLOW_ALL = True
 
 CORS_ALLOW_CREDENTIALS = True
+
+AUTHENTICATION_BACKENDS = [
+    'django.contrib.auth.backends.ModelBackend',
+    # other backends if needed
+]

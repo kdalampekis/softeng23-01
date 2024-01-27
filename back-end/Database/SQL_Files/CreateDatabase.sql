@@ -3,7 +3,7 @@ CREATE DATABASE soft_eng_2023;
 USE soft_eng_2023;
 
 
-CREATE TABLE IF NOT EXISTS Names (
+CREATE TABLE Names (
     nconst varchar(10) NOT NULL,
     primaryName varchar(255),
     birthYear int(10),
@@ -14,7 +14,7 @@ CREATE TABLE IF NOT EXISTS Names (
     PRIMARY KEY (nconst)
 );
 
-CREATE TABLE IF NOT EXISTS TitleAka (
+CREATE TABLE TitleAka (
 	aka_Id int NOT NULL AUTO_INCREMENT,
     tconst varchar(10) NOT NULL,
     ordering int(10),
@@ -27,7 +27,7 @@ CREATE TABLE IF NOT EXISTS TitleAka (
     PRIMARY KEY (aka_Id)
 );
 
-CREATE TABLE IF NOT EXISTS TitleBasic (
+CREATE TABLE TitleBasic (
     tconst varchar(10) NOT NULL,
     titleType varchar(255),
     primaryTitle varchar(255),
@@ -41,14 +41,14 @@ CREATE TABLE IF NOT EXISTS TitleBasic (
     PRIMARY KEY (tconst)
 );
 
-CREATE TABLE IF NOT EXISTS Crew (
+CREATE TABLE Crew (
     tconst varchar(10) NOT NULL,
     directors varchar(255),
     writers varchar(255),
     PRIMARY KEY (tconst)
 );
 
-CREATE TABLE IF NOT EXISTS Episode (
+CREATE TABLE Episode (
     tconst varchar(10) NOT NULL,
     parentTconst varchar(11) NOT NULL,
     seasonNumber int(10),
@@ -56,7 +56,7 @@ CREATE TABLE IF NOT EXISTS Episode (
     PRIMARY KEY (tconst, parentTconst)
 );
 
-CREATE TABLE IF NOT EXISTS WorkAs (
+CREATE TABLE WorkAs (
 	workas_Id int NOT NULL AUTO_INCREMENT,
     tconst varchar(10) NOT NULL,
     ordering int(10),
@@ -68,7 +68,7 @@ CREATE TABLE IF NOT EXISTS WorkAs (
     PRIMARY KEY (workas_Id)
 );
 
-CREATE TABLE IF NOT EXISTS User (
+CREATE TABLE User (
     userId int(10) NOT NULL AUTO_INCREMENT,
     username varchar(255),
     passwordHash varchar(255),
@@ -79,33 +79,33 @@ CREATE TABLE IF NOT EXISTS User (
     PRIMARY KEY (userId)
 );
 
-CREATE TABLE IF NOT EXISTS Rating (
+CREATE TABLE Rating (
     tconst varchar(10) NOT NULL,
     averageRating float,
     numVotes int(10),
     PRIMARY KEY (tconst)
 );
 
--- CREATE TABLE IF NOT EXISTS Series (
+-- CREATE TABLE Series (
 --     parentTconst varchar(11) NOT NULL,
 --     title varchar(50),
 --     originalTitle varchar(50),
 --     PRIMARY KEY (parentTconst)
 -- );
 
-CREATE TABLE IF NOT EXISTS Genres (
+CREATE TABLE Genres (
     genreId int(10) NOT NULL AUTO_INCREMENT,
     genreName varchar(10),
     PRIMARY KEY (genreId)
 );
 
-CREATE TABLE IF NOT EXISTS Title_Genres (
+CREATE TABLE Title_Genres (
     tconst varchar(10) NOT NULL,
     genreId int(10) NOT NULL,
     PRIMARY KEY (tconst, genreId)
 );
 
-CREATE TABLE IF NOT EXISTS User_Like (
+CREATE TABLE User_Like (
     tconst varchar(10) NOT NULL,
     userId int(10) NOT NULL,
     Liked bit(1),

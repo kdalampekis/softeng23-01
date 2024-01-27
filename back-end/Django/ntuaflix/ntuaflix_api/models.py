@@ -1,7 +1,4 @@
-# import bcrypt
 from django.db import models
-from django.contrib.auth.models import AbstractUser, PermissionsMixin
-from django.utils import timezone
 
 class TitleObject(models.Model):
     tconst = models.CharField(max_length=10, primary_key=True)
@@ -20,8 +17,7 @@ class TitleObject(models.Model):
     primaryName=models.CharField(max_length=255, blank=True, null=True)
 
     class Meta:
-        manage: False
-        db_table = 'titleObject'  # Use the exact table name from the database
+        db_table = 'titleObject'
 
     def __str__(self):
         return self.originalTitle
@@ -38,11 +34,10 @@ class NameObject(models.Model):
 
     class Meta:
         manage: False
-        db_table = 'nameObject'  # Use the exact table name from the database
+        db_table = 'nameObject'
 
     def __str__(self):
         return self.primaryName
-
 
 
 class NameProfile(models.Model):
@@ -51,9 +46,7 @@ class NameProfile(models.Model):
     AllGenres = models.CharField(max_length=255, blank=True, null=True)
 
     class Meta:
-        manage: False
-        db_table = 'nameProfile'  # Use the exact table name from the database
-
+        db_table = 'nameProfile'
     def __str__(self):
         return self.ActorName
 
