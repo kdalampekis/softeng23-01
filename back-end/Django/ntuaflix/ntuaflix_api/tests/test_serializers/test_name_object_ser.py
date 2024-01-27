@@ -31,6 +31,4 @@ class NameObjectSerializerTest(APITestCase):
                 {'titleID': 'tt002', 'category': 'Supporting'}
             ]
         }
-        print(expected_data)
-        print(serializer.data)
         self.assertEqual(serializer.data, expected_data)
