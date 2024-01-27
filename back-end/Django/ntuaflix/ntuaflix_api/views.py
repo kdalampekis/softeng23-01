@@ -75,53 +75,83 @@ class TitleDetailView(generics.ListAPIView):
     serializer_class = TitleObjectSerializer
 
     def get_queryset(self):
+        active_user_token = User.objects.filter(is_active=True).values_list('auth_token', flat=True).first()
+        token = self.request.META.get('HTTP_AUTHORIZATION')
+        print(token)
 
-        titleID = self.kwargs.get('titleID')
-        return TitleObject.objects.filter(tconst=titleID)
+        # Check if the authenticated user is a superuser
+        if token == active_user_token:
+            try:
+                titleID = self.kwargs.get('titleID')
+                return TitleObject.objects.filter(tconst=titleID)
+            except TitleObject.DoesNotExist:
+                return Response({"error": "Title not found"}, status=status.HTTP_404_NOT_FOUND)
+        else:
+            return Response({"error": "Permission denied. You don't have an active user account."}, status=status.HTTP_403_FORBIDDEN)
 
 # Following on the link: searchtitle/
 class SearchTitleView(APIView):
-
     def get(self, request):
-        title_query = request.GET.get('title', None)
-        if title_query:
-            title_objects = TitleObject.objects.filter(originalTitle__icontains=title_query)
-            serializer = TitleObjectSerializer(title_objects, many=True)
-            return Response(serializer.data)
+        active_user_token = User.objects.filter(is_active=True).values_list('auth_token', flat=True).first()
+        token = self.request.META.get('HTTP_AUTHORIZATION')
+        print(token)
+
+        if token == active_user_token:
+            try:
+                title_query = request.GET.get('title', None)
+
+                if title_query:
+                    title_objects = TitleObject.objects.filter(originalTitle__icontains=title_query)
+                    serializer = TitleObjectSerializer(title_objects, many=True)
+                    return Response(serializer.data)
+                else:
+                    # Render the search form if no query is provided
+                    return render(request, 'search_title.html')
+            except TitleObject.DoesNotExist:
+                return Response({"error": "Title not found"}, status=status.HTTP_404_NOT_FOUND)
         else:
-            # Render the search form if no query is provided
-            return render(request, 'search_title.html')
+            return Response({"error": "Permission denied. You don't have an active user account."}, status=status.HTTP_403_FORBIDDEN)
 
 class FilteredTitleObjectsView(APIView):
 
     def get(self, request, *args, **kwargs):
-        # Retrieve query parameters
-        genre = request.GET.get('genre', None)
-        minimum_rating = request.GET.get('minimumrating', None)
-        year_from = request.GET.get('yearfrom', None)
-        year_to = request.GET.get('yearto', None)
+        active_user_token = User.objects.filter(is_active=True).values_list('auth_token', flat=True).first()
+        token = self.request.META.get('HTTP_AUTHORIZATION')
+        print(token)
 
-        if genre:
-            # Start building the query
-            query = Q()
-            if genre:
-                query &= Q(genres__icontains=genre)
-            if minimum_rating:
-                query &= Q(averageRating__gte=minimum_rating)
-            if year_from:
-                query &= Q(startYear__gte=year_from)
-            if year_to:
-                query &= Q(endYear__lte=year_to)
+        if token == active_user_token:
+            try:
+                # Retrieve query parameters
+                genre = request.GET.get('genre', None)
+                minimum_rating = request.GET.get('minimumrating', None)
+                year_from = request.GET.get('yearfrom', None)
+                year_to = request.GET.get('yearto', None)
 
-            # Execute the query
-            title_objects = TitleObject.objects.filter(query)
+                if genre:
+                    # Start building the query
+                    query = Q()
+                    if genre:
+                        query &= Q(genres__icontains=genre)
+                    if minimum_rating:
+                        query &= Q(averageRating__gte=minimum_rating)
+                    if year_from:
+                        query &= Q(startYear__gte=year_from)
+                    if year_to:
+                        query &= Q(endYear__lte=year_to)
 
-            # Serialize the queryset
-            serializer = TitleObjectSerializer(title_objects, many=True)
+                    # Execute the query
+                    title_objects = TitleObject.objects.filter(query)
+
+                    # Serialize the queryset
+                    serializer = TitleObjectSerializer(title_objects, many=True)
+                else:
+                    return render(request, 'search_criteria.html')
+                # Return the response
+                return Response(serializer.data)
+            except Exception as e:
+                return Response({"error": str(e)}, status=400)
         else:
-            return render(request,'search_criteria.html')
-        # Return the response
-        return Response(serializer.data)
+            return Response({"error": "Permission denied. You don't have an active user account."}, status=403)
 
 class NameObjectView(generics.ListAPIView):
     serializer_class = NameObjectSerializer
@@ -137,20 +167,39 @@ class NameBiography(generics.ListAPIView):
     serializer_class = NameObjectSerializer
 
     def get_queryset(self):
+        active_user_token = User.objects.filter(is_active=True).values_list('auth_token', flat=True).first()
+        token = self.request.META.get('HTTP_AUTHORIZATION')
+        print(token)
 
-        nameID = self.kwargs.get('nameID')
-        return NameObject.objects.filter(nconst=nameID)
+        if token == active_user_token:
+            try:
+                nameID = self.kwargs.get('nameID')
+                return NameObject.objects.filter(nconst=nameID)
+            except Exception as e:
+                return Response({"error": str(e)}, status=400)
+        else:
+            return Response({"error": "Permission denied. You don't have an active user account."}, status=403)
 
 class SearchNameView(APIView):
     def get(self, request):
-        name_query = request.GET.get('name', None)
-        if name_query:
-            name_objects = NameObject.objects.filter(primaryName__icontains=name_query)
-            serializer = NameObjectSerializer(name_objects, many=True)
-            return Response(serializer.data)
+        active_user_token = User.objects.filter(is_active=True).values_list('auth_token', flat=True).first()
+        token = self.request.META.get('HTTP_AUTHORIZATION')
+        print(token)
+
+        if token == active_user_token:
+            try:
+                name_query = request.GET.get('name', None)
+                if name_query:
+                    name_objects = NameObject.objects.filter(primaryName__icontains=name_query)
+                    serializer = NameObjectSerializer(name_objects, many=True)
+                    return Response(serializer.data)
+                else:
+                    # Render the search form if no query is provided
+                    return render(request, 'search_name.html')
+            except Exception as e:
+                return Response({"error": str(e)}, status=500)
         else:
-            # Render the search form if no query is provided
-            return render(request, 'search_name.html')
+            return Response({"error": "Permission denied. You don't have an active user account."}, status=403)
 
 class SearchByGenre(APIView):
 
