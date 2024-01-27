@@ -43,7 +43,7 @@ class NameObjectSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = NameObject
-        fields = ['nconst','primaryName','imgUrl','birthYear','deathYear','nameTitles']
+        fields = ['nconst','primaryName','imgUrl','birthYear','primaryProfession','deathYear','nameTitles']
 
     def get_nameTitles(self,obj):
         titleID=obj.titleID.split(',') if obj.titleID else []
