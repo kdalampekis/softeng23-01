@@ -143,7 +143,7 @@ class NameBiography(generics.ListAPIView):
         return NameObject.objects.filter(nconst=nameID)
 
 class SearchNameView(APIView):
-    def get_search_by_name(self, request):
+    def get(self, request):
         name_query = request.GET.get('name', None)
         if name_query:
             name_objects = NameObject.objects.filter(primaryName=name_query)
