@@ -42,65 +42,83 @@ def add_user(request, username, password):
         return JsonResponse({"detail": "Only GET requests are allowed."}, status=405)
 
 
+def ProcessTitleBasicTSV(file, model):
+    decoded_file = file.read().decode('utf-8').splitlines()
+    reader = csv.reader(decoded_file, delimiter='\t')
+
+    ignore_first_line = True
+    for row_number, row in enumerate(reader, start=1):
+        if ignore_first_line:
+            ignore_first_line = False
+            continue
+        
+        tconst, titleType, primaryTitle, originalTitle, isAdult, startYear, endYear, runtimeMinutes, genres, img_url_asset = row
+        
+        startYear = None if startYear == '\\N' else startYear
+        endYear = None if endYear == '\\N' else endYear
+        runtimeMinutes = None if runtimeMinutes == '\\N' else runtimeMinutes
+        isAdult = None if isAdult == '\\N' else isAdult
+        genres = None if genres == '\\N' else genres
+        img_url_asset = None if img_url_asset == '\\N' else img_url_asset
+        
+        # Use get_or_create to insert a new element
+        # into the table if not already existed
+        try:
+            title_obj, created = TitleBasic.objects.get_or_create(
+                tconst=tconst,
+                defaults={
+                    'titleType': titleType,
+                    'primaryTitle': primaryTitle,
+                    'originalTitle': originalTitle,
+                    'isAdult': isAdult,
+                    'startYear': startYear,
+                    'endYear': endYear,
+                    'runtimeMinutes': runtimeMinutes,
+                    'genres': genres,
+                    'img_url_asset': img_url_asset,
+                }
+            )
+
+            if created:
+                print(f"Created new record for tconst: {tconst}")
+            else:
+                print(f"Record for tconst {tconst} already exists, skipping.")
+
+        except TitleBasic.MultipleObjectsReturned:
+            print(f"Multiple records found for tconst: {tconst}, skipping.")
+
+        print(f"Processed row number: {row_number-1}")
+    return row_number-1
+
+
 def UploadTitleBasics(request):
     if request.method == 'POST':
         form = BasicForm(request.POST, request.FILES)
         if form.is_valid():
             file = form.cleaned_data['tsv_file']
-            decoded_file = file.read().decode('utf-8').splitlines()
-            reader = csv.reader(decoded_file, delimiter='\t')
-
-            ignore_first_line = True
-            for row_number, row in enumerate(reader, start=1):
-                if ignore_first_line:
-                    ignore_first_line = False
-                    continue
-                
-                tconst, titleType, primaryTitle, originalTitle, isAdult, startYear, endYear, runtimeMinutes, genres, img_url_asset = row
-                
-                startYear = None if startYear == '\\N' else startYear
-                endYear = None if endYear == '\\N' else endYear
-                runtimeMinutes = None if runtimeMinutes == '\\N' else runtimeMinutes
-                isAdult = None if isAdult == '\\N' else isAdult
-                genres = None if genres == '\\N' else genres
-                img_url_asset = None if img_url_asset == '\\N' else img_url_asset
-                
-                # Use get_or_create to insert a new element
-                # into the table if not already existed
-                try:
-                    title_obj, created = TitleBasic.objects.get_or_create(
-                        tconst=tconst,
-                        defaults={
-                            'titleType': titleType,
-                            'primaryTitle': primaryTitle,
-                            'originalTitle': originalTitle,
-                            'isAdult': isAdult,
-                            'startYear': startYear,
-                            'endYear': endYear,
-                            'runtimeMinutes': runtimeMinutes,
-                            'genres': genres,
-                            'img_url_asset': img_url_asset,
-                        }
-                    )
-
-                    if created:
-                        print(f"Created new record for tconst: {tconst}")
-                    else:
-                        print(f"Record for tconst {tconst} already exists, skipping.")
-
-                except TitleBasic.MultipleObjectsReturned:
-                    print(f"Multiple records found for tconst: {tconst}, skipping.")
-
-                print(f"Processed row number: {row_number-1}")
+            TitleBasic.objects.all().delete()
+            Names.objects.all().delete()
+            rows = ProcessTitleBasicTSV(file, TitleBasic)
+            print(TitleBasic.objects.all())
             UploadNameProfile(request)
             UploadNameObject(request)
             UploadTitleObject(request)
-            return JsonResponse({'status': 'success', 'processed_rows': row_number-1})
+            print(TitleObject.objects.all())
+            return JsonResponse({'status': 'success', 'processed_rows': rows})
         else:
             return JsonResponse({'status': 'error', 'message': 'Form is not valid'}, status=400)
     else:
         form = BasicForm()
         return render(request, 'upload.html', {'form': form})
+
+
+def reset_database(request):
+    TitleBasic.objects.all().delete()
+    specific_file_path = 'path/to/specific/file.tsv'
+    with open(specific_file_path, 'r', encoding='utf-8') as file:
+        ProcessTitleBasicTSV(file, TitleBasic)
+
+    return JsonResponse({'status': 'success'})
 
 
 def UploadTitleAkas(request):
