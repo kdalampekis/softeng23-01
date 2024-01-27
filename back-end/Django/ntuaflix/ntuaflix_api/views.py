@@ -143,7 +143,7 @@ class SearchNameView(APIView):
     def get(self, request):
         name_query = request.GET.get('name', None)
         if name_query:
-            name_objects = NameObject.objects.filter(primaryName=name_query)
+            name_objects = NameObject.objects.filter(primaryName__icontains=name_query)
             serializer = NameObjectSerializer(name_objects, many=True)
             return Response(serializer.data)
         else:
