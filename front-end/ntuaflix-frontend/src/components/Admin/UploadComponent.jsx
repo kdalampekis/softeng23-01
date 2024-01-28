@@ -19,21 +19,25 @@ const UploadComponent = () => {
     // Handle file selection
     const handleFileChange = (event) => {
         const fileInput = event.target;
+        const label = document.querySelector('label[for="file-upload"]');
         const fileNameDisplay = document.getElementById('file-name');
 
-        // If a file is selected
+        // Check if a file is selected
         if (fileInput.files.length > 0) {
             const file = fileInput.files[0];
-            setFile(file); // Update the state with the selected file
+            setFile(file); // Set the file in state
             const fileName = file.name;
-            fileNameDisplay.textContent = fileName; // Display the file name
-            label.classList.remove('no-file-selected'); // Remove the class indicating no file is selected
+            fileNameDisplay.textContent = fileName; // Update the display text with the file name
+            label.classList.add('file-has-selected'); // Add a class to indicate file is selected
+            label.classList.remove('no-file-selected'); // Remove the class from the label
         } else {
-            setFile(null); // Update the state to no file
-            fileNameDisplay.textContent = 'No file chosen...'; // Reset the display text
-            label.classList.add('no-file-selected'); // Add the class indicating no file is selected
+            setFile(null); // Clear the file in state
+            fileNameDisplay.textContent = 'No file chosen...'; // Update the display text
+            label.classList.remove('file-has-selected'); // Remove class since no file is selected
+            label.classList.add('no-file-selected'); // Add the class to the label
         }
     };
+
 
 
     // Handle file selection
@@ -122,12 +126,11 @@ const UploadComponent = () => {
             {type && (
                 <div>
                     <div className="inputContainer fileInputContainer">
-                        <label htmlFor="file-upload" className="custom-file-label">
-                            <span>Choose file... </span>
+                        <label htmlFor="file-upload" className="custom-file-label no-file-selected">
                             <span id="file-name"></span>
                         </label>
                         <input id="file-upload" type="file" onChange={handleFileChange}
-                               className="custom-file-input no-file-selected"/>
+                               className="custom-file-input"/>
 
                     </div>
 
