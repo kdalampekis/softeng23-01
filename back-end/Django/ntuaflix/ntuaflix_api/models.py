@@ -49,10 +49,3 @@ class NameProfile(models.Model):
         db_table = 'nameProfile'
     def __str__(self):
         return self.ActorName
-
-
-
-
-
-
-    

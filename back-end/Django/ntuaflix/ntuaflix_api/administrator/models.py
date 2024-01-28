@@ -1,6 +1,5 @@
 from django.db import models
 from ..models import *
-from django.db import IntegrityError
 
 
 class TitleBasic(models.Model):

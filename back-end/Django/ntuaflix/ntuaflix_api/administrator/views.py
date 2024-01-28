@@ -523,7 +523,6 @@ def ResetTitleRatings(request):
 
 # ///////////////////////////////// OTHER VIEWS //////////////////////////////////////////////
 
-
 def health_check(request):
     superuser_token = User.objects.filter(is_superuser=True).values_list('auth_token', flat=True).first()
     token = request.META.get('HTTP_AUTHORIZATION')
@@ -546,7 +545,6 @@ def health_check(request):
             return JsonResponse({"status": "failed", "dataconnection": connection_string})
     else:
         return JsonResponse({"status": "failed", "dataconnection": "Permission denied. You don't have superuser privileges."})
-
 
 
 def reset_all(request):
@@ -632,8 +630,7 @@ def add_user(request, username, password):
 
 
 # ///////////////////////////////// OBJECT FUNCTIONS //////////////////////////////////////////////
-
-    
+  
 def UploadTitleObject(request, title_ids, reset = False):
     if reset:
         TitleObject.objects.all().delete()
