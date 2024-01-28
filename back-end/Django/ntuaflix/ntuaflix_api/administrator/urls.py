@@ -12,5 +12,5 @@ urlpatterns = [
     path('healthcheck', health_check, name='health_check'),
     path('usermod/<str:username>/<str:password>/', add_user, name='add_user'),
     path('users/<str:username>/', UserInfoAPIView.as_view(), name='user-info'),
-    path('a/', UploadNameObject)
+    path('resetall/', reset_all)
 ]

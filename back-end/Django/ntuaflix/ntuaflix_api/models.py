@@ -10,7 +10,7 @@ class TitleObject(models.Model):
     titles = models.TextField(blank=True, null=True)  # Aggregated titles
     regions = models.TextField(blank=True, null=True)  # Aggregated regions
     genres = models.TextField(blank=True, null=True)
-    averageRating=models.DecimalField(max_digits=3, decimal_places=2)
+    averageRating=models.DecimalField(max_digits=3, decimal_places=2, blank=True, null=True)
     numVotes=models.IntegerField(blank=True,null=True)
     nconsts=models.TextField(blank=True, null=True)
     categories=models.TextField(blank=True, null=True)
