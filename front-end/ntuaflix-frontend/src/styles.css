@@ -137,7 +137,7 @@ input:not([type="file"]) {
     margin: 10px 0;
     color: white;
     background-color: black;
-    border: 2px solid lime;
+    border: 2px solid white;
     border-radius: 10px;
     cursor: pointer;
     text-align: center;
@@ -146,12 +146,20 @@ input:not([type="file"]) {
 .custom-file-label::before {
     content: 'Choose file...';
     display: block;
-    margin-right: 10px; /* Adjust as needed */
+    margin-right: 10px;
 }
 
-.custom-file-label.file-has-selected::before {
-    /* When a file is selected, don't show the 'Choose file...' text */
+.custom-file-label.file-chosen::before {
     content: none;
+}
+
+
+.label-success {
+    border: 2px solid lime;
+}
+
+.label-failure {
+    border: 2px solid red;
 }
 
 
@@ -173,8 +181,10 @@ input:not([type="file"]):focus {
 
 
 .custom-file-label.no-file-selected {
-    border: 2px solid red; /* Style when no file is selected */
+    border: 2px solid white; /* Style when no file is selected */
 }
+
+
 
 
 
