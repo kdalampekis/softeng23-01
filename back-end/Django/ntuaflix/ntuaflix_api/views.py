@@ -59,6 +59,7 @@ class LoginApiView(APIView):
         else:
             return Response({"error": "Invalid credentials"}, status=400)
 
+# Following on the link: title/
 class TitleBasicList(generics.ListAPIView):
     serializer_class = TitleObjectSerializer
     queryset = TitleObject.objects.all()
@@ -69,6 +70,7 @@ class TitleBasicList(generics.ListAPIView):
 
         return title
 
+# Following on the link: title/<str:titleID>/
 class TitleDetailView(generics.ListAPIView):
     serializer_class = TitleObjectSerializer
 
@@ -87,6 +89,7 @@ class TitleDetailView(generics.ListAPIView):
         else:
             return Response({"error": "Permission denied. You don't have an active user account."}, status=status.HTTP_403_FORBIDDEN)
 
+# Following on the link: searchtitle/
 class SearchTitleView(APIView):
     def get(self, request):
         active_user_token = User.objects.filter(is_active=True).values_list('auth_token', flat=True).first()
@@ -248,7 +251,6 @@ class SearchByYear(APIView):
 
             # Return the serialized data
         else:
-            # If 'genre' is not provided, render the search criteria form
             return render(request, 'SearchByYear.html')
 
         return Response(serializer.data)

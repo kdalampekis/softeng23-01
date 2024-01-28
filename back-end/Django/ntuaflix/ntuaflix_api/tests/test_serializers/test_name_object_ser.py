@@ -12,8 +12,8 @@ class NameObjectSerializerTest(APITestCase):
             birthYear=1980,
             deathYear=2020,
             primaryProfession='Actor',
-            titleID='tt001,tt002',
-            category='Lead,Supporting'
+            titleID='tt001, tt002',
+            category='Lead, Supporting'
         )
 
     def test_name_object_serialization(self):

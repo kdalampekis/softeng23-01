@@ -20,7 +20,7 @@ class TitleObjectSerializer(serializers.ModelSerializer):
         return [{'akaTitle': akaTitle, 'regionAbbrev': regionAbbrev} for akaTitle, regionAbbrev in zip(akaTitle, regionAbbrev)]
 
     def get_genres(self, obj):
-        return obj.genres.split(', ') if obj.genres else []
+        return obj.genres.split(',') if obj.genres else []
 
     
     def get_principals(self, obj):
