@@ -33,17 +33,29 @@ class SignUpAPIView(APIView):
 
 class LogoutApiView(APIView):
     def post(self, request, *args, **kwargs):
-        # Logout the user (invalidate the token)
-        request.auth.delete()
+        # Get the token from the request header
+        token_header = self.request.META.get('HTTP_AUTHORIZATION')
+        print(token_header)
+        if token_header:
+            # Find the user associated with the token
+            try:
+                user = Token.objects.get(key=token_header).user
+            except Token.DoesNotExist:
+                return Response({"detail": "User not found."}, status=status.HTTP_404_NOT_FOUND)
 
-        return Response({"detail": "Successfully logged out."})
+            # Delete the token
+            Token.objects.filter(user=user).delete()
+
+            return Response({"detail": "Successfully logged out and deleted auth token."})
+        else:
+            return Response({"detail": "Invalid token format."}, status=status.HTTP_400_BAD_REQUEST)
 
 class LoginApiView(APIView):
     def post(self, request, *args, **kwargs):
         print("Request data:", request.data)
         username = request.data.get('username')
         password = request.data.get('password')
-
+        print(request.data)
         # Manually authenticate the user
         user = authenticate(request, username=username, password=password)
 
@@ -75,12 +87,12 @@ class TitleDetailView(generics.ListAPIView):
     serializer_class = TitleObjectSerializer
 
     def get_queryset(self):
-        active_user_token = User.objects.filter(is_active=True).values_list('auth_token', flat=True).first()
         token = self.request.META.get('HTTP_AUTHORIZATION')
+        user = Token.objects.get(key=token).user
         print(token)
 
         # Check if the authenticated user is a superuser
-        if token == active_user_token:
+        if user.is_active:
             try:
                 titleID = self.kwargs.get('titleID')
                 return TitleObject.objects.filter(tconst=titleID)
@@ -92,11 +104,11 @@ class TitleDetailView(generics.ListAPIView):
 # Following on the link: searchtitle/
 class SearchTitleView(APIView):
     def get(self, request):
-        active_user_token = User.objects.filter(is_active=True).values_list('auth_token', flat=True).first()
         token = self.request.META.get('HTTP_AUTHORIZATION')
+        user = Token.objects.get(key=token).user
         print(token)
 
-        if token == active_user_token:
+        if user.is_active:
             try:
                 title_query = request.GET.get('title', None)
 
@@ -115,11 +127,11 @@ class SearchTitleView(APIView):
 class FilteredTitleObjectsView(APIView):
 
     def get(self, request, *args, **kwargs):
-        active_user_token = User.objects.filter(is_active=True).values_list('auth_token', flat=True).first()
         token = self.request.META.get('HTTP_AUTHORIZATION')
+        user = Token.objects.get(key=token).user
         print(token)
 
-        if token == active_user_token:
+        if user.is_active:
             try:
                 # Retrieve query parameters
                 genre = request.GET.get('genre', None)
@@ -167,11 +179,11 @@ class NameBiography(generics.ListAPIView):
     serializer_class = NameObjectSerializer
 
     def get_queryset(self):
-        active_user_token = User.objects.filter(is_active=True).values_list('auth_token', flat=True).first()
         token = self.request.META.get('HTTP_AUTHORIZATION')
+        user = Token.objects.get(key=token).user
         print(token)
 
-        if token == active_user_token:
+        if user.is_active:
             try:
                 nameID = self.kwargs.get('nameID')
                 return NameObject.objects.filter(nconst=nameID)
@@ -182,11 +194,11 @@ class NameBiography(generics.ListAPIView):
 
 class SearchNameView(APIView):
     def get(self, request):
-        active_user_token = User.objects.filter(is_active=True).values_list('auth_token', flat=True).first()
         token = self.request.META.get('HTTP_AUTHORIZATION')
+        user = Token.objects.get(key=token).user
         print(token)
 
-        if token == active_user_token:
+        if user.is_active:
             try:
                 name_query = request.GET.get('name', None)
                 if name_query:

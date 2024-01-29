@@ -13,7 +13,12 @@ export default function HealthCheck() {
     const [error, setError] = useState('');
 
     useEffect(() => {
-        axios.get(`${BASE_URL}/healthcheck`)
+        const token = localStorage.getItem('softeng20bAPI.token');
+        // Set up the headers with the auth token
+        const headers = {
+            'Authorization': `${token}`,
+        };
+        axios.post(`${BASE_URL}/healthcheck`, {}, {headers : headers})
             .then(response => {
                 setHealthCheckData(response.data);
                 setLoading(false);

@@ -4,12 +4,26 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 const BASE_URL = 'http://127.0.0.1:9876/ntuaflix_api'; // Replace with your actual Django server's URL
 
-async function login(username, password, format = 'json') {
+async function login(username, password, format) {
+  format = format || 'json'; // If format is not provided, default to 'json'
+  const headers = {};
+  if (format === 'json') {
+    headers['Content-Type'] = 'application/json';
+    headers['Accept'] = 'application/json';
+  } else if (format === 'csv') {
+    headers['Content-Type'] = 'text/csv';
+    headers['Accept'] = 'text/csv';
+  } else {
+    console.error('Invalid format specified:', format);
+    return;
+  }
   try {
-    const response = await axios.post('http://127.0.0.1:9876/ntuaflix_api/login/?format=${format}', new URLSearchParams({
+    const response = await axios.post(`http://127.0.0.1:9876/ntuaflix_api/login/?format=${format}`, new URLSearchParams({
       username,
       password
-    }));
+    }), {
+      headers: headers
+    });
     if (response.status === 200) {
       const token = response.data.token;
       const homeDirectory = path.dirname(fileURLToPath(import.meta.url));
@@ -22,18 +36,18 @@ async function login(username, password, format = 'json') {
     console.error('Error:', error.message);
   }
 }
-async function logout(format = 'json') {
+async function logout(format) {
+  format = format || 'json'; // If format is not provided, default to 'json'
+
   try {
     const __filename = fileURLToPath(import.meta.url);
     const currentDir = path.dirname(__filename);
     const tokenFileName = 'softeng20bAPI.token';
     const tokenFilePath = path.join(currentDir, tokenFileName);
     const token = fs.readFileSync(tokenFilePath, 'utf-8').trim();
-    const response = await axios.post('http://127.0.0.1:9876/ntuaflix_api/logout/?format=${format}', {}, {
+    const response = await axios.post(`http://127.0.0.1:9876/ntuaflix_api/logout/?format=${format}`, {}, {
       headers: {
-        'Authorization': `Token ${token}`,
-        'Content-Type': 'application/json',
-        'Accept': `application/${format}`
+        'Authorization': `${token}`
       }
     });
     if (response.status === 200) {
@@ -47,7 +61,9 @@ async function logout(format = 'json') {
     console.error('Error:', error.message);
   }
 }
-async function adduser(username, password, format = 'json') {
+async function adduser(username, password, format) {
+  format = format || 'json'; // If format is not provided, default to 'json'
+
   try {
     // Read the token from the saved file
     const homeDirectory = path.dirname(fileURLToPath(import.meta.url));
@@ -58,10 +74,18 @@ async function adduser(username, password, format = 'json') {
 
     // Create the request headers with the token
     const headers = {
-      'Authorization': `${token}`,
-      'Content-Type': 'application/json',
-      'Accept': `application/${format}`
+      'Authorization': `${token}`
     };
+    if (format === 'json') {
+      headers['Content-Type'] = 'application/json';
+      headers['Accept'] = 'application/json';
+    } else if (format === 'csv') {
+      headers['Content-Type'] = 'text/csv';
+      headers['Accept'] = 'text/csv';
+    } else {
+      console.error('Invalid format specified:', format);
+      return;
+    }
     console.log(headers);
 
     // Make the POST request with the headers
@@ -77,16 +101,26 @@ async function adduser(username, password, format = 'json') {
     console.error('Error:', error.message);
   }
 }
-async function user(username, format = 'json') {
+async function user(username, format) {
+  format = format || 'json'; // If format is not provided, default to 'json'
+
   try {
     const homeDirectory = path.dirname(fileURLToPath(import.meta.url));
     const token = fs.readFileSync(`${homeDirectory}/softeng20bAPI.token`, 'utf8').trim();
     console.log(token);
     const headers = {
-      'Authorization': `${token}`,
-      'Content-Type': 'application/json',
-      'Accept': `application/${format}`
+      'Authorization': `${token}`
     };
+    if (format === 'json') {
+      headers['Content-Type'] = 'application/json';
+      headers['Accept'] = 'application/json';
+    } else if (format === 'csv') {
+      headers['Content-Type'] = 'text/csv';
+      headers['Accept'] = 'text/csv';
+    } else {
+      console.error('Invalid format specified:', format);
+      return;
+    }
     console.log(headers);
     const response = await axios.get(`http://127.0.0.1:9876/ntuaflix_api/admin/users/${username}?format=${format}`, {
       headers: headers
@@ -100,18 +134,28 @@ async function user(username, format = 'json') {
     console.error('Error:', error.message);
   }
 }
-async function healthcheck(format = 'json') {
+async function healthcheck(format) {
+  format = format || 'json'; // If format is not provided, default to 'json'
+
   try {
     const homeDirectory = path.dirname(fileURLToPath(import.meta.url));
     const token = fs.readFileSync(`${homeDirectory}/softeng20bAPI.token`, 'utf8').trim();
     console.log(token);
     const headers = {
-      'Authorization': `${token}`,
-      'Content-Type': 'application/json',
-      'Accept': `application/${format}`
+      'Authorization': `${token}`
     };
+    if (format === 'json') {
+      headers['Content-Type'] = 'application/json';
+      headers['Accept'] = 'application/json';
+    } else if (format === 'csv') {
+      headers['Content-Type'] = 'text/csv';
+      headers['Accept'] = 'text/csv';
+    } else {
+      console.error('Invalid format specified:', format);
+      return;
+    }
     console.log(headers);
-    const response = await axios.get('http://127.0.0.1:9876/ntuaflix_api/admin/healthcheck/?format=${format}', {
+    const response = await axios.get(`http://127.0.0.1:9876/ntuaflix_api/admin/healthcheck/?format=${format}`, {
       headers: headers
     });
     if (response.status === 200) {
@@ -123,18 +167,28 @@ async function healthcheck(format = 'json') {
     console.error('Error:', error.message);
   }
 }
-async function resetall(format = 'json') {
+async function resetall(format) {
+  format = format || 'json'; // If format is not provided, default to 'json'
+
   try {
     const homeDirectory = path.dirname(fileURLToPath(import.meta.url));
     const token = fs.readFileSync(`${homeDirectory}/softeng20bAPI.token`, 'utf8').trim();
     console.log(token);
     const headers = {
-      'Authorization': `${token}`,
-      'Content-Type': 'application/json',
-      'Accept': `application/${format}`
+      'Authorization': `${token}`
     };
+    if (format === 'json') {
+      headers['Content-Type'] = 'application/json';
+      headers['Accept'] = 'application/json';
+    } else if (format === 'csv') {
+      headers['Content-Type'] = 'text/csv';
+      headers['Accept'] = 'text/csv';
+    } else {
+      console.error('Invalid format specified:', format);
+      return;
+    }
     console.log(headers);
-    const response = await axios.post('http://127.0.0.1:9876/ntuaflix_api/admin/resetall/?format=${format}', {
+    const response = await axios.post(`http://127.0.0.1:9876/ntuaflix_api/admin/resetall/?format=${format}`, {
       headers: headers
     });
     if (response.status === 200) {
@@ -157,7 +211,9 @@ function readFile(filePath) {
     });
   });
 }
-async function newtitles(filename, format = 'json') {
+async function newtitles(filename, format) {
+  format = format || 'json'; // If format is not provided, default to 'json'
+
   try {
     const formData = new FormData();
 
@@ -167,7 +223,7 @@ async function newtitles(filename, format = 'json') {
     const homeDirectory = path.dirname(fileURLToPath(import.meta.url));
     const token = fs.readFileSync(`${homeDirectory}/softeng20bAPI.token`, 'utf8').trim();
     console.log(token);
-    const response = await axios.post('http://127.0.0.1:9876/ntuaflix_api/admin/upload/titlebasics/?format=${format}', formData, {
+    const response = await axios.post(`http://127.0.0.1:9876/ntuaflix_api/admin/upload/titlebasics/?format=${format}`, formData, {
       headers: {
         'Authorization': `${token}`,
         'Content-Type': 'multipart/form-data',
@@ -183,7 +239,9 @@ async function newtitles(filename, format = 'json') {
     console.error('Error:', error.message);
   }
 }
-async function newakas(filename, format = 'json') {
+async function newakas(filename, format) {
+  format = format || 'json'; // If format is not provided, default to 'json'
+
   try {
     const formData = new FormData();
 
@@ -193,7 +251,7 @@ async function newakas(filename, format = 'json') {
     const homeDirectory = path.dirname(fileURLToPath(import.meta.url));
     const token = fs.readFileSync(`${homeDirectory}/softeng20bAPI.token`, 'utf8').trim();
     console.log(token);
-    const response = await axios.post('http://127.0.0.1:9876/ntuaflix_api/admin/upload/titleakas/?format=${format}', formData, {
+    const response = await axios.post(`http://127.0.0.1:9876/ntuaflix_api/admin/upload/titleakas/?format=${format}`, formData, {
       headers: {
         'Authorization': `${token}`,
         'Content-Type': 'multipart/form-data',
@@ -209,7 +267,9 @@ async function newakas(filename, format = 'json') {
     console.error('Error:', error.message);
   }
 }
-async function newnames(filename, format = 'json') {
+async function newnames(filename, format) {
+  format = format || 'json'; // If format is not provided, default to 'json'
+
   try {
     const formData = new FormData();
 
@@ -219,7 +279,7 @@ async function newnames(filename, format = 'json') {
     const homeDirectory = path.dirname(fileURLToPath(import.meta.url));
     const token = fs.readFileSync(`${homeDirectory}/softeng20bAPI.token`, 'utf8').trim();
     console.log(token);
-    const response = await axios.post('http://127.0.0.1:9876/ntuaflix_api/admin/upload/namebasics/?format=${format}', formData, {
+    const response = await axios.post(`http://127.0.0.1:9876/ntuaflix_api/admin/upload/namebasics/?format=${format}`, formData, {
       headers: {
         'Authorization': `${token}`,
         'Content-Type': 'multipart/form-data',
@@ -235,7 +295,9 @@ async function newnames(filename, format = 'json') {
     console.error('Error:', error.message);
   }
 }
-async function newcrew(filename, format = 'json') {
+async function newcrew(filename, format) {
+  format = format || 'json'; // If format is not provided, default to 'json'
+
   try {
     const formData = new FormData();
 
@@ -245,7 +307,7 @@ async function newcrew(filename, format = 'json') {
     const homeDirectory = path.dirname(fileURLToPath(import.meta.url));
     const token = fs.readFileSync(`${homeDirectory}/softeng20bAPI.token`, 'utf8').trim();
     console.log(token);
-    const response = await axios.post('http://127.0.0.1:9876/ntuaflix_api/admin/upload/titlecrew/?format=${format}', formData, {
+    const response = await axios.post(`http://127.0.0.1:9876/ntuaflix_api/admin/upload/titlecrew/?format=${format}`, formData, {
       headers: {
         'Authorization': `${token}`,
         'Content-Type': 'multipart/form-data',
@@ -261,7 +323,9 @@ async function newcrew(filename, format = 'json') {
     console.error('Error:', error.message);
   }
 }
-async function newepisode(filename, format = 'json') {
+async function newepisode(filename, format) {
+  format = format || 'json'; // If format is not provided, default to 'json'
+
   try {
     const formData = new FormData();
 
@@ -271,7 +335,7 @@ async function newepisode(filename, format = 'json') {
     const homeDirectory = path.dirname(fileURLToPath(import.meta.url));
     const token = fs.readFileSync(`${homeDirectory}/softeng20bAPI.token`, 'utf8').trim();
     console.log(token);
-    const response = await axios.post('http://127.0.0.1:9876/ntuaflix_api/admin/upload/titleepisode/?format=${format}', formData, {
+    const response = await axios.post(`http://127.0.0.1:9876/ntuaflix_api/admin/upload/titleepisode/?format=${format}`, formData, {
       headers: {
         'Authorization': `${token}`,
         'Content-Type': 'multipart/form-data',
@@ -287,7 +351,9 @@ async function newepisode(filename, format = 'json') {
     console.error('Error:', error.message);
   }
 }
-async function newprincipals(filename, format = 'json') {
+async function newprincipals(filename, format) {
+  format = format || 'json'; // If format is not provided, default to 'json'
+
   try {
     const formData = new FormData();
 
@@ -297,7 +363,7 @@ async function newprincipals(filename, format = 'json') {
     const homeDirectory = path.dirname(fileURLToPath(import.meta.url));
     const token = fs.readFileSync(`${homeDirectory}/softeng20bAPI.token`, 'utf8').trim();
     console.log(token);
-    const response = await axios.post('http://127.0.0.1:9876/ntuaflix_api/admin/upload/titleprincipals/?format=${format}', formData, {
+    const response = await axios.post(`http://127.0.0.1:9876/ntuaflix_api/admin/upload/titleprincipals/?format=${format}`, formData, {
       headers: {
         'Authorization': `${token}`,
         'Content-Type': 'multipart/form-data',
@@ -313,7 +379,9 @@ async function newprincipals(filename, format = 'json') {
     console.error('Error:', error.message);
   }
 }
-async function newratings(filename, format = 'json') {
+async function newratings(filename, format) {
+  format = format || 'json'; // If format is not provided, default to 'json'
+
   try {
     const formData = new FormData();
 
@@ -323,11 +391,9 @@ async function newratings(filename, format = 'json') {
     const homeDirectory = path.dirname(fileURLToPath(import.meta.url));
     const token = fs.readFileSync(`${homeDirectory}/softeng20bAPI.token`, 'utf8').trim();
     console.log(token);
-    const response = await axios.post('http://127.0.0.1:9876/ntuaflix_api/admin/upload/titleratings/?format=${format}', formData, {
+    const response = await axios.post(`http://127.0.0.1:9876/ntuaflix_api/admin/upload/titleratings/?format=${format}`, formData, {
       headers: {
-        'Authorization': `${token}`,
-        'Content-Type': 'multipart/form-data',
-        'Accept': `application/${format}`
+        'Authorization': `${token}`
       }
     });
     if (response.status === 200) {
@@ -339,16 +405,25 @@ async function newratings(filename, format = 'json') {
     console.error('Error:', error.message);
   }
 }
-async function title(titleID, format = 'json') {
+async function title(titleID, format) {
+  format = format || 'json'; // If format is not provided, default to 'json'
   console.log('Received titleID:', titleID); // Add this line to log the received titleID
   const homeDirectory = path.dirname(fileURLToPath(import.meta.url));
   const token = fs.readFileSync(`${homeDirectory}/softeng20bAPI.token`, 'utf8').trim();
   console.log(token);
   const headers = {
-    'Authorization': `${token}`,
-    'Content-Type': 'application/json',
-    'Accept': `application/${format}`
+    'Authorization': `${token}`
   };
+  if (format === 'json') {
+    headers['Content-Type'] = 'application/json';
+    headers['Accept'] = 'application/json';
+  } else if (format === 'csv') {
+    headers['Content-Type'] = 'text/csv';
+    headers['Accept'] = 'text/csv';
+  } else {
+    console.error('Invalid format specified:', format);
+    return;
+  }
   const url = `${BASE_URL}/title/${titleID}?format=${format}`;
   try {
     const response = await axios.get(url, {
@@ -363,16 +438,25 @@ async function title(titleID, format = 'json') {
     console.error('Error:', error.message);
   }
 }
-async function searchtitle(titlepart, format = 'json') {
+async function searchtitle(titlepart, format) {
+  format = format || 'json'; // If format is not provided, default to 'json'
   const url = `${BASE_URL}/searchtitle/?title=${encodeURIComponent(titlepart)}?format=${format}`;
   const homeDirectory = path.dirname(fileURLToPath(import.meta.url));
   const token = fs.readFileSync(`${homeDirectory}/softeng20bAPI.token`, 'utf8').trim();
   console.log(token);
   const headers = {
-    'Authorization': `${token}`,
-    'Content-Type': 'application/json',
-    'Accept': `application/${format}`
+    'Authorization': `${token}`
   };
+  if (format === 'json') {
+    headers['Content-Type'] = 'application/json';
+    headers['Accept'] = 'application/json';
+  } else if (format === 'csv') {
+    headers['Content-Type'] = 'text/csv';
+    headers['Accept'] = 'text/csv';
+  } else {
+    console.error('Invalid format specified:', format);
+    return;
+  }
   try {
     const response = await axios.get(url, {
       headers: headers
@@ -386,16 +470,25 @@ async function searchtitle(titlepart, format = 'json') {
     console.error('Error:', error.message);
   }
 }
-async function bygenre(genre, minimumRating, yearFrom = null, yearTo = null, format = 'json') {
+async function bygenre(genre, minimumRating, yearFrom = null, yearTo = null, format) {
+  format = format || 'json'; // If format is not provided, default to 'json'
   let url = `${BASE_URL}/bygenre/?genre=${encodeURIComponent(genre)}&minimumrating=${minimumRating}?format=${format}`;
   const homeDirectory = path.dirname(fileURLToPath(import.meta.url));
   const token = fs.readFileSync(`${homeDirectory}/softeng20bAPI.token`, 'utf8').trim();
   console.log(token);
   const headers = {
-    'Authorization': `${token}`,
-    'Content-Type': 'application/json',
-    'Accept': `application/${format}`
+    'Authorization': `${token}`
   };
+  if (format === 'json') {
+    headers['Content-Type'] = 'application/json';
+    headers['Accept'] = 'application/json';
+  } else if (format === 'csv') {
+    headers['Content-Type'] = 'text/csv';
+    headers['Accept'] = 'text/csv';
+  } else {
+    console.error('Invalid format specified:', format);
+    return;
+  }
   // Append optional parameters if provided
   if (yearFrom !== null) {
     url += `&yearfrom=${yearFrom}`;
@@ -416,16 +509,25 @@ async function bygenre(genre, minimumRating, yearFrom = null, yearTo = null, for
     console.error('Error:', error.message);
   }
 }
-async function name(nameID, format = 'json') {
+async function name(nameID, format) {
+  format = format || 'json'; // If format is not provided, default to 'json'
   const url = `${BASE_URL}/name/${nameID}?format=${format}`;
   const homeDirectory = path.dirname(fileURLToPath(import.meta.url));
   const token = fs.readFileSync(`${homeDirectory}/softeng20bAPI.token`, 'utf8').trim();
   console.log(token);
   const headers = {
-    'Authorization': `${token}`,
-    'Content-Type': 'application/json',
-    'Accept': `application/${format}`
+    'Authorization': `${token}`
   };
+  if (format === 'json') {
+    headers['Content-Type'] = 'application/json';
+    headers['Accept'] = 'application/json';
+  } else if (format === 'csv') {
+    headers['Content-Type'] = 'text/csv';
+    headers['Accept'] = 'text/csv';
+  } else {
+    console.error('Invalid format specified:', format);
+    return;
+  }
   try {
     const response = await axios.get(url, {
       headers: headers
@@ -439,16 +541,25 @@ async function name(nameID, format = 'json') {
     console.error('Error:', error.message);
   }
 }
-async function searchname(name, format = 'json') {
+async function searchname(name, format) {
+  format = format || 'json'; // If format is not provided, default to 'json'
   const url = `${BASE_URL}/searchname/?name=${encodeURIComponent(name)}?format=${format}`;
   const homeDirectory = path.dirname(fileURLToPath(import.meta.url));
   const token = fs.readFileSync(`${homeDirectory}/softeng20bAPI.token`, 'utf8').trim();
   console.log(token);
   const headers = {
-    'Authorization': `${token}`,
-    'Content-Type': 'application/json',
-    'Accept': `application/${format}`
+    'Authorization': `${token}`
   };
+  if (format === 'json') {
+    headers['Content-Type'] = 'application/json';
+    headers['Accept'] = 'application/json';
+  } else if (format === 'csv') {
+    headers['Content-Type'] = 'text/csv';
+    headers['Accept'] = 'text/csv';
+  } else {
+    console.error('Invalid format specified:', format);
+    return;
+  }
   try {
     const response = await axios.get(url, {
       headers: headers

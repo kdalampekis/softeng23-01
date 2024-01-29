@@ -13,7 +13,10 @@ export default function ResetAll() {
     const [resetDone, setResetDone] = useState(false);
 
     const handleReset = () => {
-        axios.post(`${BASE_URL}/resetall/`)
+        const token = localStorage.getItem('softeng20bAPI.token');
+        axios.post(`${BASE_URL}/resetall/`, {}, {headers : {
+                'Authorization': `${token}`,
+            }})
             .then(response => {
                 // Handle success
                 console.log(response.data);

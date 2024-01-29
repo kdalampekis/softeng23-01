@@ -69,6 +69,8 @@ def UploadTitleBasics(request):
     if request.method == 'POST':
         superuser_token = User.objects.filter(is_superuser=True).values_list('auth_token', flat=True).first()
         token = request.META.get('HTTP_AUTHORIZATION')
+        print(superuser_token)
+        print(token)
 
         # Check if the authenticated user is a superuser
         if token == superuser_token:
@@ -213,6 +215,7 @@ def UploadNameBasics(request):
     if request.method == 'POST':
         superuser_token = User.objects.filter(is_superuser=True).values_list('auth_token', flat=True).first()
         token = request.META.get('HTTP_AUTHORIZATION')
+        print(token)
 
         # Check if the authenticated user is a superuser
         if token == superuser_token:
@@ -522,30 +525,29 @@ def ResetTitleRatings(request):
 
 
 # ///////////////////////////////// OTHER VIEWS //////////////////////////////////////////////
-
 def health_check(request):
-    superuser_token = User.objects.filter(is_superuser=True).values_list('auth_token', flat=True).first()
-    token = request.META.get('HTTP_AUTHORIZATION')
-    print(token)
+    if request.method == 'POST':
+        superuser_token = User.objects.filter(is_superuser=True).values_list('auth_token', flat=True).first()
+        token = request.META.get('HTTP_AUTHORIZATION')
+        print(token)
 
-    # Check if the authenticated user is a superuser
-    if token == superuser_token:
-        try:
-            # Example: attempting to fetch the first row of some table
-            # Replace 'your_model' with an actual model from your app
-            TitleBasic.objects.first()
+        # Check if the authenticated user is a superuser
+        if token == superuser_token:
+            try:
+                # Example: attempting to fetch the first row of some table
+                # Replace 'your_model' with an actual model from your app
+                TitleBasic.objects.first()
 
-            # If you want to test raw database connectivity
-            # connections['default'].cursor()
+                # If you want to test raw database connectivity
+                # connections['default'].cursor()
 
-            connection_string = "Database connection successful"  # Customize as needed
-            return JsonResponse({"status": "OK", "dataconnection": connection_string})
-        except (DatabaseError, ValidationError):
-            connection_string = "Database connection failed"  # Customize as needed
-            return JsonResponse({"status": "failed", "dataconnection": connection_string})
-    else:
-        return JsonResponse({"status": "failed", "dataconnection": "Permission denied. You don't have superuser privileges."})
-
+                connection_string = "Database connection successful"  # Customize as needed
+                return JsonResponse({"status": "OK", "dataconnection": connection_string})
+            except (DatabaseError, ValidationError):
+                connection_string = "Database connection failed"  # Customize as needed
+                return JsonResponse({"status": "failed", "dataconnection": connection_string})
+        else:
+            return JsonResponse({"status": "failed", "dataconnection": "Permission denied. You don't have superuser privileges."})
 
 def reset_all(request):
     if request.method == 'POST':
@@ -603,7 +605,7 @@ def add_user(request, username, password):
         superuser_token = User.objects.filter(is_superuser=True).values_list('auth_token', flat=True).first()
         token = request.META.get('HTTP_AUTHORIZATION')
         
-        print(token)
+        print(superuser_token)
         # Check if the authenticated user is a superuser
         if token == superuser_token:
             try:

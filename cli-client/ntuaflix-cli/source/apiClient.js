@@ -8,15 +8,22 @@ const BASE_URL = 'http://127.0.0.1:9876/ntuaflix_api';  // Replace with your act
 
 async function login(username, password, format) {
 	format = format || 'json'; // If format is not provided, default to 'json'
-
+	const headers = {};
+	if (format === 'json') {
+		headers['Content-Type'] = 'application/json';
+		headers['Accept'] = 'application/json';
+	} else if (format === 'csv') {
+		headers['Content-Type'] = 'text/csv';
+		headers['Accept'] = 'text/csv';
+	} else {
+		console.error('Invalid format specified:', format);
+		return;
+	}
 	try {
-		const response = await axios.post('http://127.0.0.1:9876/ntuaflix_api/login/?format=${format}',new URLSearchParams({
+		const response = await axios.post(`http://127.0.0.1:9876/ntuaflix_api/login/?format=${format}`,new URLSearchParams({
 			username,
 			password
-		}),{headers :{
-				'Content-Type': `application/${format}`,
-				'Accept': `application/${format}`,
-				}}
+		}), {headers : headers}
 			);
 
 		if (response.status === 200) {
@@ -32,7 +39,7 @@ async function login(username, password, format) {
 	}
 }
 
-async function logout(format ) {
+async function logout(format) {
 	format = format || 'json'; // If format is not provided, default to 'json'
 
 	try {
@@ -44,13 +51,11 @@ async function logout(format ) {
 		const token = fs.readFileSync(tokenFilePath, 'utf-8').trim();
 
 		const response = await axios.post(
-			'http://127.0.0.1:9876/ntuaflix_api/logout/?format=${format}',
+			`http://127.0.0.1:9876/ntuaflix_api/logout/?format=${format}`,
 			{},
 			{
 				headers: {
-					'Authorization': `Token ${token}`,
-					'Content-Type': `application/${format}`,
-					'Accept': `application/${format}`,
+					'Authorization': `${token}`,
 				},
 			}
 		);
@@ -82,9 +87,17 @@ async function adduser(username, password, format ) {
 		// Create the request headers with the token
 		const headers = {
 			'Authorization': `${token}`,
-			'Content-Type': `application/${format}`,
-			'Accept': `application/${format}`,
 		};
+		if (format === 'json') {
+			headers['Content-Type'] = 'application/json';
+			headers['Accept'] = 'application/json';
+		} else if (format === 'csv') {
+			headers['Content-Type'] = 'text/csv';
+			headers['Accept'] = 'text/csv';
+		} else {
+			console.error('Invalid format specified:', format);
+			return;
+		}
 		console.log(headers);
 
 		// Make the POST request with the headers
@@ -100,7 +113,7 @@ async function adduser(username, password, format ) {
 }
 
 
-async function user(username, format ) {
+async function user(username, format) {
 	format = format || 'json'; // If format is not provided, default to 'json'
 
 	try {
@@ -109,9 +122,17 @@ async function user(username, format ) {
 		console.log(token);
 		const headers = {
 			'Authorization': `${token}`,
-			'Content-Type': `application/${format}`,
-			'Accept': `application/${format}`,
 		};
+		if (format === 'json') {
+			headers['Content-Type'] = 'application/json';
+			headers['Accept'] = 'application/json';
+		} else if (format === 'csv') {
+			headers['Content-Type'] = 'text/csv';
+			headers['Accept'] = 'text/csv';
+		} else {
+			console.error('Invalid format specified:', format);
+			return;
+		}
 		console.log(headers);
 		const response = await axios.get(`http://127.0.0.1:9876/ntuaflix_api/admin/users/${username}?format=${format}`,{headers : headers});
 
@@ -133,11 +154,19 @@ async function healthcheck(format ) {
 		console.log(token);
 		const headers = {
 			'Authorization': `${token}`,
-			'Content-Type': 'application/json',
-			'Accept': `application/${format}`,
 		};
+		if (format === 'json') {
+			headers['Content-Type'] = 'application/json';
+			headers['Accept'] = 'application/json';
+		} else if (format === 'csv') {
+			headers['Content-Type'] = 'text/csv';
+			headers['Accept'] = 'text/csv';
+		} else {
+			console.error('Invalid format specified:', format);
+			return;
+		}
 		console.log(headers);
-		const response = await axios.get('http://127.0.0.1:9876/ntuaflix_api/admin/healthcheck/?format=${format}', {headers:headers});
+		const response = await axios.get(`http://127.0.0.1:9876/ntuaflix_api/admin/healthcheck/?format=${format}`, {headers:headers});
 
 		if (response.status === 200) {
 			console.log('Health check passed');
@@ -158,11 +187,19 @@ async function resetall(format ) {
 		console.log(token);
 		const headers = {
 			'Authorization': `${token}`,
-			'Content-Type': 'application/json',
-			'Accept': `application/${format}`,
 		};
+		if (format === 'json') {
+			headers['Content-Type'] = 'application/json';
+			headers['Accept'] = 'application/json';
+		} else if (format === 'csv') {
+			headers['Content-Type'] = 'text/csv';
+			headers['Accept'] = 'text/csv';
+		} else {
+			console.error('Invalid format specified:', format);
+			return;
+		}
 		console.log(headers);
-		const response = await axios.post('http://127.0.0.1:9876/ntuaflix_api/admin/resetall/?format=${format}', {headers:headers});
+		const response = await axios.post(`http://127.0.0.1:9876/ntuaflix_api/admin/resetall/?format=${format}`, {headers:headers});
 
 		if (response.status === 200) {
 			console.log('Reset all successful');
@@ -199,7 +236,7 @@ async function newtitles(filename, format ) {
 		const homeDirectory = path.dirname(fileURLToPath(import.meta.url));
 		const token = fs.readFileSync(`${homeDirectory}/softeng20bAPI.token`, 'utf8').trim();
 		console.log(token);
-		const response = await axios.post('http://127.0.0.1:9876/ntuaflix_api/admin/upload/titlebasics/?format=${format}', formData, {
+		const response = await axios.post(`http://127.0.0.1:9876/ntuaflix_api/admin/upload/titlebasics/?format=${format}`, formData, {
 			headers: {
 				'Authorization': `${token}`,
 				'Content-Type': 'multipart/form-data',
@@ -231,7 +268,7 @@ async function newakas(filename, format ) {
 		const homeDirectory = path.dirname(fileURLToPath(import.meta.url));
 		const token = fs.readFileSync(`${homeDirectory}/softeng20bAPI.token`, 'utf8').trim();
 		console.log(token);
-		const response = await axios.post('http://127.0.0.1:9876/ntuaflix_api/admin/upload/titleakas/?format=${format}', formData, {
+		const response = await axios.post(`http://127.0.0.1:9876/ntuaflix_api/admin/upload/titleakas/?format=${format}`, formData, {
 			headers: {
 				'Authorization': `${token}`,
 				'Content-Type': 'multipart/form-data',
@@ -261,7 +298,7 @@ async function newnames(filename, format ) {
 		const homeDirectory = path.dirname(fileURLToPath(import.meta.url));
 		const token = fs.readFileSync(`${homeDirectory}/softeng20bAPI.token`, 'utf8').trim();
 		console.log(token);
-		const response = await axios.post('http://127.0.0.1:9876/ntuaflix_api/admin/upload/namebasics/?format=${format}', formData, {
+		const response = await axios.post(`http://127.0.0.1:9876/ntuaflix_api/admin/upload/namebasics/?format=${format}`, formData, {
 			headers: {
 				'Authorization': `${token}`,
 				'Content-Type': 'multipart/form-data',
@@ -292,7 +329,7 @@ async function newcrew(filename, format ) {
 		const homeDirectory = path.dirname(fileURLToPath(import.meta.url));
 		const token = fs.readFileSync(`${homeDirectory}/softeng20bAPI.token`, 'utf8').trim();
 		console.log(token);
-		const response = await axios.post('http://127.0.0.1:9876/ntuaflix_api/admin/upload/titlecrew/?format=${format}', formData, {
+		const response = await axios.post(`http://127.0.0.1:9876/ntuaflix_api/admin/upload/titlecrew/?format=${format}`, formData, {
 			headers: {
 				'Authorization': `${token}`,
 				'Content-Type': 'multipart/form-data',
@@ -323,7 +360,7 @@ async function newepisode(filename, format ) {
 		const homeDirectory = path.dirname(fileURLToPath(import.meta.url));
 		const token = fs.readFileSync(`${homeDirectory}/softeng20bAPI.token`, 'utf8').trim();
 		console.log(token);
-		const response = await axios.post('http://127.0.0.1:9876/ntuaflix_api/admin/upload/titleepisode/?format=${format}', formData, {
+		const response = await axios.post(`http://127.0.0.1:9876/ntuaflix_api/admin/upload/titleepisode/?format=${format}`, formData, {
 			headers: {
 				'Authorization': `${token}`,
 				'Content-Type': 'multipart/form-data',
@@ -354,7 +391,7 @@ async function newprincipals(filename, format ) {
 		const homeDirectory = path.dirname(fileURLToPath(import.meta.url));
 		const token = fs.readFileSync(`${homeDirectory}/softeng20bAPI.token`, 'utf8').trim();
 		console.log(token);
-		const response = await axios.post('http://127.0.0.1:9876/ntuaflix_api/admin/upload/titleprincipals/?format=${format}', formData, {
+		const response = await axios.post(`http://127.0.0.1:9876/ntuaflix_api/admin/upload/titleprincipals/?format=${format}`, formData, {
 			headers: {
 				'Authorization': `${token}`,
 				'Content-Type': 'multipart/form-data',
@@ -386,11 +423,10 @@ async function newratings(filename, format ) {
 		const homeDirectory = path.dirname(fileURLToPath(import.meta.url));
 		const token = fs.readFileSync(`${homeDirectory}/softeng20bAPI.token`, 'utf8').trim();
 		console.log(token);
-		const response = await axios.post('http://127.0.0.1:9876/ntuaflix_api/admin/upload/titleratings/?format=${format}', formData, {
+
+		const response = await axios.post(`http://127.0.0.1:9876/ntuaflix_api/admin/upload/titleratings/?format=${format}`, formData, {
 			headers: {
 				'Authorization': `${token}`,
-				'Content-Type': 'multipart/form-data',
-				'Accept': `application/${format}`,
 			},
 		});
 
@@ -414,10 +450,17 @@ async function title(titleID, format) {
 	console.log(token);
 	const headers = {
 		'Authorization': `${token}`,
-		'Content-Type': `application/${format}`,
-		'Accept': `application/${format}`,
-
 	};
+	if (format === 'json') {
+		headers['Content-Type'] = 'application/json';
+		headers['Accept'] = 'application/json';
+	} else if (format === 'csv') {
+		headers['Content-Type'] = 'text/csv';
+		headers['Accept'] = 'text/csv';
+	} else {
+		console.error('Invalid format specified:', format);
+		return;
+	}
 	const url = `${BASE_URL}/title/${titleID}?format=${format}`;
 
 	try {
@@ -441,9 +484,17 @@ async function searchtitle(titlepart, format ) {
 	console.log(token);
 	const headers = {
 		'Authorization': `${token}`,
-		'Content-Type': `application/${format}`,
-		'Accept': `application/${format}`,
 	};
+	if (format === 'json') {
+		headers['Content-Type'] = 'application/json';
+		headers['Accept'] = 'application/json';
+	} else if (format === 'csv') {
+		headers['Content-Type'] = 'text/csv';
+		headers['Accept'] = 'text/csv';
+	} else {
+		console.error('Invalid format specified:', format);
+		return;
+	}
 	try {
 		const response = await axios.get(url,{headers:headers});
 
@@ -465,9 +516,17 @@ async function bygenre(genre, minimumRating, yearFrom = null, yearTo = null, for
 	console.log(token);
 	const headers = {
 		'Authorization': `${token}`,
-		'Content-Type': `application/${format}`,
-		'Accept': `application/${format}`,
 	};
+	if (format === 'json') {
+		headers['Content-Type'] = 'application/json';
+		headers['Accept'] = 'application/json';
+	} else if (format === 'csv') {
+		headers['Content-Type'] = 'text/csv';
+		headers['Accept'] = 'text/csv';
+	} else {
+		console.error('Invalid format specified:', format);
+		return;
+	}
 	// Append optional parameters if provided
 	if (yearFrom !== null) {
 		url += `&yearfrom=${yearFrom}`;
@@ -500,9 +559,17 @@ async function name(nameID, format) {
 	console.log(token);
 	const headers = {
 		'Authorization': `${token}`,
-		'Content-Type': `application/${format}`,
-		'Accept': `application/${format}`,
 	};
+	if (format === 'json') {
+		headers['Content-Type'] = 'application/json';
+		headers['Accept'] = 'application/json';
+	} else if (format === 'csv') {
+		headers['Content-Type'] = 'text/csv';
+		headers['Accept'] = 'text/csv';
+	} else {
+		console.error('Invalid format specified:', format);
+		return;
+	}
 	try {
 		const response = await axios.get(url,{headers:headers});
 
@@ -524,9 +591,17 @@ async function searchname(name, format) {
 	console.log(token);
 	const headers = {
 		'Authorization': `${token}`,
-		'Content-Type': `application/${format}`,
-		'Accept': `application/${format}`,
 	};
+	if (format === 'json') {
+		headers['Content-Type'] = 'application/json';
+		headers['Accept'] = 'application/json';
+	} else if (format === 'csv') {
+		headers['Content-Type'] = 'text/csv';
+		headers['Accept'] = 'text/csv';
+	} else {
+		console.error('Invalid format specified:', format);
+		return;
+	}
 	try {
 		const response = await axios.get(url,{headers:headers});
 
