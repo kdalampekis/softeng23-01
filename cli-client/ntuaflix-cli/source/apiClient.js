@@ -8,22 +8,12 @@ const BASE_URL = 'http://127.0.0.1:9876/ntuaflix_api';  // Replace with your act
 
 async function login(username, password, format) {
 	format = format || 'json'; // If format is not provided, default to 'json'
-	const headers = {};
-	if (format === 'json') {
-		headers['Content-Type'] = 'application/json';
-		headers['Accept'] = 'application/json';
-	} else if (format === 'csv') {
-		headers['Content-Type'] = 'text/csv';
-		headers['Accept'] = 'text/csv';
-	} else {
-		console.error('Invalid format specified:', format);
-		return;
-	}
+
 	try {
-		const response = await axios.post(`http://127.0.0.1:9876/ntuaflix_api/login/?format=${format}`,new URLSearchParams({
+		const response = await axios.post(`http://127.0.0.1:9876/ntuaflix_api/login/`,new URLSearchParams({
 			username,
 			password
-		}), {headers : headers}
+		})
 			);
 
 		if (response.status === 200) {
