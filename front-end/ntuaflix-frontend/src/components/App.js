@@ -7,6 +7,8 @@ import HealthCheck from "./Admin/HealthCheck";
 import AdminUpload from "./Admin/AdminUpload";
 import UploadComponent from "./Admin/UploadComponent";
 import ResetAll from "./Admin/ResetAll";
+import SearchUsers from "./Admin/SearchUsers";
+import User from "./Items/User";
 
 const App = () => {
     return (
@@ -19,6 +21,8 @@ const App = () => {
                 <Route path="/admin/upload" element={<AdminUpload />} />
                 <Route path="/admin/upload/:type" element={<UploadComponent />} />
                 <Route path="/admin/resetall" element={<ResetAll />} />
+                <Route path="/admin/users" element={<SearchUsers />} />
+                <Route path="/admin/users/:username" element={<User />} />
             </Routes>
         </Router>
     );
