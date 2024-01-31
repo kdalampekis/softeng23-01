@@ -1,5 +1,6 @@
 from django.db import models
 from ..models import *
+from django.contrib.auth.models import User
 
 
 class TitleBasic(models.Model):
@@ -111,3 +112,16 @@ class Rating(models.Model):
 
     def __str__(self):
         return f"Rating {self.averageRating} for {self.tconst}"
+
+
+class Likes(models.Model):
+    tconst = models.ForeignKey(TitleBasic, on_delete=models.CASCADE)
+    userId = models.ForeignKey(User, on_delete=models.CASCADE)
+    liked = models.BooleanField()
+
+    class Meta:
+        db_table = 'User_Like'
+        unique_together = (('tconst', 'userId'),)
+
+    def __str__(self):
+        return f"Like status for {self.tconst} by User {self.userId}"
