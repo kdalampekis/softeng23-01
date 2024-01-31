@@ -186,6 +186,21 @@ input:not([type="file"]):focus {
 
 
 
+.healthCheckInfo {
+    margin: auto;
+    color: white;
+    padding: 2rem;
+}
+
+.healthCheckInfo h2 {
+    font-size: 2.5rem;
+    text-align: left;
+}
+
+.healthCheckInfo p:first-of-type {
+    margin-top: 2rem;
+}
+
 
 
 
@@ -408,7 +423,7 @@ footer p, .link {
     margin-right: 5px;
 }
 
-.movie-analytics-content strong {
+strong {
     font-size: 1.25rem;
 }
 
