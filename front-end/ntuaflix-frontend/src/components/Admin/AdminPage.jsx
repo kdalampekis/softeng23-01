@@ -22,6 +22,9 @@ export default function AdminPage() {
         else if (option === "Reset All") {
             navigate('/admin/resetall');
         }
+        else if (option === "User Info") {
+            navigate('/admin/users');
+        }
     }
 
     return (
