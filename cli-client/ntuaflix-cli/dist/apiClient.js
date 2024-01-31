@@ -143,7 +143,7 @@ async function healthcheck(format) {
       return;
     }
     console.log(headers);
-    const response = await axios.get(`http://127.0.0.1:9876/ntuaflix_api/admin/healthcheck/?format=${format}`, {
+    const response = await axios.post(`http://127.0.0.1:9876/ntuaflix_api/admin/healthcheck?format=${format}`, {}, {
       headers: headers
     });
     if (response.status === 200) {
@@ -395,10 +395,8 @@ async function newratings(filename, format) {
 }
 async function title(titleID, format) {
   format = format || 'json'; // If format is not provided, default to 'json'
-  console.log('Received titleID:', titleID); // Add this line to log the received titleID
   const homeDirectory = path.dirname(fileURLToPath(import.meta.url));
   const token = fs.readFileSync(`${homeDirectory}/softeng20bAPI.token`, 'utf8').trim();
-  console.log(token);
   const headers = {
     'Authorization': `${token}`
   };
@@ -431,7 +429,6 @@ async function searchtitle(titlepart, format) {
   const url = `${BASE_URL}/searchtitle/?title=${encodeURIComponent(titlepart)}?format=${format}`;
   const homeDirectory = path.dirname(fileURLToPath(import.meta.url));
   const token = fs.readFileSync(`${homeDirectory}/softeng20bAPI.token`, 'utf8').trim();
-  console.log(token);
   const headers = {
     'Authorization': `${token}`
   };

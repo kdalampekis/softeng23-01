@@ -42,7 +42,8 @@
 	},
 	"ava": {
 		"environmentVariables": {
-			"NODE_NO_WARNINGS": "1"
+			"NODE_NO_WARNINGS": "1",
+			"timeout": "200000"
 		},
 		"nodeArguments": [
 			"--loader=import-jsx"

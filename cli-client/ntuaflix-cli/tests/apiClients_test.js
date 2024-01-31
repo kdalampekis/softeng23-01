@@ -26,8 +26,8 @@ function cleanupTokenFile(tokenFilePath) {
 test('login - success', async (t) => {
 	const tokenFilePath = setupTokenFile();
 	const expectedToken = 'test-token';
-	const username = 'testuser';
-	const password = 'testpassword';
+	const username = '1';
+	const password = '1';
 
 	mock.onPost('http://127.0.0.1:9876/ntuaflix_api/login/?format=json', {
 		username,
@@ -61,8 +61,8 @@ test('login - failure', async (t) => {
 test('adduser - success', async (t) => {
 	const tokenFilePath = setupTokenFile();
 
-	const username = 'testuser';
-	const password = 'testpassword';
+	const username = 'sere';
+	const password = 'sere';
 
 	mock.onPost(`http://127.0.0.1:9876/ntuaflix_api/admin/usermod/${username}/${password}/?format=json`).reply(200, { message: 'User added successfully' });
 
@@ -90,7 +90,7 @@ test('adduser - failure', async (t) => {
 test('user - success', async (t) => {
 	const tokenFilePath = setupTokenFile();
 
-	const username = 'testuser';
+	const username = 'user';
 	const userDetails = { id: 123, username: 'testuser', email: 'testuser@example.com' };
 
 	mock.onGet(`http://127.0.0.1:9876/ntuaflix_api/admin/users/${username}?format=json`).reply(200, userDetails);
@@ -173,7 +173,7 @@ test('resetall - failure', async (t) => {
 
 test('newtitles - success', async (t) => {
 	const tokenFilePath = setupTokenFile();
-	const filename = 'C:\\Users\\kostas bekis\\WebstormProjects\\softeng23-01\\back-end\\Database\\Data\\truncated_title.basics.tsv';
+	const filename = '/Users/kostasbekis/WebstormProjects/softeng23-01/back-end/Database/Data/truncated_title.basics.tsv';
 
 	// Mock the POST request and provide a successful response
 	mock.onPost(`http://127.0.0.1:9876/ntuaflix_api/admin/upload/titlebasics/?format=json`).reply(200, { success: true });
@@ -412,7 +412,7 @@ test('newratings - failure', async (t) => {
 
 test('title - success', async (t) => {
 	const tokenFilePath = setupTokenFile();
-	const titleID = '123';
+	const titleID = 'tt0094390';
 
 	// Mock the GET request and provide a successful response
 	mock.onGet(`http://127.0.0.1:9876/ntuaflix_api/title/${titleID}?format=json`).reply(200, { title: 'Example Title' });
@@ -444,7 +444,7 @@ test('title - failure', async (t) => {
 
 test('searchtitle - success', async (t) => {
 	const tokenFilePath = setupTokenFile();
-	const titlePart = 'example';
+	const titlePart = 'Wes';
 
 	// Mock the GET request and provide a successful response
 	mock.onGet(`http://127.0.0.1:9876/ntuaflix_api/searchtitle/?title=${encodeURIComponent(titlePart)}&format=json`).reply(200, { results: ['Example Title 1', 'Example Title 2'] });
@@ -476,7 +476,7 @@ test('searchtitle - failure', async (t) => {
 
 test('bygenre - success', async (t) => {
 	const tokenFilePath = setupTokenFile();
-	const genre = 'Action';
+	const genre = 'Thriller';
 	const minimumRating = 7.5;
 
 	// Mock the GET request and provide a successful response
@@ -534,7 +534,7 @@ test('bygenre - failure', async (t) => {
 
 test('name - success', async (t) => {
 	const tokenFilePath = setupTokenFile();
-	const nameID = 'nm1234567';
+	const nameID = 'nm0000019';
 
 	// Mock the GET request and provide a successful response
 	mock.onGet(`http://127.0.0.1:9876/ntuaflix_api/name/${nameID}?format=json`).reply(200, { biography: 'This is a biography of the actor/actress.' });
@@ -566,7 +566,7 @@ test('name - failure', async (t) => {
 
 test('searchname - success', async (t) => {
 	const tokenFilePath = setupTokenFile();
-	const name = 'John Doe';
+	const name = 'George Clooney';
 
 	// Mock the GET request and provide a successful response
 	mock.onGet(`http://127.0.0.1:9876/ntuaflix_api/searchname/?name=${encodeURIComponent(name)}?format=json`).reply(200, [
