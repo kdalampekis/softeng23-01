@@ -92,6 +92,10 @@ button:hover {
     margin-top: 2rem;
 }
 
+.new {
+    margin-top: 3rem;
+}
+
 .inputContainer Button {
     margin-top: 1rem;
 }
@@ -154,11 +158,11 @@ input:not([type="file"]) {
 }
 
 
-.label-success {
+.label-success, input:not([type="file"]):valid {
     border: 2px solid lime;
 }
 
-.label-failure {
+.label-failure, input:not([type="file"]):invalid {
     border: 2px solid red;
 }
 
@@ -167,21 +171,10 @@ input:not([type="file"]) {
     margin-bottom: 2rem;
 }
 
-input:not([type="file"]):valid {
-    border: 2px solid lime;
-}
-
-input:not([type="file"]):invalid {
-    border: 2px solid red;
-}
-
-input:not([type="file"]):focus {
-    border-color: white;
-}
 
 
-.custom-file-label.no-file-selected {
-    border: 2px solid white; /* Style when no file is selected */
+.custom-file-label.no-file-selected, input:not([type="file"]):focus {
+    border: 2px solid white;
 }
 
 
@@ -328,7 +321,7 @@ footer p, .link {
 
 
 
-.movie-analytics-container, .actor-analytics-container {
+.movie-analytics-container, .actor-analytics-container, .user-container {
     display: flex;
     width: 90%;
     justify-content: space-between;
@@ -340,7 +333,7 @@ footer p, .link {
     margin-top: 2rem;
 }
 
-.movie-analytics-content, .actor-analytics-content {
+.movie-analytics-content, .actor-analytics-content, .user-content {
     flex: 3;
     padding: 20px;
     height: 100%;
@@ -363,7 +356,7 @@ footer p, .link {
 }
 
 
-.movie-analytics-content h1, .actor-analytics-content h1 {
+.movie-analytics-content h1, .actor-analytics-content h1, .user-content h1 {
     margin: 1rem 0 2rem 0;
     font-size: 2.5rem;
 }
@@ -373,7 +366,7 @@ footer p, .link {
     text-align: left;
 }
 
-.movie-analytics-content p, .actor-analytics-content p {
+.movie-analytics-content p, .actor-analytics-content p, .user-content p {
     letter-spacing: 1px;
     line-height: 25px;
 }

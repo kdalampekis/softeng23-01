@@ -1,7 +1,8 @@
 const AdminBasicOptions = [
     "Health Check",
     "Upload",
-    "Reset All"
+    "Reset All",
+    "User Info"
 ];
 
 const AdminUploadOptions = {

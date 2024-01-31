@@ -182,3 +182,17 @@ export const searchMovieByTitleID = async (titleID) => {
 };
 
 
+export const searchUserByUsername = async (username) => {
+    try {
+        const token = localStorage.getItem('softeng20bAPI.token');
+        // Set up the headers with the auth token
+        const headers = {
+            'Authorization': `${token}`,
+        };
+        const response = await axios.get(`${BASE_URL}/admin/users/${username}/`, { headers: headers });
+        return response.data;
+    } catch (error) {
+        console.error('Error:', error);
+        throw error;
+    }
+};

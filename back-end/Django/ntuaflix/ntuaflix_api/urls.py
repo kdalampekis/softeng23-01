@@ -30,5 +30,10 @@ urlpatterns = [
     # ///////////////////////////////// ADMIN //////////////////////////////////
     
     path('admin/', include('ntuaflix_api.administrator.urls')),
+    
+    # ///////////////////////////// LIKE - DISLIKE ///////////////////////////////
+
     path('title_likes/<str:titleID>/', TitleLikesView.as_view(), name='title-likes'),
+    path('title_likes/press_like/<str:titleID>/', PressLikeButton.as_view(), name='press_like'),
+    path('title_likes/press_dislike/<str:titleID>/', PressDislikeButton.as_view(), name='press_dislike'),
 ]

@@ -93,7 +93,7 @@ def UploadTitleBasics(request):
 
 def ResetTitleBasics(request):
     TitleBasic.objects.all().delete()
-    specific_file_path = 'C:\\SoftEng\\softeng23-01\\softeng23-01\\back-end\\Database\\Data\\truncated_title.basics.tsv'
+    specific_file_path = '..\\..\\Database\\Data\\truncated_title.basics.tsv'
     with open(specific_file_path, 'r', encoding='utf-8') as file:
         rows = ProcessTitleBasicsTSV(request, file, True)
     return JsonResponse({'status': 'success', 'processed_rows': rows})
@@ -159,7 +159,7 @@ def UploadTitleAkas(request):
 
 def ResetTitleAkas(request):
     TitleAka.objects.all().delete()
-    specific_file_path = 'C:\\SoftEng\\softeng23-01\\softeng23-01\\back-end\\Database\\Data\\truncated_title.akas.tsv'
+    specific_file_path = '..\\..\\Database\\Data\\truncated_title.akas.tsv'
     with open(specific_file_path, 'r', encoding='utf-8') as file:
         rows = ProcessTitleAkasTSV(request, file, True)
     return JsonResponse({'status': 'success', 'processed_rows': rows})
@@ -238,7 +238,7 @@ def UploadNameBasics(request):
 
 def ResetNameBasics(request):
     Names.objects.all().delete()
-    specific_file_path = 'C:\\SoftEng\\softeng23-01\\softeng23-01\\back-end\\Database\\Data\\truncated_name.basics.tsv'
+    specific_file_path = '..\\..\\Database\\Data\\truncated_name.basics.tsv'
     with open(specific_file_path, 'r', encoding='utf-8') as file:
         rows = ProcessNameBasicsTSV(request, file, True)
     return JsonResponse({'status': 'success', 'processed_rows': rows})
@@ -305,7 +305,7 @@ def UploadTitleCrew(request):
 
 def ResetTitleCrew(request):
     Crew.objects.all().delete()
-    specific_file_path = 'C:\\SoftEng\\softeng23-01\\softeng23-01\\back-end\\Database\\Data\\truncated_title.crew.tsv'
+    specific_file_path = '..\\..\\Database\\Data\\truncated_title.crew.tsv'
     with open(specific_file_path, 'r', encoding='utf-8') as file:
         rows = ProcessTitleCrewTSV(request, file, True)
     return JsonResponse({'status': 'success', 'processed_rows': rows})
@@ -373,7 +373,7 @@ def UploadTitleEpisode(request):
 
 def ResetTitleEpisode(request):
     Episode.objects.all().delete()
-    specific_file_path = 'C:\\SoftEng\\softeng23-01\\softeng23-01\\back-end\\Database\\Data\\truncated_title.episode.tsv'
+    specific_file_path = '..\\..\\Database\\Data\\truncated_title.episode.tsv'
     with open(specific_file_path, 'r', encoding='utf-8') as file:
         rows = ProcessTitleEpisodeTSV(request, file, True)
     return JsonResponse({'status': 'success', 'processed_rows': rows})
@@ -451,7 +451,7 @@ def UploadTitlePrincipals(request):
 
 def ResetTitlePrincipals(request):
     Principals.objects.all().delete()
-    specific_file_path = 'C:\\SoftEng\\softeng23-01\\softeng23-01\\back-end\\Database\\Data\\truncated_title.principals.tsv'
+    specific_file_path = '..\\..\\Database\\Data\\truncated_title.principals.tsv'
     with open(specific_file_path, 'r', encoding='utf-8') as file:
         rows = ProcessTitlePrincipalsTSV(request, file, True)
     return JsonResponse({'status': 'success', 'processed_rows': rows})
@@ -520,7 +520,7 @@ def UploadTitleRatings(request):
 
 def ResetTitleRatings(request):
     Rating.objects.all().delete()
-    specific_file_path = 'C:\\SoftEng\\softeng23-01\\softeng23-01\\back-end\\Database\\Data\\truncated_title.ratings.tsv'
+    specific_file_path = '..\\..\\Database\\Data\\truncated_title.ratings.tsv'
     with open(specific_file_path, 'r', encoding='utf-8') as file:
         rows = ProcessTitleRatingsTSV(request, file, True)
     return JsonResponse({'status': 'success', 'processed_rows': rows})
