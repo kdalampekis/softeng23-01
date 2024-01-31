@@ -2,7 +2,7 @@ import test from 'ava';
 import axios from 'axios';
 import MockAdapter from 'axios-mock-adapter';
 import fs from 'fs';
-import { login, logout, adduser, user, healthcheck, resetall, newtitles, newakas, newnames, newcrew, newepisode, newprincipals, newratings, title, searchtitle, bygenre, name, searchname } from '../source/apiClient';
+import { login, logout, adduser, user, healthcheck, resetall, newtitles, newakas, newnames, newcrew, newepisode, newprincipals, newratings, title, searchtitle, bygenre, name, searchname } from '../source/apiClient.js';
 import path from "path";
 import {fileURLToPath} from "url";
 
@@ -18,12 +18,10 @@ function setupTokenFile() {
 }
 
 // Helper function to clean up the token file after testing
-function cleanupTokenFile(tokenFilePath) {
-	fs.unlinkSync(tokenFilePath);
-}
+
 
 // Test login function
-test('login - success', async (t) => {
+test.serial('login - success', async (t) => {
 	const tokenFilePath = setupTokenFile();
 	const expectedToken = 'test-token';
 	const username = '1';
@@ -35,14 +33,12 @@ test('login - success', async (t) => {
 	}).reply(200, { token: expectedToken });
 
 	await login(username, password, 'json');
-
 	const actualToken = fs.readFileSync(tokenFilePath, 'utf-8').trim();
 	t.is(actualToken, expectedToken);
 
-	cleanupTokenFile(tokenFilePath);
 });
 
-test('login - failure', async (t) => {
+test.serial('login - failure', async (t) => {
 	const username = 'testuser';
 	const password = 'testpassword';
 
@@ -58,8 +54,7 @@ test('login - failure', async (t) => {
 
 
 
-test('adduser - success', async (t) => {
-	const tokenFilePath = setupTokenFile();
+test.serial('adduser - success', async (t) => {
 
 	const username = 'sere';
 	const password = 'sere';
@@ -73,10 +68,9 @@ test('adduser - success', async (t) => {
 	t.is(config.url, `http://127.0.0.1:9876/ntuaflix_api/admin/usermod/${username}/${password}/?format=json`);
 	t.true(config.headers['Authorization'].startsWith('Bearer '));
 
-	cleanupTokenFile(tokenFilePath);
 });
 
-test('adduser - failure', async (t) => {
+test.serial('adduser - failure', async (t) => {
 	const username = 'testuser';
 	const password = 'testpassword';
 
@@ -87,11 +81,11 @@ test('adduser - failure', async (t) => {
 	}, { instanceOf: Error, message: 'Error: Failed to add user' });
 });
 
-test('user - success', async (t) => {
+test.serial('user - success', async (t) => {
 	const tokenFilePath = setupTokenFile();
 
-	const username = 'user';
-	const userDetails = { id: 123, username: 'testuser', email: 'testuser@example.com' };
+	const username = 'sere';
+	const userDetails = { id: 2, username: 'sere', email: 'g.seretakos@gmail.com' };
 
 	mock.onGet(`http://127.0.0.1:9876/ntuaflix_api/admin/users/${username}?format=json`).reply(200, userDetails);
 
@@ -102,10 +96,9 @@ test('user - success', async (t) => {
 	t.is(config.url, `http://127.0.0.1:9876/ntuaflix_api/admin/users/${username}?format=json`);
 	t.true(config.headers['Authorization'].startsWith('Bearer '));
 
-	cleanupTokenFile(tokenFilePath);
 });
 
-test('user - user not found', async (t) => {
+test.serial('user - user not found', async (t) => {
 	const username = 'nonexistentuser';
 
 	mock.onGet(`http://127.0.0.1:9876/ntuaflix_api/admin/users/${username}?format=json`).reply(404);
@@ -115,7 +108,7 @@ test('user - user not found', async (t) => {
 	}, { instanceOf: Error, message: 'Error: User not found' });
 });
 
-test('user - failure', async (t) => {
+test.serial('user - failure', async (t) => {
 	const username = 'testuser';
 
 	mock.onGet(`http://127.0.0.1:9876/ntuaflix_api/admin/users/${username}?format=json`).reply(500, { message: 'Internal Server Error' });
@@ -125,22 +118,21 @@ test('user - failure', async (t) => {
 	}, { instanceOf: Error, message: 'Error: Failed to fetch user details' });
 });
 
-test('healthcheck - success', async (t) => {
+test.serial('healthcheck - success', async (t) => {
 	const tokenFilePath = setupTokenFile();
 
-	mock.onGet(`http://127.0.0.1:9876/ntuaflix_api/admin/healthcheck/?format=json`).reply(200);
+	mock.onGet(`http://127.0.0.1:9876/ntuaflix_api/admin/healthcheck?format=json`).reply(200);
 
 	await healthcheck('json');
 
 	// Assert that the API call was made with the correct parameters
 	const [config] = mock.history.get;
-	t.is(config.url, `http://127.0.0.1:9876/ntuaflix_api/admin/healthcheck/?format=json`);
+	t.is(config.url, `http://127.0.0.1:9876/ntuaflix_api/admin/healthcheck?format=json`);
 	t.true(config.headers['Authorization'].startsWith('Bearer '));
 
-	cleanupTokenFile(tokenFilePath);
 });
 
-test('healthcheck - failure', async (t) => {
+test.serial('healthcheck - failure', async (t) => {
 	mock.onGet(`http://127.0.0.1:9876/ntuaflix_api/admin/healthcheck/?format=json`).reply(500, { message: 'Internal Server Error' });
 
 	await t.throwsAsync(async () => {
@@ -148,7 +140,7 @@ test('healthcheck - failure', async (t) => {
 	}, { instanceOf: Error, message: 'Error: Health check failed' });
 });
 
-test('resetall - success', async (t) => {
+test.serial('resetall - success', async (t) => {
 	const tokenFilePath = setupTokenFile();
 
 	mock.onPost(`http://127.0.0.1:9876/ntuaflix_api/admin/resetall/?format=json`).reply(200);
@@ -160,10 +152,9 @@ test('resetall - success', async (t) => {
 	t.is(config.url, `http://127.0.0.1:9876/ntuaflix_api/admin/resetall/?format=json`);
 	t.true(config.headers['Authorization'].startsWith('Bearer '));
 
-	cleanupTokenFile(tokenFilePath);
 });
 
-test('resetall - failure', async (t) => {
+test.serial('resetall - failure', async (t) => {
 	mock.onPost(`http://127.0.0.1:9876/ntuaflix_api/admin/resetall/?format=json`).reply(500, { message: 'Internal Server Error' });
 
 	await t.throwsAsync(async () => {
@@ -171,7 +162,7 @@ test('resetall - failure', async (t) => {
 	}, { instanceOf: Error, message: 'Error: Failed to reset all' });
 });
 
-test('newtitles - success', async (t) => {
+test.serial('newtitles - success', async (t) => {
 	const tokenFilePath = setupTokenFile();
 	const filename = '/Users/kostasbekis/WebstormProjects/softeng23-01/back-end/Database/Data/truncated_title.basics.tsv';
 
@@ -192,11 +183,10 @@ test('newtitles - success', async (t) => {
 	t.true(formData instanceof FormData);
 	t.true(formData.has('tsv_file'));
 
-	cleanupTokenFile(tokenFilePath);
 });
 
-test('newtitles - failure', async (t) => {
-	const filename = 'C:\\Users\\kostas bekis\\WebstormProjects\\softeng23-01\\back-end\\Database\\Data\\truncated_title.basics.tsv';
+test.serial('newtitles - failure', async (t) => {
+	const filename = '/Users/kostasbekis/WebstormProjects/softeng23-01/back-end/Database/Data/truncated_title.basics.tsv';
 
 	// Mock the POST request and provide an error response
 	mock.onPost(`http://127.0.0.1:9876/ntuaflix_api/admin/upload/titlebasics/?format=json`).reply(500, { message: 'Internal Server Error' });
@@ -206,10 +196,10 @@ test('newtitles - failure', async (t) => {
 	}, { instanceOf: Error, message: 'Error: API call failed: Internal Server Error' });
 });
 
-test('newakas - success', async (t) => {
+test.serial('newakas - success', async (t) => {
 	const tokenFilePath = setupTokenFile();
 
-	const filename = 'C:\\Users\\kostas bekis\\WebstormProjects\\softeng23-01\\back-end\\Database\\Data\\truncated_title.akas.tsv';
+	const filename = '/Users/kostasbekis/WebstormProjects/softeng23-01/back-end/Database/Data/truncated_title.akas.tsv';
 	const formData = new FormData();
 	formData.append('tsv_file', 'contents', filename);
 
@@ -222,11 +212,10 @@ test('newakas - success', async (t) => {
 	t.is(config.url, `http://127.0.0.1:9876/ntuaflix_api/admin/upload/titleakas/?format=json`);
 	t.true(config.headers['Authorization'].startsWith('Bearer '));
 
-	cleanupTokenFile(tokenFilePath);
 });
 
-test('newakas - failure', async (t) => {
-	const filename = 'C:\\Users\\kostas bekis\\WebstormProjects\\softeng23-01\\back-end\\Database\\Data\\truncated_title.akas.tsv';
+test.serial('newakas - failure', async (t) => {
+	const filename = '/Users/kostasbekis/WebstormProjects/softeng23-01/back-end/Database/Data/truncated_title.akas.tsv';
 	const formData = new FormData();
 	formData.append('tsv_file', 'contents', filename);
 
@@ -237,9 +226,9 @@ test('newakas - failure', async (t) => {
 	}, { instanceOf: Error, message: 'Error: API call failed: Internal Server Error' });
 });
 
-test('newnames - success', async (t) => {
+test.serial('newnames - success', async (t) => {
 	const tokenFilePath = setupTokenFile();
-	const filename = 'C:\\Users\\kostas bekis\\WebstormProjects\\softeng23-01\\back-end\\Database\\Data\\truncated_title.akas.tsv';
+	const filename = '/Users/kostasbekis/WebstormProjects/softeng23-01/back-end/Database/Data/truncated_title.akas.tsv';
 
 	// Mock the POST request and provide a successful response
 	mock.onPost(`http://127.0.0.1:9876/ntuaflix_api/admin/upload/namebasics/?format=json`).reply(200, { success: true });
@@ -258,11 +247,10 @@ test('newnames - success', async (t) => {
 	t.true(formData instanceof FormData);
 	t.true(formData.has('tsv_file'));
 
-	cleanupTokenFile(tokenFilePath);
 });
 
-test('newnames - failure', async (t) => {
-	const filename = 'C:\\Users\\kostas bekis\\WebstormProjects\\softeng23-01\\back-end\\Database\\Data\\truncated_title.akas.tsv';
+test.serial('newnames - failure', async (t) => {
+	const filename = '/Users/kostasbekis/WebstormProjects/softeng23-01/back-end/Database/Data/truncated_title.akas.tsv';
 
 	// Mock the POST request and provide an error response
 	mock.onPost(`http://127.0.0.1:9876/ntuaflix_api/admin/upload/namebasics/?format=json`).reply(500, { message: 'Internal Server Error' });
@@ -272,9 +260,9 @@ test('newnames - failure', async (t) => {
 	}, { instanceOf: Error, message: 'Error: API call failed: Internal Server Error' });
 });
 
-test('newcrew - success', async (t) => {
+test.serial('newcrew - success', async (t) => {
 	const tokenFilePath = setupTokenFile();
-	const filename = 'C:\\Users\\kostas bekis\\WebstormProjects\\softeng23-01\\back-end\\Database\\Data\\truncated_title.crew.tsv';
+	const filename = '/Users/kostasbekis/WebstormProjects/softeng23-01/back-end/Database/Data/truncated_title.crew.tsv';
 
 	// Mock the POST request and provide a successful response
 	mock.onPost(`http://127.0.0.1:9876/ntuaflix_api/admin/upload/titlecrew/?format=json`).reply(200, { success: true });
@@ -293,11 +281,10 @@ test('newcrew - success', async (t) => {
 	t.true(formData instanceof FormData);
 	t.true(formData.has('tsv_file'));
 
-	cleanupTokenFile(tokenFilePath);
 });
 
-test('newcrew - failure', async (t) => {
-	const filename = 'C:\\Users\\kostas bekis\\WebstormProjects\\softeng23-01\\back-end\\Database\\Data\\truncated_title.crew.tsv';
+test.serial('newcrew - failure', async (t) => {
+	const filename = '/Users/kostasbekis/WebstormProjects/softeng23-01/back-end/Database/Data/truncated_title.crew.tsv';
 
 	// Mock the POST request and provide an error response
 	mock.onPost(`http://127.0.0.1:9876/ntuaflix_api/admin/upload/titlecrew/?format=json`).reply(500, { message: 'Internal Server Error' });
@@ -307,9 +294,9 @@ test('newcrew - failure', async (t) => {
 	}, { instanceOf: Error, message: 'Error: API call failed: Internal Server Error' });
 });
 
-test('newepisode - success', async (t) => {
+test.serial('newepisode - success', async (t) => {
 	const tokenFilePath = setupTokenFile();
-	const filename = 'C:\\Users\\kostas bekis\\WebstormProjects\\softeng23-01\\back-end\\Database\\Data\\truncated_title.episode.tsv';
+	const filename = '/Users/kostasbekis/WebstormProjects/softeng23-01/back-end/Database/Data/truncated_title.episode.tsv';
 
 	// Mock the POST request and provide a successful response
 	mock.onPost(`http://127.0.0.1:9876/ntuaflix_api/admin/upload/titleepisode/?format=json`).reply(200, { success: true });
@@ -328,11 +315,10 @@ test('newepisode - success', async (t) => {
 	t.true(formData instanceof FormData);
 	t.true(formData.has('tsv_file'));
 
-	cleanupTokenFile(tokenFilePath);
 });
 
-test('newepisode - failure', async (t) => {
-	const filename = 'C:\\Users\\kostas bekis\\WebstormProjects\\softeng23-01\\back-end\\Database\\Data\\truncated_title.episode.tsv';
+test.serial('newepisode - failure', async (t) => {
+	const filename = '/Users/kostasbekis/WebstormProjects/softeng23-01/back-end/Database/Data/truncated_title.episode.tsv';
 
 	// Mock the POST request and provide an error response
 	mock.onPost(`http://127.0.0.1:9876/ntuaflix_api/admin/upload/titleepisode/?format=json`).reply(500, { message: 'Internal Server Error' });
@@ -342,9 +328,9 @@ test('newepisode - failure', async (t) => {
 	}, { instanceOf: Error, message: 'Error: API call failed: Internal Server Error' });
 });
 
-test('newprincipals - success', async (t) => {
+test.serial('newprincipals - success', async (t) => {
 	const tokenFilePath = setupTokenFile();
-	const filename = 'C:\\Users\\kostas bekis\\WebstormProjects\\softeng23-01\\back-end\\Database\\Data\\truncated_title.principals.tsv';
+	const filename = '/Users/kostasbekis/WebstormProjects/softeng23-01/back-end/Database/Data/truncated_title.principals.tsv';
 
 	// Mock the POST request and provide a successful response
 	mock.onPost(`http://127.0.0.1:9876/ntuaflix_api/admin/upload/titleprincipals/?format=json`).reply(200, { success: true });
@@ -363,11 +349,10 @@ test('newprincipals - success', async (t) => {
 	t.true(formData instanceof FormData);
 	t.true(formData.has('tsv_file'));
 
-	cleanupTokenFile(tokenFilePath);
 });
 
-test('newprincipals - failure', async (t) => {
-	const filename = 'C:\\Users\\kostas bekis\\WebstormProjects\\softeng23-01\\back-end\\Database\\Data\\truncated_title.principals.tsv';
+test.serial('newprincipals - failure', async (t) => {
+	const filename = '/Users/kostasbekis/WebstormProjects/softeng23-01/back-end/Database/Data/truncated_title.principals.tsv';
 
 	// Mock the POST request and provide an error response
 	mock.onPost(`http://127.0.0.1:9876/ntuaflix_api/admin/upload/titleprincipals/?format=json`).reply(500, { message: 'Internal Server Error' });
@@ -377,9 +362,9 @@ test('newprincipals - failure', async (t) => {
 	}, { instanceOf: Error, message: 'Error: API call failed: Internal Server Error' });
 });
 
-test('newratings - success', async (t) => {
+test.serial('newratings - success', async (t) => {
 	const tokenFilePath = setupTokenFile();
-	const filename = 'C:\\Users\\kostas bekis\\WebstormProjects\\softeng23-01\\back-end\\Database\\Data\\truncated_title.ratings.tsv';
+	const filename = '/Users/kostasbekis/WebstormProjects/softeng23-01/back-end/Database/Data/truncated_title.ratings.tsv';
 
 	// Mock the POST request and provide a successful response
 	mock.onPost(`http://127.0.0.1:9876/ntuaflix_api/admin/upload/titleratings/?format=json`).reply(200, { success: true });
@@ -396,11 +381,10 @@ test('newratings - success', async (t) => {
 	t.true(formData instanceof FormData);
 	t.true(formData.has('tsv_file'));
 
-	cleanupTokenFile(tokenFilePath);
 });
 
-test('newratings - failure', async (t) => {
-	const filename = 'C:\\Users\\kostas bekis\\WebstormProjects\\softeng23-01\\back-end\\Database\\Data\\truncated_title.ratings.tsv';
+test.serial('newratings - failure', async (t) => {
+	const filename = '/Users/kostasbekis/WebstormProjects/softeng23-01/back-end/Database/Data/truncated_title.ratings.tsv';
 
 	// Mock the POST request and provide an error response
 	mock.onPost(`http://127.0.0.1:9876/ntuaflix_api/admin/upload/titleratings/?format=json`).reply(500, { message: 'Internal Server Error' });
@@ -410,12 +394,12 @@ test('newratings - failure', async (t) => {
 	}, { instanceOf: Error, message: 'Error: API call failed: Internal Server Error' });
 });
 
-test('title - success', async (t) => {
+test.serial('title - success', async (t) => {
 	const tokenFilePath = setupTokenFile();
-	const titleID = 'tt0094390';
+	const titleID = 'tt0097559';
 
 	// Mock the GET request and provide a successful response
-	mock.onGet(`http://127.0.0.1:9876/ntuaflix_api/title/${titleID}?format=json`).reply(200, { title: 'Example Title' });
+	mock.onGet(`http://127.0.0.1:9876/ntuaflix_api/title/${titleID}?format=json`).reply(200, { title: 'Idomeneo' });
 
 	await title(titleID, 'json');
 
@@ -426,12 +410,11 @@ test('title - success', async (t) => {
 
 	// Assert the response data
 	const responseData = config.data;
-	t.deepEqual(responseData, { title: 'Example Title' });
+	t.deepEqual(responseData, { title: 'Idomeneo' });
 
-	cleanupTokenFile(tokenFilePath);
 });
 
-test('title - failure', async (t) => {
+test.serial('title - failure', async (t) => {
 	const titleID = '456';
 
 	// Mock the GET request and provide an error response
@@ -442,7 +425,7 @@ test('title - failure', async (t) => {
 	}, { instanceOf: Error, message: 'Error: Failed to fetch title details: Title not found' });
 });
 
-test('searchtitle - success', async (t) => {
+test.serial('searchtitle - success', async (t) => {
 	const tokenFilePath = setupTokenFile();
 	const titlePart = 'Wes';
 
@@ -460,10 +443,9 @@ test('searchtitle - success', async (t) => {
 	const responseData = config.data;
 	t.deepEqual(responseData, { results: ['Example Title 1', 'Example Title 2'] });
 
-	cleanupTokenFile(tokenFilePath);
 });
 
-test('searchtitle - failure', async (t) => {
+test.serial('searchtitle - failure', async (t) => {
 	const titlePart = 'nonexistent';
 
 	// Mock the GET request and provide an error response
@@ -474,7 +456,7 @@ test('searchtitle - failure', async (t) => {
 	}, { instanceOf: Error, message: 'Error: Failed to fetch search results: No matching titles found' });
 });
 
-test('bygenre - success', async (t) => {
+test.serial('bygenre - success', async (t) => {
 	const tokenFilePath = setupTokenFile();
 	const genre = 'Thriller';
 	const minimumRating = 7.5;
@@ -493,10 +475,9 @@ test('bygenre - success', async (t) => {
 	const responseData = config.data;
 	t.deepEqual(responseData, { results: ['Movie 1', 'Movie 2'] });
 
-	cleanupTokenFile(tokenFilePath);
 });
 
-test('bygenre - with optional parameters', async (t) => {
+test.serial('bygenre - with optional parameters', async (t) => {
 	const tokenFilePath = setupTokenFile();
 	const genre = 'Drama';
 	const minimumRating = 8.0;
@@ -517,10 +498,9 @@ test('bygenre - with optional parameters', async (t) => {
 	const responseData = config.data;
 	t.deepEqual(responseData, { results: ['Drama Movie 1', 'Drama Movie 2'] });
 
-	cleanupTokenFile(tokenFilePath);
 });
 
-test('bygenre - failure', async (t) => {
+test.serial('bygenre - failure', async (t) => {
 	const genre = 'Nonexistent';
 	const minimumRating = 7.0;
 
@@ -532,7 +512,7 @@ test('bygenre - failure', async (t) => {
 	}, { instanceOf: Error, message: 'Error: Failed to fetch By Genre results: No matching movies found' });
 });
 
-test('name - success', async (t) => {
+test.serial('name - success', async (t) => {
 	const tokenFilePath = setupTokenFile();
 	const nameID = 'nm0000019';
 
@@ -550,10 +530,9 @@ test('name - success', async (t) => {
 	const responseData = config.data;
 	t.deepEqual(responseData, { biography: 'This is a biography of the actor/actress.' });
 
-	cleanupTokenFile(tokenFilePath);
 });
 
-test('name - failure', async (t) => {
+test.serial('name - failure', async (t) => {
 	const nameID = 'nonexistent';
 
 	// Mock the GET request and provide an error response
@@ -564,7 +543,7 @@ test('name - failure', async (t) => {
 	}, { instanceOf: Error, message: 'Error: Failed to fetch Name Biography: Actor/actress not found' });
 });
 
-test('searchname - success', async (t) => {
+test.serial('searchname - success', async (t) => {
 	const tokenFilePath = setupTokenFile();
 	const name = 'George Clooney';
 
@@ -588,10 +567,9 @@ test('searchname - success', async (t) => {
 		{ id: 'nm7654321', name: 'Johnathan Doe' },
 	]);
 
-	cleanupTokenFile(tokenFilePath);
 });
 
-test('searchname - failure', async (t) => {
+test.serial('searchname - failure', async (t) => {
 	const name = 'Nonexistent Actor';
 
 	// Mock the GET request and provide an error response
@@ -602,7 +580,7 @@ test('searchname - failure', async (t) => {
 	}, { instanceOf: Error, message: 'Error: Failed to fetch Search Name results: No results found' });
 });
 
-test('logout - success', async (t) => {
+test.serial('logout - success', async (t) => {
 	const tokenFilePath = setupTokenFile();
 
 	mock.onPost('http://127.0.0.1:9876/ntuaflix_api/logout/?format=json').reply(200);
@@ -611,10 +589,9 @@ test('logout - success', async (t) => {
 
 	t.false(fs.existsSync(tokenFilePath)); // Token file should be deleted after logout
 
-	cleanupTokenFile(tokenFilePath);
 });
 
-test('logout - failure', async (t) => {
+test.serial('logout - failure', async (t) => {
 	mock.onPost('http://127.0.0.1:9876/ntuaflix_api/logout/?format=json').reply(401, { message: 'Logout failed' });
 
 	await t.throwsAsync(async () => {
