@@ -226,11 +226,10 @@ async function newtitles(filename, format ) {
 		const homeDirectory = path.dirname(fileURLToPath(import.meta.url));
 		const token = fs.readFileSync(`${homeDirectory}/softeng20bAPI.token`, 'utf8').trim();
 		console.log(token);
-		const response = await axios.post(`http://127.0.0.1:9876/ntuaflix_api/admin/upload/titlebasics/?format=${format}`, formData, {
+		const response = await axios.post(`http://127.0.0.1:9876/ntuaflix_api/admin/upload/titlebasics/`, formData, {
 			headers: {
 				'Authorization': `${token}`,
 				'Content-Type': 'multipart/form-data',
-				'Accept': `application/${format}`,
 			},
 		});
 
@@ -417,6 +416,7 @@ async function newratings(filename, format ) {
 		const response = await axios.post(`http://127.0.0.1:9876/ntuaflix_api/admin/upload/titleratings/?format=${format}`, formData, {
 			headers: {
 				'Authorization': `${token}`,
+				'Content-Type': 'multipart/form-data'
 			},
 		});
 
@@ -500,13 +500,23 @@ async function searchtitle(titlepart, format ) {
 
 async function bygenre(genre, minimumRating, yearFrom = null, yearTo = null, format ) {
 	format = format || 'json'; // If format is not provided, default to 'json'
-	let url = `${BASE_URL}/bygenre/?genre=${encodeURIComponent(genre)}&minimumrating=${minimumRating}?format=${format}`;
+	let url = `${BASE_URL}/bygenre/?genre=${encodeURIComponent(genre)}&minimumrating=${minimumRating}`;
 	const homeDirectory = path.dirname(fileURLToPath(import.meta.url));
 	const token = fs.readFileSync(`${homeDirectory}/softeng20bAPI.token`, 'utf8').trim();
 	console.log(token);
 	const headers = {
 		'Authorization': `${token}`,
 	};
+
+	// Append optional parameters if provided
+	if (yearFrom !== null) {
+		url += `&yearfrom=${yearFrom}`;
+	}
+
+	if (yearTo !== null) {
+		url += `&yearto=${yearTo}`;
+	}
+
 	if (format === 'json') {
 		headers['Content-Type'] = 'application/json';
 		headers['Accept'] = 'application/json';
@@ -517,15 +527,7 @@ async function bygenre(genre, minimumRating, yearFrom = null, yearTo = null, for
 		console.error('Invalid format specified:', format);
 		return;
 	}
-	// Append optional parameters if provided
-	if (yearFrom !== null) {
-		url += `&yearfrom=${yearFrom}`;
-	}
-
-	if (yearTo !== null) {
-		url += `&yearto=${yearTo}`;
-	}
-
+	url += `&?format=${format}`;
 	try {
 		const response = await axios.get(url,{headers:headers});
 

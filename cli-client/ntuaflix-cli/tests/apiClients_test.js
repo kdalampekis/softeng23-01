@@ -56,25 +56,7 @@ test('login - failure', async (t) => {
 	}, { instanceOf: Error, message: 'Error: Authentication failed' });
 });
 
-test('logout - success', async (t) => {
-	const tokenFilePath = setupTokenFile();
 
-	mock.onPost('http://127.0.0.1:9876/ntuaflix_api/logout/?format=json').reply(200);
-
-	await logout('json');
-
-	t.false(fs.existsSync(tokenFilePath)); // Token file should be deleted after logout
-
-	cleanupTokenFile(tokenFilePath);
-});
-
-test('logout - failure', async (t) => {
-	mock.onPost('http://127.0.0.1:9876/ntuaflix_api/logout/?format=json').reply(401, { message: 'Logout failed' });
-
-	await t.throwsAsync(async () => {
-		await logout('json');
-	}, { instanceOf: Error, message: 'Error: Logout failed' });
-});
 
 test('adduser - success', async (t) => {
 	const tokenFilePath = setupTokenFile();
@@ -618,6 +600,26 @@ test('searchname - failure', async (t) => {
 	await t.throwsAsync(async () => {
 		await searchname(name, 'json');
 	}, { instanceOf: Error, message: 'Error: Failed to fetch Search Name results: No results found' });
+});
+
+test('logout - success', async (t) => {
+	const tokenFilePath = setupTokenFile();
+
+	mock.onPost('http://127.0.0.1:9876/ntuaflix_api/logout/?format=json').reply(200);
+
+	await logout('json');
+
+	t.false(fs.existsSync(tokenFilePath)); // Token file should be deleted after logout
+
+	cleanupTokenFile(tokenFilePath);
+});
+
+test('logout - failure', async (t) => {
+	mock.onPost('http://127.0.0.1:9876/ntuaflix_api/logout/?format=json').reply(401, { message: 'Logout failed' });
+
+	await t.throwsAsync(async () => {
+		await logout('json');
+	}, { instanceOf: Error, message: 'Error: Logout failed' });
 });
 
 test.after.always(() => {

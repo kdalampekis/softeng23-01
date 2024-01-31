@@ -16,18 +16,18 @@ const executeCommand = (command) => {
 
 
 test('CLI - login command', async (t) => {
-	const result = await executeCommand('se2301 login --username testuser --password testpass');
+	const result = await executeCommand('se2301 login --username 1 --password 1');
 	t.true(result.includes('Login successful'));
 });
 
 
 test('CLI - adduser command', async (t) => {
-	const result = await executeCommand('se2301 adduser --username newuser --password newpass');
+	const result = await executeCommand('se2301 adduser --username sere --password sere');
 	t.true(result.includes('User added successfully'));
 });
 
 test('CLI - user command', async (t) => {
-	const result = await executeCommand('se2301 user --username testuser');
+	const result = await executeCommand('se2301 user --username sere');
 	t.true(result.includes('User details:'));
 });
 
@@ -78,27 +78,27 @@ test('CLI - newratings command', async (t) => {
 });
 
 test('CLI - title command', async (t) => {
-	const result = await executeCommand('se2301 title --titleID tt1234567');
+	const result = await executeCommand('se2301 title --titleID tt0000929');
 	t.true(result.includes('Title details:'));
 });
 
 test('CLI - searchtitle command', async (t) => {
-	const result = await executeCommand('se2301 searchtitle --titlepart Hango');
+	const result = await executeCommand('se2301 searchtitle --titlepart Non');
 	t.true(result.includes('Search results:'));
 });
 
 test('CLI - bygenre command', async (t) => {
-	const result = await executeCommand('se2301 bygenre --genre Action --min 7.5 --from 2000 --to 2020');
+	const result = await executeCommand('se2301 bygenre --genre Comedy --min 7.5 --from 1990 --to 2020');
 	t.true(result.includes('By Genre results:'));
 });
 
 test('CLI - name command', async (t) => {
-	const result = await executeCommand('se2301 name --nameID nm1234567');
+	const result = await executeCommand('se2301 name --nameID nm0000019');
 	t.true(result.includes('Name Biography:'));
 });
 
 test('CLI - searchname command', async (t) => {
-	const result = await executeCommand('se2301 searchname --name John Doe');
+	const result = await executeCommand('se2301 searchname --name James Horner');
 	t.true(result.includes('Search Name results:'));
 });
 
