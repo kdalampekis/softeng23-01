@@ -5,13 +5,20 @@ import Footer from "../Footer";
 import axios from 'axios';
 import {useEffect, useState} from "react";
 
+const BASE_URL = 'http://127.0.0.1:9876/ntuaflix_api/admin';
+
 export default function HealthCheck() {
     const [healthCheckData, setHealthCheckData] = useState({ status: '', dataconnection: '' });
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
 
     useEffect(() => {
-        axios.get('/admin/healthcheck')
+        const token = localStorage.getItem('softeng20bAPI.token');
+        // Set up the headers with the auth token
+        const headers = {
+            'Authorization': `${token}`,
+        };
+        axios.post(`${BASE_URL}/healthcheck`, {}, {headers : headers})
             .then(response => {
                 setHealthCheckData(response.data);
                 setLoading(false);
@@ -23,7 +30,7 @@ export default function HealthCheck() {
     }, []);
 
     if (loading) {
-        return <div>
+        return <div className="healthCheck">
             <Header/>
             <h1 className="header">Loading...</h1>
             <Footer role="admin"/>
@@ -31,7 +38,7 @@ export default function HealthCheck() {
     }
 
     if (error) {
-        return <div>
+        return <div className="healthCheck">
             <Header/>
             <h1 className="header">{error}</h1>
             <Footer role="admin"/>
@@ -39,11 +46,13 @@ export default function HealthCheck() {
     }
 
     return (
-        <div>
+        <div className="healthCheck">
             <Header/>
-            <h2>Health Check Status</h2>
-            <p>Status: {healthCheckData.status}</p>
-            <p>Data Connection: {healthCheckData.dataconnection}</p>
+            <div className="healthCheckInfo">
+                <h2>Health Check Status</h2>
+                <p><strong className="dynamic-content">Status:</strong> {healthCheckData.status}</p>
+                <p><strong className="dynamic-content">Data Connection:</strong> {healthCheckData.dataconnection}</p>
+            </div>
             <Footer role="admin"/>
         </div>
     )

@@ -95,7 +95,7 @@ function StartPage() {
                     navigate('/admin');
                 } else {
                     // Redirect to user page if the user is not a superuser
-                    navigate('/');
+                    navigate('/user');
                 }
             } else {
                 console.log('Login failed');

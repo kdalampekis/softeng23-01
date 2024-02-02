@@ -32,6 +32,7 @@ export default function AdminUpload() {
                     ))}
                 </div>
             )}
+
             <Footer role="admin"/>
         </div>
     );

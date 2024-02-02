@@ -1,3 +1,4 @@
+from MySQLdb import IntegrityError
 from django.shortcuts import render
 from django.http import JsonResponse
 import csv
@@ -11,6 +12,7 @@ from .serializers import UserSerializer
 from rest_framework.views import APIView
 from rest_framework import status
 from rest_framework.response import Response
+from django.db import IntegrityError
 
 
 # /////////////////////////////// TITLE BASICS ///////////////////////////////////////
@@ -69,6 +71,8 @@ def UploadTitleBasics(request):
     if request.method == 'POST':
         superuser_token = User.objects.filter(is_superuser=True).values_list('auth_token', flat=True).first()
         token = request.META.get('HTTP_AUTHORIZATION')
+        print(superuser_token)
+        print(token)
 
         # Check if the authenticated user is a superuser
         if token == superuser_token:
@@ -89,7 +93,7 @@ def UploadTitleBasics(request):
 
 def ResetTitleBasics(request):
     TitleBasic.objects.all().delete()
-    specific_file_path = 'C:\\SoftEng\\softeng23-01\\softeng23-01\\back-end\\Database\\Data\\truncated_title.basics.tsv'
+    specific_file_path = '..\\..\\Database\\Data\\truncated_title.basics.tsv'
     with open(specific_file_path, 'r', encoding='utf-8') as file:
         rows = ProcessTitleBasicsTSV(request, file, True)
     return JsonResponse({'status': 'success', 'processed_rows': rows})
@@ -155,7 +159,7 @@ def UploadTitleAkas(request):
 
 def ResetTitleAkas(request):
     TitleAka.objects.all().delete()
-    specific_file_path = 'C:\\SoftEng\\softeng23-01\\softeng23-01\\back-end\\Database\\Data\\truncated_title.akas.tsv'
+    specific_file_path = '..\\..\\Database\\Data\\truncated_title.akas.tsv'
     with open(specific_file_path, 'r', encoding='utf-8') as file:
         rows = ProcessTitleAkasTSV(request, file, True)
     return JsonResponse({'status': 'success', 'processed_rows': rows})
@@ -213,6 +217,7 @@ def UploadNameBasics(request):
     if request.method == 'POST':
         superuser_token = User.objects.filter(is_superuser=True).values_list('auth_token', flat=True).first()
         token = request.META.get('HTTP_AUTHORIZATION')
+        print(token)
 
         # Check if the authenticated user is a superuser
         if token == superuser_token:
@@ -233,7 +238,7 @@ def UploadNameBasics(request):
 
 def ResetNameBasics(request):
     Names.objects.all().delete()
-    specific_file_path = 'C:\\SoftEng\\softeng23-01\\softeng23-01\\back-end\\Database\\Data\\truncated_name.basics.tsv'
+    specific_file_path = '..\\..\\Database\\Data\\truncated_name.basics.tsv'
     with open(specific_file_path, 'r', encoding='utf-8') as file:
         rows = ProcessNameBasicsTSV(request, file, True)
     return JsonResponse({'status': 'success', 'processed_rows': rows})
@@ -300,7 +305,7 @@ def UploadTitleCrew(request):
 
 def ResetTitleCrew(request):
     Crew.objects.all().delete()
-    specific_file_path = 'C:\\SoftEng\\softeng23-01\\softeng23-01\\back-end\\Database\\Data\\truncated_title.crew.tsv'
+    specific_file_path = '..\\..\\Database\\Data\\truncated_title.crew.tsv'
     with open(specific_file_path, 'r', encoding='utf-8') as file:
         rows = ProcessTitleCrewTSV(request, file, True)
     return JsonResponse({'status': 'success', 'processed_rows': rows})
@@ -368,7 +373,7 @@ def UploadTitleEpisode(request):
 
 def ResetTitleEpisode(request):
     Episode.objects.all().delete()
-    specific_file_path = 'C:\\SoftEng\\softeng23-01\\softeng23-01\\back-end\\Database\\Data\\truncated_title.episode.tsv'
+    specific_file_path = '..\\..\\Database\\Data\\truncated_title.episode.tsv'
     with open(specific_file_path, 'r', encoding='utf-8') as file:
         rows = ProcessTitleEpisodeTSV(request, file, True)
     return JsonResponse({'status': 'success', 'processed_rows': rows})
@@ -446,7 +451,7 @@ def UploadTitlePrincipals(request):
 
 def ResetTitlePrincipals(request):
     Principals.objects.all().delete()
-    specific_file_path = 'C:\\SoftEng\\softeng23-01\\softeng23-01\\back-end\\Database\\Data\\truncated_title.principals.tsv'
+    specific_file_path = '..\\..\\Database\\Data\\truncated_title.principals.tsv'
     with open(specific_file_path, 'r', encoding='utf-8') as file:
         rows = ProcessTitlePrincipalsTSV(request, file, True)
     return JsonResponse({'status': 'success', 'processed_rows': rows})
@@ -515,37 +520,36 @@ def UploadTitleRatings(request):
 
 def ResetTitleRatings(request):
     Rating.objects.all().delete()
-    specific_file_path = 'C:\\SoftEng\\softeng23-01\\softeng23-01\\back-end\\Database\\Data\\truncated_title.ratings.tsv'
+    specific_file_path = '..\\..\\Database\\Data\\truncated_title.ratings.tsv'
     with open(specific_file_path, 'r', encoding='utf-8') as file:
         rows = ProcessTitleRatingsTSV(request, file, True)
     return JsonResponse({'status': 'success', 'processed_rows': rows})
 
 
 # ///////////////////////////////// OTHER VIEWS //////////////////////////////////////////////
-
 def health_check(request):
-    superuser_token = User.objects.filter(is_superuser=True).values_list('auth_token', flat=True).first()
-    token = request.META.get('HTTP_AUTHORIZATION')
-    print(token)
+    if request.method == 'POST':
+        superuser_token = User.objects.filter(is_superuser=True).values_list('auth_token', flat=True).first()
+        token = request.META.get('HTTP_AUTHORIZATION')
+        print(token)
 
-    # Check if the authenticated user is a superuser
-    if token == superuser_token:
-        try:
-            # Example: attempting to fetch the first row of some table
-            # Replace 'your_model' with an actual model from your app
-            TitleBasic.objects.first()
+        # Check if the authenticated user is a superuser
+        if token == superuser_token:
+            try:
+                # Example: attempting to fetch the first row of some table
+                # Replace 'your_model' with an actual model from your app
+                TitleBasic.objects.first()
 
-            # If you want to test raw database connectivity
-            # connections['default'].cursor()
+                # If you want to test raw database connectivity
+                # connections['default'].cursor()
 
-            connection_string = "Database connection successful"  # Customize as needed
-            return JsonResponse({"status": "OK", "dataconnection": connection_string})
-        except (DatabaseError, ValidationError):
-            connection_string = "Database connection failed"  # Customize as needed
-            return JsonResponse({"status": "failed", "dataconnection": connection_string})
-    else:
-        return JsonResponse({"status": "failed", "dataconnection": "Permission denied. You don't have superuser privileges."})
-
+                connection_string = "Database connection successful"  # Customize as needed
+                return JsonResponse({"status": "OK", "dataconnection": connection_string})
+            except (DatabaseError, ValidationError):
+                connection_string = "Database connection failed"  # Customize as needed
+                return JsonResponse({"status": "failed", "dataconnection": connection_string})
+        else:
+            return JsonResponse({"status": "failed", "dataconnection": "Permission denied. You don't have superuser privileges."})
 
 def reset_all(request):
     if request.method == 'POST':
@@ -603,7 +607,7 @@ def add_user(request, username, password):
         superuser_token = User.objects.filter(is_superuser=True).values_list('auth_token', flat=True).first()
         token = request.META.get('HTTP_AUTHORIZATION')
         
-        print(token)
+        print(superuser_token)
         # Check if the authenticated user is a superuser
         if token == superuser_token:
             try:

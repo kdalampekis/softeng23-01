@@ -92,11 +92,15 @@ button:hover {
     margin-top: 2rem;
 }
 
+.new {
+    margin-top: 3rem;
+}
+
 .inputContainer Button {
     margin-top: 1rem;
 }
 
-input, .inputContainer .styled-select {
+input, .styled-select {
     width: 200px;
     padding: 10px;
     margin: 10px 0;
@@ -109,9 +113,9 @@ input, .inputContainer .styled-select {
 }
 
 input:not([type="file"]) {
-    background-color: black; /* Black background */
-    color: white; /* White text color */
-    border: 2px solid white; /* White border, 2 pixels thick */
+    background-color: black;
+    color: white;
+    border: 2px solid white;
     border-radius: 10px;
 }
 
@@ -143,56 +147,53 @@ input:not([type="file"]) {
     text-align: center;
 }
 
-input[type="file"] {
-    background-color: white;
+.custom-file-label::before {
+    content: 'Choose file...';
+    display: block;
+    margin-right: 10px;
+}
+
+.custom-file-label.file-chosen::before {
+    content: none;
+}
+
+
+.label-success, input:not([type="file"]):valid {
+    border: 2px solid lime;
+}
+
+.label-failure, input:not([type="file"]):invalid {
     border: 2px solid red;
 }
 
-
-/* You can style the label even further to match your screenshot */
-.custom-file-label:hover {
-    /* Style for hover state */
-}
-
-
-.no-file-selected {
-    /* Your specific styles for "no file selected" state */
-    border: 2px solid red; /* Example: dashed border */
-    color: grey; /* Example: grey text */
-    /* Any other styles you want to apply */
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-.buttonContainer {
-    /*margin-top: 3rem;*/
-}
 
 .buttonContainer input:last-child {
     margin-bottom: 2rem;
 }
 
-input:not([type="file"]):valid {
-    border: 2px solid lime; /* White border when there's a number */
+
+
+.custom-file-label.no-file-selected, input:not([type="file"]):focus {
+    border: 2px solid white;
 }
 
-input:not([type="file"]):invalid {
-    border: 2px solid red; /* Red border when the input is empty or not a number */
+
+
+.healthCheckInfo {
+    margin: auto;
+    color: white;
+    padding: 2rem;
 }
 
-input:not([type="file"]):focus {
-    border-color: white; /* Lime border when the input is focused */
+.healthCheckInfo h2 {
+    font-size: 2.5rem;
+    text-align: left;
 }
+
+.healthCheckInfo p:first-of-type {
+    margin-top: 2rem;
+}
+
 
 
 
@@ -208,7 +209,6 @@ input[type="number"] {
     -moz-appearance: textfield; /* Firefox */
 }
 
-/* Change the placeholder color */
 input::placeholder, input:-ms-input-placeholder, input::-ms-input-placeholder {
     color: white;
 }
@@ -229,9 +229,9 @@ input::placeholder {
     display: none;
 }
 
-/* Styles for hover, focus, etc., can be added similarly to your buttons */
+
 .styled-select:hover {
-    background-color: #f5f5f5; /* Example hover color */
+    background-color: #f5f5f5;
 }
 
 .home {
@@ -239,7 +239,7 @@ input::placeholder {
 }
 
 .functionality, .actor, .movie {
-    border: 2px solid var(--button); /* Example border */
+    border: 2px solid var(--button);
     padding: 10px;
     margin: 4px 0;
     border-radius: 10px;
@@ -251,15 +251,13 @@ input::placeholder {
 }
 
 .actor, .movie {
-    /* Use flexbox for the layout */
     display: flex;
-    flex-direction: row; /* Align children horizontally */
-    align-items: center; /* Center children vertically */
-    justify-content: start; /* Align children to the start of the container */
+    flex-direction: row;
+    align-items: center;
+    justify-content: start;
     border: 2px solid white;
-    height: 12rem; /* Keep the height as specified */
-    width: 20rem; /* Keep the width as specified */
-    /*padding: 10px; !* Optional: Add padding for some space inside the container *!*/
+    height: 12rem;
+    width: 20rem;
 }
 
 .functionality:hover, .movie:hover, .actor:hover {
@@ -322,9 +320,8 @@ footer p, .link {
 }
 
 
-/* ... (existing styles) */
 
-.movie-analytics-container, .actor-analytics-container {
+.movie-analytics-container, .actor-analytics-container, .user-container {
     display: flex;
     width: 90%;
     justify-content: space-between;
@@ -334,11 +331,9 @@ footer p, .link {
     color: white;
     margin: auto;
     margin-top: 2rem;
-    /*flex-wrap: wrap;*/
-    /*align-items: flex-start;*/
 }
 
-.movie-analytics-content, .actor-analytics-content {
+.movie-analytics-content, .actor-analytics-content, .user-content {
     flex: 3;
     padding: 20px;
     height: 100%;
@@ -346,22 +341,22 @@ footer p, .link {
 }
 
 .movie-analytics-image-container, .actor-analytics-image-container {
-    flex: 1; /* Takes up 1/4 of the space */
+    flex: 1;
     display: flex;
-    align-items: center; /* Center the image vertically */
-    justify-content: center; /* Center the image horizontally */
-    padding: 10px; /* Add some spacing around the image */
+    align-items: center;
+    justify-content: center;
+    padding: 10px;
     margin: 1rem;
 }
 
 .movie-analytics-image, .actor-analytics-image {
-    width: 100%; /* The image will take the full width of the image container */
-    height: 40vh; /* Maintain aspect ratio */
-    object-fit: contain; /* Ensure the image is contained within its element */
+    width: 100%;
+    height: 40vh;
+    object-fit: contain;
 }
 
 
-.movie-analytics-content h1, .actor-analytics-content h1 {
+.movie-analytics-content h1, .actor-analytics-content h1, .user-content h1 {
     margin: 1rem 0 2rem 0;
     font-size: 2.5rem;
 }
@@ -371,14 +366,12 @@ footer p, .link {
     text-align: left;
 }
 
-.movie-analytics-content p, .actor-analytics-content p {
+.movie-analytics-content p, .actor-analytics-content p, .user-content p {
     letter-spacing: 1px;
     line-height: 25px;
 }
 
 
-
-/* Additional styling as per your design preferences */
 
 .addLikeButtons {
     margin: .25rem;
@@ -407,48 +400,47 @@ footer p, .link {
 .movie-analytics-content .movie-info span,
 .movie-analytics-content .aka-titles li,
 .movie-analytics-content .principal-crew li {
-    /* Ensure that text does not break awkwardly */
-    word-wrap: break-word; /* This allows long words to wrap and go to the next line */
-    white-space: normal; /* This ensures that whitespace such as spaces and new lines are handled normally */
+    word-wrap: break-word;
+    white-space: normal;
 }
 
 /* To make sure list items do not break out of their containers */
 .aka-titles ul, .principal-crew ul {
-    padding: 0; /* Remove padding to ensure list aligns with container edges */
-    margin: 0; /* Remove margin to ensure list aligns with container edges */
+    padding: 0;
+    margin: 0;
 }
 
 .aka-titles li, .principal-crew li {
     /* Ensures list items break onto the next line within their container */
-    display: inline; /* This makes the list items flow like inline text */
-    margin-right: 5px; /* Adds a small margin to the right of each item for separation */
+    display: inline;
+    margin-right: 5px;
 }
 
-.movie-analytics-content strong {
+strong {
     font-size: 1.25rem;
 }
 
 
 .actor-image, .movie-image {
-    width: 33.33%; /* Image takes up 1/3 of the container */
-    height: 100%; /* Image takes full height of the container */
-    object-fit: cover; /* Cover the area without stretching the image */
-    border-radius: 10px; /* Optional: if you want rounded corners */
+    width: 33.33%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 10px;
 }
 
 
 .actor-details, .movie-details {
     display: flex;
-    flex-direction: column; /* Stack name and profession vertically */
-    align-items: center; /* Center the text horizontally */
-    justify-content: center; /* Center the text vertically */
-    width: 66.66%; /* Text takes up the remaining 2/3 of the container */
-    height: 100%; /* Take full height of the container */
-    padding-left: 10px; /* Add some space between the image and the text */
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 66.66%;
+    height: 100%;
+    padding-left: 10px;
 }
 
 .actor-name, .actor-profession {
-    text-align: center; /* Center the text */
+    text-align: center;
 }
 
 
