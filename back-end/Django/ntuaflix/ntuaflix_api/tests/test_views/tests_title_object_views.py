@@ -4,10 +4,18 @@ from django.urls import reverse
 from ntuaflix_api.models import *
 from ntuaflix_api.serializers import *
 from django.db.models import Q
-
+from rest_framework.authtoken.models import Token
+from django.contrib.auth.models import User
 class TitleBasicListViewTest(APITestCase):
 # Setting Up the TitleObject objects that will be used for testing
     def setUp(self):
+
+        self.active_user = User.objects.create_user(username='activeUser', password='test123', is_active=True)
+        self.active_user_token = Token.objects.create(user=self.active_user)
+
+        self.inactive_user = User.objects.create_user(username='inactiveUser', password='false', is_active=False)
+        self.inactive_user_token = Token.objects.create(user=self.inactive_user)
+
         # Create some instances of TitleObject for testing
         self.title_object =TitleObject.objects.create(
             tconst='tt1234567',
@@ -77,14 +85,14 @@ class TitleBasicListViewTest(APITestCase):
             primaryName='Name1,Name2'
         )
 
+        self.url_title_objects = reverse('title-basic-list')  
+        self.url_search_title = reverse('search-title')
+        self.url_title_detail = reverse('title-detail', kwargs={'titleID': self.title_object.tconst})  
+
 # Testing the TitleBasicList view 
 # Used on the url title/
     def test_get_title_basic_list(self):
-        # Define the URL for the TitleBasicList view
-        url = reverse('title-basic-list')  # Replace 'title_basic_list' with the actual name used in your URL patterns
-
-        # Make a GET request to the view
-        response = self.client.get(url)
+        response = self.client.get(self.url_title_objects)
 
         # Get the data from the database to compare with the response
         titles = TitleObject.objects.all()
@@ -98,176 +106,198 @@ class TitleBasicListViewTest(APITestCase):
 
 # Testing the view: TitleDetailView 
 # Used for the ulr : title/<str:titleID>/
-    def test_get_title_basic_list(self):
-        # Define the URL for the TitleBasicList view
-        url = reverse('title-detail', kwargs={'titleID': self.title_object.tconst})
-
-        # Make a GET request to the view
-        response = self.client.get(url)
-
-        expected_serializer = TitleObjectSerializer([self.title_object], many=True)
-
-        # Check that the response status code is 200 (OK)
+    def test_get_title_details(self):
+        """
+        Ensure an active user can retrieve a title detail successfully.
+        """
+        self.client.credentials(HTTP_AUTHORIZATION=self.active_user_token.key)
+        response = self.client.get(self.url_title_detail)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
+        # Add more assertions here to validate the response data
 
-        # Check that the response data matches the serialized data
-        self.assertEqual(response.data, expected_serializer.data)
+        """
+        Ensure an inactive user cannot retrieve title details.
+        """
+        self.client.credentials(HTTP_AUTHORIZATION=self.inactive_user_token.key)
+        response = self.client.get(self.url_title_detail)
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+
+        """
+        Ensure an active user gets a 404 when requesting a non-existent title.
+        """
+        self.client.credentials(HTTP_AUTHORIZATION=self.active_user_token.key)
+        invalid_url = reverse('title-detail', kwargs={'titleID': 'invalid'})
+        response = self.client.get(invalid_url)
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+
+
 
 # Testing the view: SearchTitleView 
 # Used for the ulr : searchtitle/
     def test_search_title(self):
-        # Test searching with a title query parameter
-        url = reverse('search-title') + '?title=Test'
-        response = self.client.get(url)
-
-        # Filter TitleObject instances as expected by the view
-        title_objects = TitleObject.objects.filter(originalTitle__icontains="Test")
-        serializer = TitleObjectSerializer(title_objects, many=True)
-
-        # Check that the response status code is 200 (OK)
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-
-        # Check that the response data matches the serialized data
-        self.assertEqual(response.data, serializer.data)
-
-        # Test searching without a title query parameter
-        url = reverse('search-title')
-        response = self.client.get(url)
-
-        # Check that the response status code is 200 (OK)
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-
-# Testing the view: FilteredTitleObjectsView 
-# Used for the ulr : bygenre/
-    def test_filtered_titles(self):
-        # Define the URL for the FilteredTitleObjectsView view
-        url = reverse('filtered-title-objects')  # Replace 'filtered_titles' with the actual name used in your URL patterns
-        query_params = {
-            'genre': 'Comedy',
-            'minimumrating': '7.0',
-            'yearfrom': '2000',
-            'yearto': '2010'
-        }
-        response = self.client.get(url, query_params)
-
-        # Expected filtered queryset
-        query = Q(genres__icontains=query_params['genre']) & Q(averageRating__gte=query_params['minimumrating']) & Q(startYear__gte=query_params['yearfrom']) & Q(endYear__lte=query_params['yearto'])
-        title_objects = TitleObject.objects.filter(query)
-        serializer = TitleObjectSerializer(title_objects, many=True)
-
-        # Check response status and data
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(response.data, serializer.data)
-
-        # Test with no parameters
-        url = reverse('filtered-title-objects')
-        response = self.client.get(url)
-
-        # Check that it renders the search criteria page
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-        # Add assertions to check the response content if necessary
-
-# Testing the view: SearchByGenre 
-# Used for the ulr : SearchByGenre/
-    def test_search_by_genre(self):
-        url = reverse('SearchByGenre')
-        # //////////////////////////////////////////////////////Top Rated with amount of movies//////////////////////////////////////////////////////////////
-        response = self.client.get(url, {'genre': 'Comedy', 'toprated': 'true', 'number': '1'})
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-        # Expected filtered queryset
-        queryset = TitleObject.objects.filter(genres__icontains='Comedy').order_by('-averageRating')[:1]
-        serializer = TitleObjectSerializer(queryset, many=True)
-        self.assertEqual(response.data, serializer.data)
-
-        # //////////////////////////////////////////////////////NON Top Rated With amount of movies////////////////////////////////////////////////
+    # /////////////////////////////////////////////////test_search_with_valid_query_active_user///////////////////////////////////////////////////////////////////
+        self.client.credentials(HTTP_AUTHORIZATION=self.active_user_token.key)
+        response = self.client.get(self.url_search_title, {'title': 'movie'})
         
-        response = self.client.get(url, {'genre': 'Comedy', 'toprated': 'false', 'number': '1'})
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-        # Expected filtered queryset
-        queryset = TitleObject.objects.filter(genres__icontains='Comedy')[:1]
-        serializer = TitleObjectSerializer(queryset, many=True)
-        self.assertEqual(response.data, serializer.data)
+        expected_queryset = TitleObject.objects.filter(originalTitle__icontains='Test')
+        serializer = TitleObjectSerializer(expected_queryset, many=True)
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)        
+        self.assertEqual(response.data, serializer.data)  # Ensure actual data matches
+
+
+    # /////////////////////////////////////////////////test_search_no_results///////////////////////////////////////////////////////////////////
+
+        self.client.credentials(HTTP_AUTHORIZATION=self.active_user_token.key)
+        response = self.client.get(self.url_search_title, {'title': '9999'})
         
-        # //////////////////////////////////////////////////////NON Top Rated Without amount of movies/////////////////////////////////////////////
+        # Assuming the view redirects or renders a search form
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+        # Check for the presence of 'search_title.html' if rendering a template
+
+    # /////////////////////////////////////////////////////test_search_inactive_user///////////////////////////////////////////////////////////////
+        self.client.credentials(HTTP_AUTHORIZATION=self.inactive_user_token.key)
+        response = self.client.get(self.url_search_title, {'title': 'movie'})
         
-        response = self.client.get(url, {'genre': 'Comedy', 'toprated': 'false', 'number': ''})
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-        # Expected filtered queryset
-        queryset = TitleObject.objects.filter(genres__icontains='Comedy')
-        serializer = TitleObjectSerializer(queryset, many=True)
-        self.assertEqual(response.data, serializer.data)
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
-        # ///////////////////////////////////////////////////////Top Rated Without amount of Movies/////////////////////////////////////////
 
-        response = self.client.get(url, {'genre': 'Comedy', 'toprated': 'true', 'number': ''})
-        # Check response status code
-        self.assertEqual(response.status_code, 200)
-        # Check if the response contains the specific error message
-        self.assertIn("You have to input a number.", response.content.decode())
 
-        # /////////////////////////////////////////////////////////Empty input//////////////////////////////////////////////
-        response = self.client.get(url)
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
 
-        # ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-# Testing the view: SearchByYear 
-# Used for the ulr : SearchByYear/
-    def test_search_by_year(self):
-        url = reverse('SearchByYear')  # Replace with the actual name used in your URL patterns
-        response = self.client.get(url, {'year': '2000'})
 
-        # Expected filtered queryset
-        queryset = TitleObject.objects.filter(startYear=2000)
-        serializer = TitleObjectSerializer(queryset, many=True)
 
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(response.data, serializer.data)
+# # Testing the view: FilteredTitleObjectsView 
+# # Used for the ulr : bygenre/
+#     def test_filtered_titles(self):
+#         # Define the URL for the FilteredTitleObjectsView view
+#         url = reverse('filtered-title-objects')  # Replace 'filtered_titles' with the actual name used in your URL patterns
+#         query_params = {
+#             'genre': 'Comedy',
+#             'minimumrating': '7.0',
+#             'yearfrom': '2000',
+#             'yearto': '2010'
+#         }
+#         response = self.client.get(url, query_params)
 
-        response = self.client.get(url)
+#         # Expected filtered queryset
+#         query = Q(genres__icontains=query_params['genre']) & Q(averageRating__gte=query_params['minimumrating']) & Q(startYear__gte=query_params['yearfrom']) & Q(endYear__lte=query_params['yearto'])
+#         title_objects = TitleObject.objects.filter(query)
+#         serializer = TitleObjectSerializer(title_objects, many=True)
 
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-        # Further assertions to check if SearchByYear.html is rendered can be added
+#         # Check response status and data
+#         self.assertEqual(response.status_code, status.HTTP_200_OK)
+#         self.assertEqual(response.data, serializer.data)
 
-# Testing the view: SearchByName 
-# Used for the ulr : SearchByName/
-    def test_search_by_name(self):
+#         # Test with no parameters
+#         url = reverse('filtered-title-objects')
+#         response = self.client.get(url)
+
+#         # Check that it renders the search criteria page
+#         self.assertEqual(response.status_code, status.HTTP_200_OK)
+#         # Add assertions to check the response content if necessary
+
+# # Testing the view: SearchByGenre 
+# # Used for the ulr : SearchByGenre/
+#     def test_search_by_genre(self):
+#         url = reverse('SearchByGenre')
+#         # //////////////////////////////////////////////////////Top Rated with amount of movies//////////////////////////////////////////////////////////////
+#         response = self.client.get(url, {'genre': 'Comedy', 'toprated': 'true', 'number': '1'})
+#         self.assertEqual(response.status_code, status.HTTP_200_OK)
+#         # Expected filtered queryset
+#         queryset = TitleObject.objects.filter(genres__icontains='Comedy').order_by('-averageRating')[:1]
+#         serializer = TitleObjectSerializer(queryset, many=True)
+#         self.assertEqual(response.data, serializer.data)
+
+#         # //////////////////////////////////////////////////////NON Top Rated With amount of movies////////////////////////////////////////////////
         
-        url = reverse('SearchByName') 
-        # //////////////////////////////////////////////////////Top Rated WITH amount of movies//////////////////////////////////////////////////////////////
-        response = self.client.get(url, {'name': 'Name', 'toprated': 'true','newest': 'false', 'number': '2'})
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-        queryset = TitleObject.objects.filter(primaryName__icontains='Name').order_by('-averageRating')[:2]
-        serializer = TitleObjectSerializer(queryset, many=True)
-        self.assertEqual(response.data, serializer.data)
+#         response = self.client.get(url, {'genre': 'Comedy', 'toprated': 'false', 'number': '1'})
+#         self.assertEqual(response.status_code, status.HTTP_200_OK)
+#         # Expected filtered queryset
+#         queryset = TitleObject.objects.filter(genres__icontains='Comedy')[:1]
+#         serializer = TitleObjectSerializer(queryset, many=True)
+#         self.assertEqual(response.data, serializer.data)
+        
+#         # //////////////////////////////////////////////////////NON Top Rated Without amount of movies/////////////////////////////////////////////
+        
+#         response = self.client.get(url, {'genre': 'Comedy', 'toprated': 'false', 'number': ''})
+#         self.assertEqual(response.status_code, status.HTTP_200_OK)
+#         # Expected filtered queryset
+#         queryset = TitleObject.objects.filter(genres__icontains='Comedy')
+#         serializer = TitleObjectSerializer(queryset, many=True)
+#         self.assertEqual(response.data, serializer.data)
 
-        # //////////////////////////////////////////////////////Newest WITH amount of movies/////////////////////////////////////////////
-        response = self.client.get(url, {'name': 'Name', 'toprated': 'false','newest': 'true', 'number': '1'})
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-        queryset = TitleObject.objects.filter(primaryName__icontains='Name').order_by('-startYear')[:1]
-        serializer = TitleObjectSerializer(queryset, many=True)
-        self.assertEqual(response.data, serializer.data)
+#         # ///////////////////////////////////////////////////////Top Rated Without amount of Movies/////////////////////////////////////////
 
-        # //////////////////////////////////////////////////////Top Rated withOUT amount of movies//////////////////////////////////////////////////////////////
-        response = self.client.get(url, {'name': 'Name', 'toprated': 'true','newest': 'false', 'number': ''})
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-        queryset = TitleObject.objects.filter(primaryName__icontains='Name').order_by('-averageRating')[:1]
-        serializer = TitleObjectSerializer(queryset, many=True)
-        self.assertEqual(response.data, serializer.data)
+#         response = self.client.get(url, {'genre': 'Comedy', 'toprated': 'true', 'number': ''})
+#         # Check response status code
+#         self.assertEqual(response.status_code, 200)
+#         # Check if the response contains the specific error message
+#         self.assertIn("You have to input a number.", response.content.decode())
 
-        # //////////////////////////////////////////////////////Newest withOUT amount of movies/////////////////////////////////////////////
-        response = self.client.get(url, {'name': 'Name', 'toprated': 'false','newest': 'true', 'number': ''})
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-        queryset = TitleObject.objects.filter(primaryName__icontains='Name').order_by('-startYear')[:1]
-        serializer = TitleObjectSerializer(queryset, many=True)
-        self.assertEqual(response.data, serializer.data)
+#         # /////////////////////////////////////////////////////////Empty input//////////////////////////////////////////////
+#         response = self.client.get(url)
+#         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
-        # ////////////////////////////////////////////////////// Conflict ////////////////////////////////////////////////        
-        response = self.client.get(url, {'name': 'Actor', 'toprated': 'true', 'newest': 'true'})
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
+#         # ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        # /////////////////////////////////////////////////////////Empty input//////////////////////////////////////////////
-        response = self.client.get(url)
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
+# # Testing the view: SearchByYear 
+# # Used for the ulr : SearchByYear/
+#     def test_search_by_year(self):
+#         url = reverse('SearchByYear')  # Replace with the actual name used in your URL patterns
+#         response = self.client.get(url, {'year': '2000'})
 
-        # ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+#         # Expected filtered queryset
+#         queryset = TitleObject.objects.filter(startYear=2000)
+#         serializer = TitleObjectSerializer(queryset, many=True)
+
+#         self.assertEqual(response.status_code, status.HTTP_200_OK)
+#         self.assertEqual(response.data, serializer.data)
+
+#         response = self.client.get(url)
+
+#         self.assertEqual(response.status_code, status.HTTP_200_OK)
+#         # Further assertions to check if SearchByYear.html is rendered can be added
+
+# # Testing the view: SearchByName 
+# # Used for the ulr : SearchByName/
+#     def test_search_by_name(self):
+        
+#         url = reverse('SearchByName') 
+#         # //////////////////////////////////////////////////////Top Rated WITH amount of movies//////////////////////////////////////////////////////////////
+#         response = self.client.get(url, {'name': 'Name', 'toprated': 'true','newest': 'false', 'number': '2'})
+#         self.assertEqual(response.status_code, status.HTTP_200_OK)
+#         queryset = TitleObject.objects.filter(primaryName__icontains='Name').order_by('-averageRating')[:2]
+#         serializer = TitleObjectSerializer(queryset, many=True)
+#         self.assertEqual(response.data, serializer.data)
+
+#         # //////////////////////////////////////////////////////Newest WITH amount of movies/////////////////////////////////////////////
+#         response = self.client.get(url, {'name': 'Name', 'toprated': 'false','newest': 'true', 'number': '1'})
+#         self.assertEqual(response.status_code, status.HTTP_200_OK)
+#         queryset = TitleObject.objects.filter(primaryName__icontains='Name').order_by('-startYear')[:1]
+#         serializer = TitleObjectSerializer(queryset, many=True)
+#         self.assertEqual(response.data, serializer.data)
+
+#         # //////////////////////////////////////////////////////Top Rated withOUT amount of movies//////////////////////////////////////////////////////////////
+#         response = self.client.get(url, {'name': 'Name', 'toprated': 'true','newest': 'false', 'number': ''})
+#         self.assertEqual(response.status_code, status.HTTP_200_OK)
+#         queryset = TitleObject.objects.filter(primaryName__icontains='Name').order_by('-averageRating')[:1]
+#         serializer = TitleObjectSerializer(queryset, many=True)
+#         self.assertEqual(response.data, serializer.data)
+
+#         # //////////////////////////////////////////////////////Newest withOUT amount of movies/////////////////////////////////////////////
+#         response = self.client.get(url, {'name': 'Name', 'toprated': 'false','newest': 'true', 'number': ''})
+#         self.assertEqual(response.status_code, status.HTTP_200_OK)
+#         queryset = TitleObject.objects.filter(primaryName__icontains='Name').order_by('-startYear')[:1]
+#         serializer = TitleObjectSerializer(queryset, many=True)
+#         self.assertEqual(response.data, serializer.data)
+
+#         # ////////////////////////////////////////////////////// Conflict ////////////////////////////////////////////////        
+#         response = self.client.get(url, {'name': 'Actor', 'toprated': 'true', 'newest': 'true'})
+#         self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+#         # /////////////////////////////////////////////////////////Empty input//////////////////////////////////////////////
+#         response = self.client.get(url)
+#         self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+#         # ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

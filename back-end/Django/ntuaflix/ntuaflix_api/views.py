@@ -47,7 +47,7 @@ class LogoutApiView(APIView):
             # Delete the token
             Token.objects.filter(user=user).delete()
 
-            return Response({"detail": "Successfully logged out and deleted auth token."})
+            return Response({"detail": "Successfully logged out and deleted auth token."},status=status.HTTP_200_OK)
         else:
             return Response({"detail": "Invalid token format."}, status=status.HTTP_400_BAD_REQUEST)
 
@@ -84,23 +84,28 @@ class TitleBasicList(generics.ListAPIView):
         return title
 
 # Following on the link: title/<str:titleID>/
-class TitleDetailView(generics.ListAPIView):
-    serializer_class = TitleObjectSerializer
+class TitleDetailView(APIView):
+    def get(self, request, *args, **kwargs):
+        # Extract the token and authenticate the user
+        token_key = request.META.get('HTTP_AUTHORIZATION', '').replace('Token ', '')
+        try:
+            user = Token.objects.get(key=token_key).user
+        except Token.DoesNotExist:
+            return Response({"error": "Authentication credentials were not provided or are invalid."}, status=status.HTTP_401_UNAUTHORIZED)
 
-    def get_queryset(self):
-        token = self.request.META.get('HTTP_AUTHORIZATION')
-        user = Token.objects.get(key=token).user
-        print(token)
-
-        # Check if the authenticated user is a superuser
-        if user.is_active:
-            try:
-                titleID = self.kwargs.get('titleID')
-                return TitleObject.objects.filter(tconst=titleID)
-            except TitleObject.DoesNotExist:
-                return Response({"error": "Title not found"}, status=status.HTTP_404_NOT_FOUND)
-        else:
+        # Check if the user is active
+        if not user.is_active:
             return Response({"error": "Permission denied. You don't have an active user account."}, status=status.HTTP_403_FORBIDDEN)
+
+        # Fetch and serialize the title
+        titleID = self.kwargs.get('titleID')
+        try:
+            title = TitleObject.objects.get(tconst=titleID)
+        except TitleObject.DoesNotExist:
+            return Response({"error": "Title not found"}, status=status.HTTP_404_NOT_FOUND)
+
+        serializer = TitleObjectSerializer(title)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
 # Following on the link: searchtitle/
 class SearchTitleView(APIView):
@@ -110,18 +115,16 @@ class SearchTitleView(APIView):
         print(token)
 
         if user.is_active:
-            try:
-                title_query = request.GET.get('title', None)
-
-                if title_query:
-                    title_objects = TitleObject.objects.filter(originalTitle__icontains=title_query)
+            title_query = request.GET.get('title', None)
+            if title_query:
+                title_objects = TitleObject.objects.filter(originalTitle__icontains=title_query)
+                if title_objects.exists():
                     serializer = TitleObjectSerializer(title_objects, many=True)
                     return Response(serializer.data)
                 else:
-                    # Render the search form if no query is provided
-                    return render(request, 'search_title.html')
-            except TitleObject.DoesNotExist:
-                return Response({"error": "Title not found"}, status=status.HTTP_404_NOT_FOUND)
+                    return Response({"error": "No Movies Found"}, status=status.HTTP_404_NOT_FOUND)
+            else:
+                return render(request, 'search_title.html')
         else:
             return Response({"error": "Permission denied. You don't have an active user account."}, status=status.HTTP_403_FORBIDDEN)
 
@@ -176,23 +179,36 @@ class NameObjectView(generics.ListAPIView):
 
         return queryset
 
-class NameBiography(generics.ListAPIView):
-    serializer_class = NameObjectSerializer
+class NameBiography(APIView):
+    def get(self, request, *args, **kwargs):
+        # Extract token and get user
+        token_key = request.META.get('HTTP_AUTHORIZATION')
+        try:
+            user = Token.objects.get(key=token_key).user
+        except Token.DoesNotExist:
+            return Response({"error": "Authentication credentials were not provided or are invalid."}, status=status.HTTP_401_UNAUTHORIZED)
 
-    def get_queryset(self):
-        token = self.request.META.get('HTTP_AUTHORIZATION')
-        user = Token.objects.get(key=token).user
-        print(token)
+        # Check if user is active
+        if not user.is_active:
+            return Response({"error": "Permission denied. You don't have an active user account."}, status=status.HTTP_403_FORBIDDEN)
 
-        if user.is_active:
-            try:
-                nameID = self.kwargs.get('nameID')
-                return NameObject.objects.filter(nconst=nameID)
-            except Exception as e:
-                return Response({"error": str(e)}, status=400)
-        else:
-            return Response({"error": "Permission denied. You don't have an active user account."}, status=403)
+        # Proceed if user is active
+        nameID = self.kwargs.get('nameID')
+        if not nameID:
+            return Response({"error": "Name ID is required."}, status=status.HTTP_400_BAD_REQUEST)
 
+        try:
+            # Fetch the NameObject using the provided nameID
+            name_objects = NameObject.objects.filter(nconst=nameID)
+            if not name_objects.exists():
+                return Response({"error": "NameObject not found."}, status=status.HTTP_404_NOT_FOUND)
+            # Serialize the queryset
+            serializer = NameObjectSerializer(name_objects, many=True)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        except Exception as e:
+            # Log the error or send it to a monitoring system
+            return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        
 class SearchNameView(APIView):
     def get(self, request):
         token = self.request.META.get('HTTP_AUTHORIZATION')
