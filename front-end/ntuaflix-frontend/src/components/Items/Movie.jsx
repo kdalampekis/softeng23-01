@@ -32,7 +32,7 @@ Movie.propTypes = {
     title: PropTypes.string.isRequired,
     genres: PropTypes.arrayOf(PropTypes.string),
     year: PropTypes.number,
-    imgUrl: PropTypes.string, // Note that imgUrl is optional
+    imgUrl: PropTypes.string,
     onClick: PropTypes.func
 };
 
