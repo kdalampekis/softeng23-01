@@ -11,6 +11,6 @@ urlpatterns = [
     path('upload/titleratings/', UploadTitleRatings, name='upload_title_ratings'),
     path('healthcheck', health_check, name='health_check'),
     path('usermod/<str:username>/<str:password>/', add_user, name='add_user'),
-    path('users/<str:username>/', UserInfoAPIView.as_view(), name='user-info'),
-    path('resetall/', reset_all),
+    path('users/<str:username>/', UserInfoAPIView.as_view(), name='user_info'),
+    path('resetall/', reset_all, name='reset_all'),
 ]
