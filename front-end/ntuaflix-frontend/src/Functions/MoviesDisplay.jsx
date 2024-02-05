@@ -2,7 +2,7 @@
 
 import React from 'react';
 import PropTypes from 'prop-types';
-import Movie from "../components/Items/Movie"; // Make sure this path is correct
+import Movie from "../components/Items/Movie";
 
 const MoviesDisplay = ({ moviesData, onSelectMovie }) => {
     return (
@@ -27,7 +27,6 @@ const MoviesDisplay = ({ moviesData, onSelectMovie }) => {
 MoviesDisplay.propTypes = {
     moviesData: PropTypes.array.isRequired,
     onSelectMovie: PropTypes.func.isRequired
-    // Removed the unused onSearchAgain and onExit functions from propTypes
 };
 
 export default MoviesDisplay;

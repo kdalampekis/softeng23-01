@@ -351,7 +351,7 @@ footer p, .link {
 
 .movie-analytics-image, .actor-analytics-image {
     width: 100%;
-    height: 40vh;
+    height: 50vh;
     object-fit: contain;
 }
 
@@ -445,7 +445,7 @@ strong {
 
 
 /* When there is no image, the details should take up the whole width */
-.actor-details.full-width, .movie-details.full-width, .movie-analytics-content.full-width {
+.actor-details.full-width, .movie-details.full-width, .movie-analytics-content.full-width, .actor-analytics-content.full-width {
     width: 100%; /* Text takes up full width when there's no image */
 }
 

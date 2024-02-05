@@ -6,6 +6,8 @@ import { searchMovieByTitleID } from "../../api";
 const ActorAnalytics = ({ actor, onSearchAgain, onExit }) => {
     const [filmography, setFilmography] = useState([]);
     const fullImageUrl = actor.imgUrl ? actor.imgUrl.replace('{width_variable}', 'w300') : null;
+    const hasImage = actor.imgUrl && actor.imgUrl !== "\\N";
+
 
     useEffect(() => {
         let isMounted = true; // flag to handle async operations for mounted component only
@@ -60,7 +62,7 @@ const ActorAnalytics = ({ actor, onSearchAgain, onExit }) => {
                     </span>
                 </p>
             </div>
-            {fullImageUrl && (
+            {hasImage && (
                 <div className="actor-analytics-image-container">
                     <img src={fullImageUrl} alt={actor.primaryName} className="actor-analytics-image"/>
                 </div>

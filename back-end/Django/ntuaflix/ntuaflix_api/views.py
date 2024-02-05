@@ -1,19 +1,15 @@
 from django.http import JsonResponse
-from rest_framework import generics
-from .serializers import TitleObjectSerializer,NameObjectSerializer
 from django.shortcuts import render
 from rest_framework.views import APIView
 from django.db.models import Q
 from collections import Counter
 from .models import *
 from .administrator.models import *
+from .serializers import *
 from rest_framework.authtoken.models import Token
-from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework.response import Response
-from rest_framework import status
-from rest_framework.authentication import TokenAuthentication
+from rest_framework import status, generics
 from django.contrib.auth.models import User
-from django.shortcuts import get_object_or_404
 from rest_framework.permissions import AllowAny
 from django.contrib.auth import authenticate, login
 
@@ -406,22 +402,29 @@ class PressLikeButton(APIView):
                 return Response({"error": "Title not found"}, status=status.HTTP_404_NOT_FOUND)
 
             likeTconst = TitleBasic.objects.get(tconst=title_object.tconst)
-            like_object, created = Likes.objects.get_or_create(tconst=likeTconst, userId=user, liked=True)
-        
-            if created:
+            
+            # Use get instead of get_or_create
+            try:
+                like_object = Likes.objects.get(tconst=likeTconst, userId=user)
+                
+                if like_object.liked:
+                    # User has already liked, remove the like instance
+                    like_object.delete()
+                    response_data = {"status": "remove liked"}
+                elif like_object.liked is False:
+                    # User has already disliked, switch from dislike to like
+                    like_object.liked = True
+                    like_object.save()
+                    response_data = {"status": "switched to liked"}
+
+            except Likes.DoesNotExist:
+                like_object = Likes.objects.create(tconst=likeTconst, userId=user, liked=True)
+
                 # User has not liked or disliked before, create a new like instance
-                like_object.save()
-                response_data = {"status": "liked"}
-            elif like_object.liked:
-                # User has already liked, delete the like instance
-                like_object.delete()
-                response_data = {"status": "remove liked"}
-            else:
-                # User has disliked before, update the like instance to liked
                 like_object.liked = True
                 like_object.save()
                 response_data = {"status": "liked"}
-                
+
             return Response(response_data, status=status.HTTP_200_OK)
         else:
             return Response({"error": "Permission denied. You don't have an active user account."}, status=403)
@@ -439,22 +442,28 @@ class PressDislikeButton(APIView):
                 return Response({"error": "Title not found"}, status=status.HTTP_404_NOT_FOUND)
 
             dislikeTconst = TitleBasic.objects.get(tconst=title_object.tconst)
-            dislike_object, created = Likes.objects.get_or_create(tconst=dislikeTconst, userId=user, liked=False)
-        
-            if created:
-                # User has not liked or disliked before, create a new like instance
-                dislike_object.save()
-                response_data = {"status": "unliked"}
-            elif dislike_object.liked:
-                # User has already liked, update the like instance to unliked
+
+            # Use get instead of get_or_create
+            try:
+                dislike_object = Likes.objects.get(tconst=dislikeTconst, userId=user)
+                
+                if dislike_object.liked:
+                    # User has already liked, update the like instance to unliked
+                    dislike_object.liked = False
+                    dislike_object.save()
+                    response_data = {"status": "switched to disliked"}
+                elif dislike_object.liked is False:
+                    # User has already disliked, remove the dislike instance
+                    dislike_object.delete()
+                    response_data = {"status": "remove disliked"}
+            except Likes.DoesNotExist:
+                dislike_object = Likes.objects.create(tconst=dislikeTconst, userId=user, liked=False)
+
+                # User has not liked or disliked before, create a new dislike instance
                 dislike_object.liked = False
                 dislike_object.save()
-                response_data = {"status": "unliked"}
-            else:
-                # User has disliked before, delete the like instance
-                dislike_object.delete()
-                response_data = {"status": "remove unliked"}
-                
+                response_data = {"status": "disliked"}
+
             return Response(response_data, status=status.HTTP_200_OK)
         else:
             return Response({"error": "Permission denied. You don't have an active user account."}, status=403)
