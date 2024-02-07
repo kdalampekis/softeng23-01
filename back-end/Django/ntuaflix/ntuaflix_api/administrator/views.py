@@ -578,7 +578,6 @@ class UserInfoAPIView(APIView):
     def get(self, request, username):
         superuser_token = User.objects.filter(is_superuser=True).values_list('auth_token', flat=True).first()
         token = request.META.get('HTTP_AUTHORIZATION')
-        print(token)
 
         # Check if the authenticated user is a superuser
         if token == superuser_token:
@@ -603,7 +602,6 @@ def add_user(request, username, password):
         superuser_token = User.objects.filter(is_superuser=True).values_list('auth_token', flat=True).first()
         token = request.META.get('HTTP_AUTHORIZATION')
         
-        print(superuser_token)
         # Check if the authenticated user is a superuser
         if token == superuser_token:
             try:

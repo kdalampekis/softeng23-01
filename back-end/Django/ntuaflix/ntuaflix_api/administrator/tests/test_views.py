@@ -3,7 +3,8 @@ from django.urls import reverse
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.contrib.auth.models import User
 from rest_framework.authtoken.models import Token
-from ..models import TitleBasic, Names
+from ..models import *
+from ..serializers import *
 
 
 class ViewTests(TestCase):
@@ -17,6 +18,16 @@ class ViewTests(TestCase):
         
         # Create an authentication token for the superuser
         self.token = Token.objects.create(user=self.superuser)
+
+        # Create a user to insert him to the database
+        self.user = User.objects.create_user(
+            username = 'some_username',
+            email = 'some_email@example.com',
+            first_name = 'some_first_name',
+            last_name = 'some_last_name',
+            is_active = False,
+            is_superuser = False,
+        )
         
         self.title_basics_tsv_content = """tconst	titleType	primaryTitle	originalTitle	isAdult	startYear	endYear	runtimeMinutes	genres	img_url_asset
 tt0000929	short	Klebolin klebt alles	Klebolin klebt alles	0	1990	\\N	\\N	Comedy,Short	\\N"""
@@ -133,3 +144,50 @@ tt0000929	5.3	46"""
         
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.json()['status'], 'OK')
+
+
+    def test_user_info_success(self):        
+        response = self.client.get(reverse('user_info', kwargs={'username': self.user.username}) , HTTP_AUTHORIZATION=self.token.key)
+        
+        self.assertEqual(response.status_code, 200)
+        expected_data = UserSerializer(self.user).data
+        self.assertEqual(response.data, expected_data)
+
+
+    def test_user_info_not_found(self):
+        response = self.client.get(reverse('user_info', kwargs={'username': 'invalidusername'}), HTTP_AUTHORIZATION=self.token.key)
+
+        # Check if the response indicates user not found
+        self.assertEqual(response.status_code, 404)
+        self.assertEqual(response.data, {"error": "User not found"})
+
+
+    def test_add_user_inactive(self):        
+        response = self.client.post(reverse('add_user', kwargs={'username': self.user.username, 'password': self.user.password}), HTTP_AUTHORIZATION=self.token.key)
+        
+        # Check if the response indicates successful activation
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json(), {"detail": "User activated successfully."})
+
+        # Check if the user is active and the password is updated
+        self.user.refresh_from_db()
+        self.assertTrue(self.user.is_active)
+    
+    
+    def test_add_user_active(self):
+        self.user.is_active = True
+        self.user.save()
+        
+        response = self.client.post(reverse('add_user', kwargs={'username': self.user.username, 'password': self.user.password}), HTTP_AUTHORIZATION=self.token.key)
+        
+        # Check if the response indicates user is already active
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.json(), {"detail": "User is already active."})
+
+
+    def test_add_user_not_found(self):
+        response = self.client.post(reverse('add_user', kwargs={'username': 'fake_username', 'password': 'fake_password'}), HTTP_AUTHORIZATION=self.token.key)
+        
+        # Check if the response indicates user is already active
+        self.assertEqual(response.status_code, 404)
+        self.assertEqual(response.json(), {"detail": "User not found."})
