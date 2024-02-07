@@ -71,8 +71,6 @@ def UploadTitleBasics(request):
     if request.method == 'POST':
         superuser_token = User.objects.filter(is_superuser=True).values_list('auth_token', flat=True).first()
         token = request.META.get('HTTP_AUTHORIZATION')
-        print(superuser_token)
-        print(token)
 
         # Check if the authenticated user is a superuser
         if token == superuser_token:
@@ -217,7 +215,6 @@ def UploadNameBasics(request):
     if request.method == 'POST':
         superuser_token = User.objects.filter(is_superuser=True).values_list('auth_token', flat=True).first()
         token = request.META.get('HTTP_AUTHORIZATION')
-        print(token)
 
         # Check if the authenticated user is a superuser
         if token == superuser_token:
@@ -531,7 +528,6 @@ def health_check(request):
     if request.method == 'POST':
         superuser_token = User.objects.filter(is_superuser=True).values_list('auth_token', flat=True).first()
         token = request.META.get('HTTP_AUTHORIZATION')
-        print(token)
 
         # Check if the authenticated user is a superuser
         if token == superuser_token:
