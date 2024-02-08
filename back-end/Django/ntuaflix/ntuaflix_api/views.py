@@ -32,7 +32,6 @@ class LogoutApiView(APIView):
     def post(self, request, *args, **kwargs):
         # Get the token from the request header
         token_header = self.request.META.get('HTTP_AUTHORIZATION')
-        print(token_header)
         if token_header:
             # Find the user associated with the token
             try:
