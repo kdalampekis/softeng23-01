@@ -35,6 +35,11 @@ class RatingAdmin(admin.ModelAdmin):
     list_display = ['tconst', 'averageRating', 'numVotes']
     search_fields = ['tconst__originalTitle', 'averageRating', 'numVotes']
 
+class LikesAdmin(admin.ModelAdmin):
+    list_display = ['tconst', 'userId', 'liked']
+    search_fields = ['tconst__originalTitle', 'userId__username']
+    list_filter = ['liked']
+
 
 admin.site.register(TitleBasic,TitleBasicsAdmin)
 admin.site.register(TitleAka, TitleAkaAdmin)
@@ -43,4 +48,4 @@ admin.site.register(Crew, CrewAdmin)
 admin.site.register(Episode, EpisodeAdmin)
 admin.site.register(Principals, PrincipalsAdmin)
 admin.site.register(Rating, RatingAdmin)
-admin.site.register(Likes)
+admin.site.register(Likes, LikesAdmin)
