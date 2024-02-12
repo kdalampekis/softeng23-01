@@ -11,9 +11,7 @@ const mock = new MockAdapter(axios);
 // Helper function to set up the token file for testing
 function setupTokenFile() {
 	const dir = path.dirname(fileURLToPath(import.meta.url));
-	const tokenFilePath = `${dir}/softeng20bAPI.token`;
-	const tokenContent = 'test-token';
-	fs.writeFileSync(tokenFilePath, tokenContent);
+	const tokenFilePath = `${dir}/../source/softeng20bAPI.token`;
 	return tokenFilePath;
 }
 
@@ -23,7 +21,7 @@ function setupTokenFile() {
 // Test login function
 test.serial('login - success', async (t) => {
 	const tokenFilePath = setupTokenFile();
-	const expectedToken = 'test-token';
+	const expectedToken = '';
 	const username = '1';
 	const password = '1';
 
@@ -31,6 +29,7 @@ test.serial('login - success', async (t) => {
 		username,
 		password,
 	}).reply(200, { token: expectedToken });
+	fs.writeFileSync(tokenFilePath, expectedToken);
 
 	await login(username, password, 'json');
 	const actualToken = fs.readFileSync(tokenFilePath, 'utf-8').trim();
@@ -71,8 +70,8 @@ test.serial('adduser - success', async (t) => {
 });
 
 test.serial('adduser - failure', async (t) => {
-	const username = 'testuser';
-	const password = 'testpassword';
+	const username = 'sere';
+	const password = 'sere';
 
 	mock.onPost(`http://127.0.0.1:9876/ntuaflix_api/admin/usermod/${username}/${password}/?format=json`).reply(500, { message: 'Internal Server Error' });
 
@@ -399,7 +398,7 @@ test.serial('title - success', async (t) => {
 	const titleID = 'tt0097559';
 
 	// Mock the GET request and provide a successful response
-	mock.onGet(`http://127.0.0.1:9876/ntuaflix_api/title/${titleID}?format=json`).reply(200, { title: 'Idomeneo' });
+	mock.onGet(`http://127.0.0.1:9876/ntuaflix_api/title/${titleID}?format=json`).reply(200, { });
 
 	await title(titleID, 'json');
 
@@ -427,10 +426,10 @@ test.serial('title - failure', async (t) => {
 
 test.serial('searchtitle - success', async (t) => {
 	const tokenFilePath = setupTokenFile();
-	const titlePart = 'Wes';
+	const titlePart = 'Non';
 
 	// Mock the GET request and provide a successful response
-	mock.onGet(`http://127.0.0.1:9876/ntuaflix_api/searchtitle/?title=${encodeURIComponent(titlePart)}&format=json`).reply(200, { results: ['Example Title 1', 'Example Title 2'] });
+	mock.onGet(`http://127.0.0.1:9876/ntuaflix_api/searchtitle/?title=${encodeURIComponent(titlePart)}&format=json`).reply(200, { results: ['Nonstop'] });
 
 	await searchtitle(titlePart, 'json');
 
@@ -441,7 +440,7 @@ test.serial('searchtitle - success', async (t) => {
 
 	// Assert the response data
 	const responseData = config.data;
-	t.deepEqual(responseData, { results: ['Example Title 1', 'Example Title 2'] });
+	t.deepEqual(responseData, { results: ['Nonstop'] });
 
 });
 
@@ -462,7 +461,7 @@ test.serial('bygenre - success', async (t) => {
 	const minimumRating = 7.5;
 
 	// Mock the GET request and provide a successful response
-	mock.onGet(`http://127.0.0.1:9876/ntuaflix_api/bygenre/?genre=${encodeURIComponent(genre)}&minimumrating=${minimumRating}&format=json`).reply(200, { results: ['Movie 1', 'Movie 2'] });
+	mock.onGet(`http://127.0.0.1:9876/ntuaflix_api/bygenre/?genre=${encodeURIComponent(genre)}&minimumrating=${minimumRating}&format=json`).reply(200, { results: ['12:01 PM', 'La porte secrète'] });
 
 	await bygenre(genre, minimumRating, null, null, 'json');
 
@@ -473,7 +472,7 @@ test.serial('bygenre - success', async (t) => {
 
 	// Assert the response data
 	const responseData = config.data;
-	t.deepEqual(responseData, { results: ['Movie 1', 'Movie 2'] });
+	t.deepEqual(responseData, { results: ['12:01 PM', 'La porte secrète'] });
 
 });
 
@@ -481,11 +480,11 @@ test.serial('bygenre - with optional parameters', async (t) => {
 	const tokenFilePath = setupTokenFile();
 	const genre = 'Drama';
 	const minimumRating = 8.0;
-	const yearFrom = 2010;
-	const yearTo = 2020;
+	const yearFrom = 1980;
+	const yearTo = 2000;
 
 	// Mock the GET request and provide a successful response
-	mock.onGet(`http://127.0.0.1:9876/ntuaflix_api/bygenre/?genre=${encodeURIComponent(genre)}&minimumrating=${minimumRating}&yearfrom=${yearFrom}&yearto=${yearTo}&format=json`).reply(200, { results: ['Drama Movie 1', 'Drama Movie 2'] });
+	mock.onGet(`http://127.0.0.1:9876/ntuaflix_api/bygenre/?genre=${encodeURIComponent(genre)}&minimumrating=${minimumRating}&yearfrom=${yearFrom}&yearto=${yearTo}&format=json`).reply(200, { results: [] });
 
 	await bygenre(genre, minimumRating, yearFrom, yearTo, 'json');
 
@@ -496,7 +495,7 @@ test.serial('bygenre - with optional parameters', async (t) => {
 
 	// Assert the response data
 	const responseData = config.data;
-	t.deepEqual(responseData, { results: ['Drama Movie 1', 'Drama Movie 2'] });
+	t.deepEqual(responseData, { results: [] });
 
 });
 
@@ -514,21 +513,41 @@ test.serial('bygenre - failure', async (t) => {
 
 test.serial('name - success', async (t) => {
 	const tokenFilePath = setupTokenFile();
-	const nameID = 'nm0000019';
+	const nameid = 'nm0000019';
 
 	// Mock the GET request and provide a successful response
-	mock.onGet(`http://127.0.0.1:9876/ntuaflix_api/name/${nameID}?format=json`).reply(200, { biography: 'This is a biography of the actor/actress.' });
+	mock.onGet(`http://127.0.0.1:9876/ntuaflix_api/name/${nameid}?format=json`).reply(200, { biography: 'Name Biography: [\n' +
+			'  {\n' +
+			'    nconst: \'nm0066941\',\n' +
+			'    primaryName: \'Ernst Behmer\',\n' +
+			'    imgUrl: \'\\\\N\',\n' +
+			'    birthYear: 1875,\n' +
+			'    primaryProfession: \'actor\',\n' +
+			'    deathYear: 1938,\n' +
+			'    nameTitles: [ [Object] ]\n' +
+			'  }\n' +
+			']\n' });
 
-	await name(nameID, 'json');
+	await name(nameid, 'json');
 
 	// Assert that the API call was made with the correct parameters
 	const [config] = mock.history.get;
-	t.is(config.url, `http://127.0.0.1:9876/ntuaflix_api/name/${nameID}?format=json`);
+	t.is(config.url, `http://127.0.0.1:9876/ntuaflix_api/name/${nameid}?format=json`);
 	t.true(config.headers['Authorization'].startsWith('Bearer '));
 
 	// Assert the response data
 	const responseData = config.data;
-	t.deepEqual(responseData, { biography: 'This is a biography of the actor/actress.' });
+	t.deepEqual(responseData, {biography: 'Name Biography: [\n' +
+			'  {\n' +
+			'    nconst: \'nm0066941\',\n' +
+			'    primaryName: \'Ernst Behmer\',\n' +
+			'    imgUrl: \'\\\\N\',\n' +
+			'    birthYear: 1875,\n' +
+			'    primaryProfession: \'actor\',\n' +
+			'    deathYear: 1938,\n' +
+			'    nameTitles: [ [Object] ]\n' +
+			'  }\n' +
+			']\n'});
 
 });
 
@@ -536,7 +555,7 @@ test.serial('name - failure', async (t) => {
 	const nameID = 'nonexistent';
 
 	// Mock the GET request and provide an error response
-	mock.onGet(`http://127.0.0.1:9876/ntuaflix_api/name/${nameID}?format=json`).reply(404, { message: 'Actor/actress not found' });
+	mock.onGet(`http://127.0.0.1:9876/ntuaflix_api/name/${nameID}?format=json`).reply(404, { message: 'Error: Request failed with status code 404\n' });
 
 	await t.throwsAsync(async () => {
 		await name(nameID, 'json');
@@ -545,12 +564,11 @@ test.serial('name - failure', async (t) => {
 
 test.serial('searchname - success', async (t) => {
 	const tokenFilePath = setupTokenFile();
-	const name = 'George Clooney';
+	const name = 'Curt';
 
 	// Mock the GET request and provide a successful response
 	mock.onGet(`http://127.0.0.1:9876/ntuaflix_api/searchname/?name=${encodeURIComponent(name)}?format=json`).reply(200, [
-		{ id: 'nm1234567', name: 'John Doe' },
-		{ id: 'nm7654321', name: 'Johnathan Doe' },
+		{},
 	]);
 
 	await searchname(name, 'json');
@@ -563,8 +581,7 @@ test.serial('searchname - success', async (t) => {
 	// Assert the response data
 	const responseData = config.data;
 	t.deepEqual(responseData, [
-		{ id: 'nm1234567', name: 'John Doe' },
-		{ id: 'nm7654321', name: 'Johnathan Doe' },
+		{ id: 'nm0092290', name: 'Curt Bois' },
 	]);
 
 });

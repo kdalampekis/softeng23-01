@@ -216,6 +216,7 @@ class SearchNameView(APIView):
                 if name_query:
                     name_objects = NameObject.objects.filter(primaryName__icontains=name_query)
                     serializer = NameObjectSerializer(name_objects, many=True)
+                    print(serializer.data)
                     return Response(serializer.data)
                 else:
                     # Render the search form if no query is provided

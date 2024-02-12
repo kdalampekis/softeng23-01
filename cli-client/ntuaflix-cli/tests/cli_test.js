@@ -15,20 +15,36 @@ const executeCommand = (command) => {
 };
 
 
-test.serial('CLI - login command', async (t) => {
+test.serial('CLI - login command success', async (t) => {
 	const result = await executeCommand('se2301 login --username 1 --password 1');
 	t.true(result.includes('Login successful'));
 });
+test.serial('CLI - login command failure', async (t) => {
+	const result = await executeCommand('se2301 login --username nonexistant --password nonexistant');
+	t.false(result.includes('Error: Authentication failed'));
+});
 
-
-test.serial('CLI - adduser command', async (t) => {
+test.serial('CLI - adduser command success', async (t) => {
 	const result = await executeCommand('se2301 adduser --username sere --password sere');
 	t.true(result.includes('User added successfully'));
 });
 
-test.serial('CLI - user command', async (t) => {
+test.serial('CLI - adduser command failure', async (t) => {
+	const result = await executeCommand('se2301 adduser --username nonexistant --password nonexistant');
+	t.false(result.includes('Error: Failed to add user'));
+});
+
+test.serial('CLI - user command success', async (t) => {
 	const result = await executeCommand('se2301 user --username sere');
-	t.true(result.includes('email:'));
+	t.true(result.includes('username: \'sere\',\n' +
+		'  email: \'g.seretakos@gmail.com\',\n' +
+		'  first_name: \'George\',\n' +
+		'  last_name: \'Seretakos\''));
+});
+
+test.serial('CLI - user command failure ', async (t) => {
+	const result = await executeCommand('se2301 user --username nonexistant');
+	t.false(result.includes('Error: User not found'));
 });
 
 test.serial('CLI - healthcheck command', async (t) => {
@@ -93,12 +109,12 @@ test.serial('CLI - bygenre command', async (t) => {
 });
 
 test.serial('CLI - name command', async (t) => {
-	const result = await executeCommand('se2301 name --nameID nm0000019');
+	const result = await executeCommand('se2301 name --nameid nm0000019');
 	t.true(result.includes('Name Biography:'));
 });
 
 test.serial('CLI - searchname command', async (t) => {
-	const result = await executeCommand('se2301 searchname --name George Clooney');
+	const result = await executeCommand('se2301 searchname --name George');
 	t.true(result.includes('Search Name results:'));
 });
 

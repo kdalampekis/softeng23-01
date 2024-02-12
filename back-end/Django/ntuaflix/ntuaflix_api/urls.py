@@ -17,8 +17,7 @@ urlpatterns = [
     path('name/', NameObjectView.as_view(), name='name-basic-list'),
     path('name/<str:nameID>/', NameBiography.as_view(), name='name-detail'), # 25th Requirement aswell
     path('searchname/', SearchNameView.as_view(), name='search-name'),
-    
-    # ////////////////////////// ENDPOINTS REQUIREMENTS ///////////////////////////
+        # ////////////////////////// ENDPOINTS REQUIREMENTS ///////////////////////////
     
     path('SearchByGenre/', SearchByGenre.as_view(), name='SearchByGenre'),    # 17th Requirement and 1st Requirement
     path('SearchByYear/', SearchByYear.as_view(), name='SearchByYear'),    # 18th Requirement
