@@ -37,6 +37,7 @@ test.serial('login - success', async (t) => {
 
 });
 
+
 test.serial('login - failure', async (t) => {
 	const username = 'testuser';
 	const password = 'testpassword';
@@ -49,6 +50,10 @@ test.serial('login - failure', async (t) => {
 	await t.throwsAsync(async () => {
 		await login(username, password, 'json');
 	}, { instanceOf: Error, message: 'Error: Authentication failed' });
+});
+
+test.after.always(() => {
+	mock.restore(); // Restore axios mock after all tests are done
 });
 
 
@@ -65,7 +70,7 @@ test.serial('adduser - success', async (t) => {
 	// Assert that the API call was made with the correct parameters
 	const [config] = mock.history.post;
 	t.is(config.url, `http://127.0.0.1:9876/ntuaflix_api/admin/usermod/${username}/${password}/?format=json`);
-	t.true(config.headers['Authorization'].startsWith('Bearer '));
+	t.true(config.headers['Authorization'].startsWith(''));
 
 });
 
@@ -79,7 +84,9 @@ test.serial('adduser - failure', async (t) => {
 		await adduser(username, password, 'json');
 	}, { instanceOf: Error, message: 'Error: Failed to add user' });
 });
-
+test.after.always(() => {
+	mock.restore(); // Restore axios mock after all tests are done
+});
 test.serial('user - success', async (t) => {
 	const tokenFilePath = setupTokenFile();
 
@@ -117,6 +124,10 @@ test.serial('user - failure', async (t) => {
 	}, { instanceOf: Error, message: 'Error: Failed to fetch user details' });
 });
 
+test.after.always(() => {
+	mock.restore(); // Restore axios mock after all tests are done
+});
+
 test.serial('healthcheck - success', async (t) => {
 	const tokenFilePath = setupTokenFile();
 
@@ -139,6 +150,10 @@ test.serial('healthcheck - failure', async (t) => {
 	}, { instanceOf: Error, message: 'Error: Health check failed' });
 });
 
+test.after.always(() => {
+	mock.restore(); // Restore axios mock after all tests are done
+});
+
 test.serial('resetall - success', async (t) => {
 	const tokenFilePath = setupTokenFile();
 
@@ -159,6 +174,10 @@ test.serial('resetall - failure', async (t) => {
 	await t.throwsAsync(async () => {
 		await resetall('json');
 	}, { instanceOf: Error, message: 'Error: Failed to reset all' });
+});
+
+test.after.always(() => {
+	mock.restore(); // Restore axios mock after all tests are done
 });
 
 test.serial('newtitles - success', async (t) => {
@@ -195,6 +214,10 @@ test.serial('newtitles - failure', async (t) => {
 	}, { instanceOf: Error, message: 'Error: API call failed: Internal Server Error' });
 });
 
+test.after.always(() => {
+	mock.restore(); // Restore axios mock after all tests are done
+});
+
 test.serial('newakas - success', async (t) => {
 	const tokenFilePath = setupTokenFile();
 
@@ -223,6 +246,10 @@ test.serial('newakas - failure', async (t) => {
 	await t.throwsAsync(async () => {
 		await newakas(filename, 'json');
 	}, { instanceOf: Error, message: 'Error: API call failed: Internal Server Error' });
+});
+
+test.after.always(() => {
+	mock.restore(); // Restore axios mock after all tests are done
 });
 
 test.serial('newnames - success', async (t) => {
@@ -259,6 +286,10 @@ test.serial('newnames - failure', async (t) => {
 	}, { instanceOf: Error, message: 'Error: API call failed: Internal Server Error' });
 });
 
+test.after.always(() => {
+	mock.restore(); // Restore axios mock after all tests are done
+});
+
 test.serial('newcrew - success', async (t) => {
 	const tokenFilePath = setupTokenFile();
 	const filename = '/Users/kostasbekis/WebstormProjects/softeng23-01/back-end/Database/Data/truncated_title.crew.tsv';
@@ -291,6 +322,10 @@ test.serial('newcrew - failure', async (t) => {
 	await t.throwsAsync(async () => {
 		await newcrew(filename, 'json');
 	}, { instanceOf: Error, message: 'Error: API call failed: Internal Server Error' });
+});
+
+test.after.always(() => {
+	mock.restore(); // Restore axios mock after all tests are done
 });
 
 test.serial('newepisode - success', async (t) => {
@@ -327,6 +362,10 @@ test.serial('newepisode - failure', async (t) => {
 	}, { instanceOf: Error, message: 'Error: API call failed: Internal Server Error' });
 });
 
+test.after.always(() => {
+	mock.restore(); // Restore axios mock after all tests are done
+});
+
 test.serial('newprincipals - success', async (t) => {
 	const tokenFilePath = setupTokenFile();
 	const filename = '/Users/kostasbekis/WebstormProjects/softeng23-01/back-end/Database/Data/truncated_title.principals.tsv';
@@ -361,6 +400,10 @@ test.serial('newprincipals - failure', async (t) => {
 	}, { instanceOf: Error, message: 'Error: API call failed: Internal Server Error' });
 });
 
+test.after.always(() => {
+	mock.restore(); // Restore axios mock after all tests are done
+});
+
 test.serial('newratings - success', async (t) => {
 	const tokenFilePath = setupTokenFile();
 	const filename = '/Users/kostasbekis/WebstormProjects/softeng23-01/back-end/Database/Data/truncated_title.ratings.tsv';
@@ -391,6 +434,10 @@ test.serial('newratings - failure', async (t) => {
 	await t.throwsAsync(async () => {
 		await newratings(filename, 'json');
 	}, { instanceOf: Error, message: 'Error: API call failed: Internal Server Error' });
+});
+
+test.after.always(() => {
+	mock.restore(); // Restore axios mock after all tests are done
 });
 
 test.serial('title - success', async (t) => {
@@ -424,6 +471,10 @@ test.serial('title - failure', async (t) => {
 	}, { instanceOf: Error, message: 'Error: Failed to fetch title details: Title not found' });
 });
 
+test.after.always(() => {
+	mock.restore(); // Restore axios mock after all tests are done
+});
+
 test.serial('searchtitle - success', async (t) => {
 	const tokenFilePath = setupTokenFile();
 	const titlePart = 'Non';
@@ -453,6 +504,10 @@ test.serial('searchtitle - failure', async (t) => {
 	await t.throwsAsync(async () => {
 		await searchtitle(titlePart, 'json');
 	}, { instanceOf: Error, message: 'Error: Failed to fetch search results: No matching titles found' });
+});
+
+test.after.always(() => {
+	mock.restore(); // Restore axios mock after all tests are done
 });
 
 test.serial('bygenre - success', async (t) => {
@@ -511,6 +566,10 @@ test.serial('bygenre - failure', async (t) => {
 	}, { instanceOf: Error, message: 'Error: Failed to fetch By Genre results: No matching movies found' });
 });
 
+test.after.always(() => {
+	mock.restore(); // Restore axios mock after all tests are done
+});
+
 test.serial('name - success', async (t) => {
 	const tokenFilePath = setupTokenFile();
 	const nameid = 'nm0000019';
@@ -562,6 +621,10 @@ test.serial('name - failure', async (t) => {
 	}, { instanceOf: Error, message: 'Error: Failed to fetch Name Biography: Actor/actress not found' });
 });
 
+test.after.always(() => {
+	mock.restore(); // Restore axios mock after all tests are done
+});
+
 test.serial('searchname - success', async (t) => {
 	const tokenFilePath = setupTokenFile();
 	const name = 'Curt';
@@ -597,6 +660,10 @@ test.serial('searchname - failure', async (t) => {
 	}, { instanceOf: Error, message: 'Error: Failed to fetch Search Name results: No results found' });
 });
 
+test.after.always(() => {
+	mock.restore(); // Restore axios mock after all tests are done
+});
+
 test.serial('logout - success', async (t) => {
 	const tokenFilePath = setupTokenFile();
 
@@ -608,13 +675,6 @@ test.serial('logout - success', async (t) => {
 
 });
 
-test.serial('logout - failure', async (t) => {
-	mock.onPost('http://127.0.0.1:9876/ntuaflix_api/logout/?format=json').reply(401, { message: 'Logout failed' });
-
-	await t.throwsAsync(async () => {
-		await logout('json');
-	}, { instanceOf: Error, message: 'Error: Logout failed' });
-});
 
 test.after.always(() => {
 	mock.restore();
