@@ -34,6 +34,15 @@ test.serial('CLI - adduser command failure', async (t) => {
 	t.false(result.includes('Error: Failed to add user'));
 });
 
+test.serial('CLI - adduser command forbidden', async (t) => {
+	await executeCommand('se2301 logout');
+	await executeCommand('se2301 login --username sere --password sere');
+	const result = await executeCommand('se2301 adduser --username nonexistant --password nonexistant');
+	t.false(result.includes('Error: Failed to add user'));
+	await executeCommand('se2301 logout');
+	await executeCommand('se2301 login --username 1 --password 1');
+});
+
 test.serial('CLI - user command success', async (t) => {
 	const result = await executeCommand('se2301 user --username sere');
 	t.true(result.includes('username: \'sere\',\n' +
@@ -47,9 +56,19 @@ test.serial('CLI - user command failure ', async (t) => {
 	t.false(result.includes('Error: User not found'));
 });
 
-test.serial('CLI - healthcheck command', async (t) => {
+test.serial('CLI - healthcheck command success', async (t) => {
 	const result = await executeCommand('se2301 healthcheck');
 	t.true(result.includes('Health check passed'));
+});
+
+test.serial('CLI - healthcheck command forbidden', async (t) => {
+	await executeCommand('se2301 logout');
+	await executeCommand('se2301 login --username sere --password sere');
+	const result = await executeCommand('se2301 healthcheck');
+	t.false(result.includes('Error: Health check failed'));
+	await executeCommand('se2301 logout');
+	await executeCommand('se2301 login --username 1 --password 1');
+
 });
 
 test.serial('CLI - resetall command', async (t) => {
@@ -57,40 +76,146 @@ test.serial('CLI - resetall command', async (t) => {
 	t.true(result.includes('Reset all successful'));
 });
 
-test.serial('CLI - newtitles command', async (t) => {
+test.serial('CLI - resetall command forbidden', async (t) => {
+	await executeCommand('se2301 logout');
+	await executeCommand('se2301 login --username sere --password sere');
+	const result = await executeCommand('se2301 resetall');
+	t.false(result.includes('Error: Failed to reset all'));
+	await executeCommand('se2301 logout');
+	await executeCommand('se2301 login --username 1 --password 1');
+});
+
+test.serial('CLI - newtitles command success', async (t) => {
 	const result = await executeCommand('se2301 newtitles --filename /Users/kostasbekis/WebstormProjects/softeng23-01/back-end/Database/Data/truncated_title.basics.tsv');
 	t.true(result.includes('API call successful'));
 });
 
-test.serial('CLI - newnames command', async (t) => {
+test.serial('CLI - newtitles command failure', async (t) => {
+	const result = await executeCommand('se2301 newtitles --filename /Users/kostasbekis/WebstormProjects/softeng23-01/back-end/Database/Data/truncated_title.basicss.tsv');
+	t.false(result.includes('Error: API call failed'));
+});
+
+test.serial('CLI - newtitles command forbidden', async (t) => {
+	await executeCommand('se2301 logout');
+	await executeCommand('se2301 login --username sere --password sere');
+	const result = await executeCommand('se2301 newtitles --filename /Users/kostasbekis/WebstormProjects/softeng23-01/back-end/Database/Data/truncated_title.basics.tsv');
+	t.false(result.includes('Error: API call failed'));
+	await executeCommand('se2301 logout');
+	await executeCommand('se2301 login --username 1 --password 1');
+});
+
+test.serial('CLI - newnames command success', async (t) => {
 	const result = await executeCommand('se2301 newnames --filename /Users/kostasbekis/WebstormProjects/softeng23-01/back-end/Database/Data/truncated_name.basics.tsv');
 	t.true(result.includes('API call successful'));
 });
 
+test.serial('CLI - newnames command failure', async (t) => {
+	const result = await executeCommand('se2301 newnames --filename /Users/kostasbekis/WebstormProjects/softeng23-01/back-end/Database/Data/truncated_name.basicss.tsv');
+	t.false(result.includes('Error: API call failed'));
+});
 
-test.serial('CLI - newakas command', async (t) => {
+test.serial('CLI - newnames command forbidden', async (t) => {
+	await executeCommand('se2301 logout');
+	await executeCommand('se2301 login --username sere --password sere');
+	const result = await executeCommand('se2301 newnames --filename /Users/kostasbekis/WebstormProjects/softeng23-01/back-end/Database/Data/truncated_name.basics.tsv');
+	t.false(result.includes('Error: API call failed'));
+	await executeCommand('se2301 logout');
+	await executeCommand('se2301 login --username 1 --password 1');
+});
+
+test.serial('CLI - newakas command success', async (t) => {
 	const result = await executeCommand('se2301 newakas --filename /Users/kostasbekis/WebstormProjects/softeng23-01/back-end/Database/Data/truncated_title.akas.tsv');
 	t.true(result.includes('API call successful'));
 });
 
-test.serial('CLI - newcrew command', async (t) => {
+test.serial('CLI - newakas command failure', async (t) => {
+	const result = await executeCommand('se2301 newakas --filename /Users/kostasbekis/WebstormProjects/softeng23-01/back-end/Database/Data/truncated_title.aka.tsv');
+	t.false(result.includes('Error: API call failed'));
+});
+
+test.serial('CLI - newakas command forbidden', async (t) => {
+	await executeCommand('se2301 logout');
+	await executeCommand('se2301 login --username sere --password sere');
+	const result = await executeCommand('se2301 newakas --filename /Users/kostasbekis/WebstormProjects/softeng23-01/back-end/Database/Data/truncated_title.akas.tsv');
+	t.false(result.includes('Error: API call failed'));
+	await executeCommand('se2301 logout');
+	await executeCommand('se2301 login --username 1 --password 1');
+});
+
+test.serial('CLI - newcrew command success', async (t) => {
 	const result = await executeCommand('se2301 newcrew --filename /Users/kostasbekis/WebstormProjects/softeng23-01/back-end/Database/Data/truncated_title.crew.tsv');
 	t.true(result.includes('API call successful'));
 });
 
-test.serial('CLI - newepisode command', async (t) => {
+test.serial('CLI - newcrew command failure', async (t) => {
+	const result = await executeCommand('se2301 newcrew --filename /Users/kostasbekis/WebstormProjects/softeng23-01/back-end/Database/Data/truncated_title.crews.tsv');
+	t.false(result.includes('Error: API call failed'));
+});
+
+test.serial('CLI - newcrew command forbidden', async (t) => {
+	await executeCommand('se2301 logout');
+	await executeCommand('se2301 login --username sere --password sere');
+	const result = await executeCommand('se2301 newcrew --filename /Users/kostasbekis/WebstormProjects/softeng23-01/back-end/Database/Data/truncated_title.crew.tsv');
+	t.false(result.includes('Error: API call failed'));
+	await executeCommand('se2301 logout');
+	await executeCommand('se2301 login --username 1 --password 1');
+});
+
+test.serial('CLI - newepisode command success', async (t) => {
 	const result = await executeCommand('se2301 newepisode --filename /Users/kostasbekis/WebstormProjects/softeng23-01/back-end/Database/Data/truncated_title.episode.tsv');
 	t.true(result.includes('API call successful'));
 });
 
-test.serial('CLI - newprincipals command', async (t) => {
+test.serial('CLI - newepisode command failure', async (t) => {
+	const result = await executeCommand('se2301 newepisode --filename /Users/kostasbekis/WebstormProjects/softeng23-01/back-end/Database/Data/truncated_title.episodes.tsv');
+	t.false(result.includes('Error: API call failed'));
+});
+
+test.serial('CLI - newepisode command forbidden', async (t) => {
+	await executeCommand('se2301 logout');
+	await executeCommand('se2301 login --username sere --password sere');
+	const result = await executeCommand('se2301 newepisode --filename /Users/kostasbekis/WebstormProjects/softeng23-01/back-end/Database/Data/truncated_title.episode.tsv');
+	t.false(result.includes('Error: API call failed'));
+	await executeCommand('se2301 logout');
+	await executeCommand('se2301 login --username 1 --password 1');
+});
+
+test.serial('CLI - newprincipals command success', async (t) => {
 	const result = await executeCommand('se2301 newprincipals --filename /Users/kostasbekis/WebstormProjects/softeng23-01/back-end/Database/Data/truncated_title.principals.tsv');
 	t.true(result.includes('API call successful'));
 });
 
-test.serial('CLI - newratings command', async (t) => {
+test.serial('CLI - newprincipals command failure', async (t) => {
+	const result = await executeCommand('se2301 newprincipals --filename /Users/kostasbekis/WebstormProjects/softeng23-01/back-end/Database/Data/truncated_title.principal.tsv');
+	t.false(result.includes('Error: API call failed'));
+});
+
+test.serial('CLI - newprincipals command forbidden', async (t) => {
+	await executeCommand('se2301 logout');
+	await executeCommand('se2301 login --username sere --password sere');
+	const result = await executeCommand('se2301 newprincipals --filename /Users/kostasbekis/WebstormProjects/softeng23-01/back-end/Database/Data/truncated_title.principals.tsv');
+	t.false(result.includes('Error: API call failed'));
+	await executeCommand('se2301 logout');
+	await executeCommand('se2301 login --username 1 --password 1');
+});
+
+test.serial('CLI - newratings command success', async (t) => {
 	const result = await executeCommand('se2301 newratings --filename /Users/kostasbekis/WebstormProjects/softeng23-01/back-end/Database/Data/truncated_title.ratings.tsv');
 	t.true(result.includes('API call successful'));
+});
+
+test.serial('CLI - newratings command failure', async (t) => {
+	const result = await executeCommand('se2301 newratings --filename /Users/kostasbekis/WebstormProjects/softeng23-01/back-end/Database/Data/truncated_title.rating.tsv');
+	t.false(result.includes('Error: API call failed'));
+});
+
+test.serial('CLI - newratings command forbidden', async (t) => {
+	await executeCommand('se2301 logout');
+	await executeCommand('se2301 login --username sere --password sere');
+	const result = await executeCommand('se2301 newratings --filename /Users/kostasbekis/WebstormProjects/softeng23-01/back-end/Database/Data/truncated_title.ratings.tsv');
+	t.false(result.includes('Error: API call failed'));
+	await executeCommand('se2301 logout');
+	await executeCommand('se2301 login --username 1 --password 1');
 });
 
 test.serial('CLI - title command', async (t) => {

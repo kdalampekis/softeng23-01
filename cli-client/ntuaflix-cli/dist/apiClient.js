@@ -109,6 +109,7 @@ async function user(username, format) {
     const response = await axios.get(`http://127.0.0.1:9876/ntuaflix_api/admin/users/${username}?format=${format}`, {
       headers: headers
     });
+    console.log(headers);
     if (response.status === 200) {
       console.log(response.data); // Assuming the server sends user details
     } else {
@@ -214,7 +215,7 @@ async function newtitles(filename, format) {
       console.error('API call failed:', response.statusText);
     }
   } catch (error) {
-    console.error('Error:', error.message);
+    console.error('Error: API call failed');
   }
 }
 async function newakas(filename, format) {
@@ -241,7 +242,7 @@ async function newakas(filename, format) {
       console.error('API call failed:', response.statusText);
     }
   } catch (error) {
-    console.error('Error:', error.message);
+    console.error('Error: API call failed');
   }
 }
 async function newnames(filename, format) {
@@ -268,7 +269,7 @@ async function newnames(filename, format) {
       console.error('API call failed:', response.statusText);
     }
   } catch (error) {
-    console.error('Error:', error.message);
+    console.error('Error: API call failed');
   }
 }
 async function newcrew(filename, format) {
@@ -295,7 +296,7 @@ async function newcrew(filename, format) {
       console.error('API call failed:', response.statusText);
     }
   } catch (error) {
-    console.error('Error:', error.message);
+    console.error('Error: API call failed');
   }
 }
 async function newepisode(filename, format) {
@@ -322,7 +323,7 @@ async function newepisode(filename, format) {
       console.error('API call failed:', response.statusText);
     }
   } catch (error) {
-    console.error('Error:', error.message);
+    console.error('Error: API call failed');
   }
 }
 async function newprincipals(filename, format) {
@@ -349,7 +350,7 @@ async function newprincipals(filename, format) {
       console.error('API call failed:', response.statusText);
     }
   } catch (error) {
-    console.error('Error:', error.message);
+    console.error('Error: API call failed');
   }
 }
 async function newratings(filename, format) {
@@ -375,7 +376,7 @@ async function newratings(filename, format) {
       console.error('API call failed:', response.statusText);
     }
   } catch (error) {
-    console.error('Error:', error.message);
+    console.error('Error: API call failed');
   }
 }
 async function title(titleID, format) {
