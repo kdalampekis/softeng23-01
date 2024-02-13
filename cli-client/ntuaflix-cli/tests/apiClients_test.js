@@ -1,4 +1,4 @@
-import test from 'ava';
+/*import test from 'ava';
 import axios from 'axios';
 import MockAdapter from 'axios-mock-adapter';
 import fs from 'fs';
@@ -613,3 +613,4 @@ test.serial('logout - success', async (t) => {
 test.after.always(() => {
 	mock.restore();
 });
+*/

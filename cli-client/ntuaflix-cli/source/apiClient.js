@@ -37,7 +37,10 @@ async function logout(format) {
 		const currentDir = path.dirname(__filename);
 		const tokenFileName = 'softeng20bAPI.token';
 		const tokenFilePath = path.join(currentDir, tokenFileName);
-
+		if (!fs.existsSync(tokenFilePath)) {
+			console.log('Login required'); // Output a message indicating login is required
+			return; // Stop execution if directory doesn't exist
+		}
 		const token = fs.readFileSync(tokenFilePath, 'utf-8').trim();
 
 		const response = await axios.post(
@@ -69,6 +72,10 @@ async function adduser(username, password, format ) {
 	try {
 		// Read the token from the saved file
 		const homeDirectory = path.dirname(fileURLToPath(import.meta.url));
+		if (!fs.existsSync(`${homeDirectory}/softeng20bAPI.token`)) {
+			console.log('Login required'); // Output a message indicating login is required
+			return; // Stop execution if directory doesn't exist
+		}
 		const token = fs.readFileSync(`${homeDirectory}/softeng20bAPI.token`, 'utf8').trim();
 		// Set the API endpoint URL
 		const apiUrl = `http://127.0.0.1:9876/ntuaflix_api/admin/usermod/${username}/${password}/?format=${format}`;
@@ -106,6 +113,10 @@ async function user(username, format) {
 
 	try {
 		const homeDirectory = path.dirname(fileURLToPath(import.meta.url));
+		if (!fs.existsSync(`${homeDirectory}/softeng20bAPI.token`)) {
+			console.log('Login required'); // Output a message indicating login is required
+			return; // Stop execution if directory doesn't exist
+		}
 		const token = fs.readFileSync(`${homeDirectory}/softeng20bAPI.token`, 'utf8').trim();
 		const headers = {
 			'Authorization': `${token}`,
@@ -121,7 +132,6 @@ async function user(username, format) {
 			return;
 		}
 		const response = await axios.get(`http://127.0.0.1:9876/ntuaflix_api/admin/users/${username}?format=${format}`,{headers : headers});
-		console.log(headers);
 		if (response.status === 200) {
 			console.log(response.data); // Assuming the server sends user details
 		} else {
@@ -136,6 +146,10 @@ async function healthcheck(format ) {
 
 	try {
 		const homeDirectory = path.dirname(fileURLToPath(import.meta.url));
+		if (!fs.existsSync(`${homeDirectory}/softeng20bAPI.token`)) {
+			console.log('Login required'); // Output a message indicating login is required
+			return; // Stop execution if directory doesn't exist
+		}
 		const token = fs.readFileSync(`${homeDirectory}/softeng20bAPI.token`, 'utf8').trim();
 		const headers = {
 			'Authorization': `${token}`,
@@ -167,6 +181,10 @@ async function resetall(format ) {
 
 	try {
 		const homeDirectory = path.dirname(fileURLToPath(import.meta.url));
+		if (!fs.existsSync(`${homeDirectory}/softeng20bAPI.token`)) {
+			console.log('Login required'); // Output a message indicating login is required
+			return; // Stop execution if directory doesn't exist
+		}
 		const token = fs.readFileSync(`${homeDirectory}/softeng20bAPI.token`, 'utf8').trim();
 		const headers = {
 			'Authorization': `${token}`,
@@ -216,6 +234,10 @@ async function newtitles(filename, format ) {
 		const file = await readFile(filename);
 		formData.append('tsv_file', file, filename);
 		const homeDirectory = path.dirname(fileURLToPath(import.meta.url));
+		if (!fs.existsSync(`${homeDirectory}/softeng20bAPI.token`)) {
+			console.log('Login required'); // Output a message indicating login is required
+			return; // Stop execution if directory doesn't exist
+		}
 		const token = fs.readFileSync(`${homeDirectory}/softeng20bAPI.token`, 'utf8').trim();
 		const response = await axios.post(`http://127.0.0.1:9876/ntuaflix_api/admin/upload/titlebasics/`, formData, {
 			headers: {
@@ -246,6 +268,10 @@ async function newakas(filename, format ) {
 		const file = await readFile(filename);
 		formData.append('tsv_file', file, filename);
 		const homeDirectory = path.dirname(fileURLToPath(import.meta.url));
+		if (!fs.existsSync(`${homeDirectory}/softeng20bAPI.token`)) {
+			console.log('Login required'); // Output a message indicating login is required
+			return; // Stop execution if directory doesn't exist
+		}
 		const token = fs.readFileSync(`${homeDirectory}/softeng20bAPI.token`, 'utf8').trim();
 		const response = await axios.post(`http://127.0.0.1:9876/ntuaflix_api/admin/upload/titleakas/?format=${format}`, formData, {
 			headers: {
@@ -275,6 +301,10 @@ async function newnames(filename, format ) {
 		const file = await readFile(filename);
 		formData.append('tsv_file', file, filename);
 		const homeDirectory = path.dirname(fileURLToPath(import.meta.url));
+		if (!fs.existsSync(`${homeDirectory}/softeng20bAPI.token`)) {
+			console.log('Login required'); // Output a message indicating login is required
+			return; // Stop execution if directory doesn't exist
+		}
 		const token = fs.readFileSync(`${homeDirectory}/softeng20bAPI.token`, 'utf8').trim();
 		const response = await axios.post(`http://127.0.0.1:9876/ntuaflix_api/admin/upload/namebasics/?format=${format}`, formData, {
 			headers: {
@@ -305,6 +335,10 @@ async function newcrew(filename, format ) {
 		const file = await readFile(filename);
 		formData.append('tsv_file', file, filename);
 		const homeDirectory = path.dirname(fileURLToPath(import.meta.url));
+		if (!fs.existsSync(`${homeDirectory}/softeng20bAPI.token`)) {
+			console.log('Login required'); // Output a message indicating login is required
+			return; // Stop execution if directory doesn't exist
+		}
 		const token = fs.readFileSync(`${homeDirectory}/softeng20bAPI.token`, 'utf8').trim();
 		const response = await axios.post(`http://127.0.0.1:9876/ntuaflix_api/admin/upload/titlecrew/?format=${format}`, formData, {
 			headers: {
@@ -335,6 +369,10 @@ async function newepisode(filename, format ) {
 		const file = await readFile(filename);
 		formData.append('tsv_file', file, filename);
 		const homeDirectory = path.dirname(fileURLToPath(import.meta.url));
+		if (!fs.existsSync(`${homeDirectory}/softeng20bAPI.token`)) {
+			console.log('Login required'); // Output a message indicating login is required
+			return; // Stop execution if directory doesn't exist
+		}
 		const token = fs.readFileSync(`${homeDirectory}/softeng20bAPI.token`, 'utf8').trim();
 		const response = await axios.post(`http://127.0.0.1:9876/ntuaflix_api/admin/upload/titleepisode/?format=${format}`, formData, {
 			headers: {
@@ -365,6 +403,10 @@ async function newprincipals(filename, format ) {
 		const file = await readFile(filename);
 		formData.append('tsv_file', file, filename);
 		const homeDirectory = path.dirname(fileURLToPath(import.meta.url));
+		if (!fs.existsSync(`${homeDirectory}/softeng20bAPI.token`)) {
+			console.log('Login required'); // Output a message indicating login is required
+			return; // Stop execution if directory doesn't exist
+		}
 		const token = fs.readFileSync(`${homeDirectory}/softeng20bAPI.token`, 'utf8').trim();
 		const response = await axios.post(`http://127.0.0.1:9876/ntuaflix_api/admin/upload/titleprincipals/?format=${format}`, formData, {
 			headers: {
@@ -396,6 +438,10 @@ async function newratings(filename, format ) {
 		const file = await readFile(filename);
 		formData.append('tsv_file', file, filename);
 		const homeDirectory = path.dirname(fileURLToPath(import.meta.url));
+		if (!fs.existsSync(`${homeDirectory}/softeng20bAPI.token`)) {
+			console.log('Login required'); // Output a message indicating login is required
+			return; // Stop execution if directory doesn't exist
+		}
 		const token = fs.readFileSync(`${homeDirectory}/softeng20bAPI.token`, 'utf8').trim();
 
 		const response = await axios.post(`http://127.0.0.1:9876/ntuaflix_api/admin/upload/titleratings/?format=${format}`, formData, {
@@ -420,6 +466,10 @@ async function newratings(filename, format ) {
 async function title(titleID, format) {
 	format = format || 'json'; // If format is not provided, default to 'json'
 	const homeDirectory = path.dirname(fileURLToPath(import.meta.url));
+	if (!fs.existsSync(`${homeDirectory}/softeng20bAPI.token`)) {
+		console.log('Login required'); // Output a message indicating login is required
+		return; // Stop execution if directory doesn't exist
+	}
 	const token = fs.readFileSync(`${homeDirectory}/softeng20bAPI.token`, 'utf8').trim();
 	const headers = {
 		'Authorization': `${token}`,
@@ -453,6 +503,10 @@ async function searchtitle(titlepart, format ) {
 	format = format || 'json'; // If format is not provided, default to 'json'
 	const url = `${BASE_URL}/searchtitle/?title=${encodeURIComponent(titlepart)}&?format=${format}`;
 	const homeDirectory = path.dirname(fileURLToPath(import.meta.url));
+	if (!fs.existsSync(`${homeDirectory}/softeng20bAPI.token`)) {
+		console.log('Login required'); // Output a message indicating login is required
+		return; // Stop execution if directory doesn't exist
+	}
 	const token = fs.readFileSync(`${homeDirectory}/softeng20bAPI.token`, 'utf8').trim();
 	const headers = {
 		'Authorization': `${token}`,
@@ -484,6 +538,10 @@ async function bygenre(genre, minimumRating, yearFrom = null, yearTo = null, for
 	format = format || 'json'; // If format is not provided, default to 'json'
 	let url = `${BASE_URL}/bygenre/?genre=${encodeURIComponent(genre)}&minimumrating=${minimumRating}`;
 	const homeDirectory = path.dirname(fileURLToPath(import.meta.url));
+	if (!fs.existsSync(`${homeDirectory}/softeng20bAPI.token`)) {
+		console.log('Login required'); // Output a message indicating login is required
+		return; // Stop execution if directory doesn't exist
+	}
 	const token = fs.readFileSync(`${homeDirectory}/softeng20bAPI.token`, 'utf8').trim();
 	const headers = {
 		'Authorization': `${token}`,
@@ -528,6 +586,10 @@ async function name(nameID, format) {
 	format = format || 'json'; // If format is not provided, default to 'json'
 	let url = `${BASE_URL}/name/${nameID}?format=${format}`;
 	const homeDirectory = path.dirname(fileURLToPath(import.meta.url));
+	if (!fs.existsSync(`${homeDirectory}/softeng20bAPI.token`)) {
+		console.log('Login required'); // Output a message indicating login is required
+		return; // Stop execution if directory doesn't exist
+	}
 	const token = fs.readFileSync(`${homeDirectory}/softeng20bAPI.token`, 'utf8').trim();
 	const headers = {
 		'Authorization': `${token}`,
@@ -559,6 +621,10 @@ async function searchname(name, format) {
 	format = format || 'json'; // If format is not provided, default to 'json'
 	let url = `${BASE_URL}/searchname/?name=${encodeURIComponent(name)}&?format=${format}`;
 	const homeDirectory = path.dirname(fileURLToPath(import.meta.url));
+	if (!fs.existsSync(`${homeDirectory}/softeng20bAPI.token`)) {
+		console.log('Login required'); // Output a message indicating login is required
+		return; // Stop execution if directory doesn't exist
+	}
 	const token = fs.readFileSync(`${homeDirectory}/softeng20bAPI.token`, 'utf8').trim();
 	const headers = {
 		'Authorization': `${token}`,
