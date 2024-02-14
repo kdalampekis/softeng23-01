@@ -1,5 +1,7 @@
 import test from 'ava';
 import { exec } from 'child_process';
+import path from "path";
+import {fileURLToPath} from "url";
 
 // Helper function to execute a CLI command and return a Promise
 const executeCommand = (command) => {
@@ -149,24 +151,33 @@ test.serial('CLI - resetall command forbidden as not logged in', async (t) => {
 	await executeCommand('se2301 logout');
 	const result = await executeCommand('se2301 resetall');
 	t.true(result.includes('Login required'));
-	await executeCommand('se2301 logout');
 	await executeCommand('se2301 login --username 1 --password 1');
 });
 
 test.serial('CLI - newtitles command success', async (t) => {
-	const result = await executeCommand('se2301 newtitles --filename /Users/kostasbekis/WebstormProjects/softeng23-01/back-end/Database/Data/truncated_title.basics.tsv');
+	// Construct the file path dynamically using the path module
+	const __filename = fileURLToPath(import.meta.url);
+	const currentDir = path.dirname(__filename);
+	const filename = path.join(currentDir, '..', '..', '..', 'back-end', 'Database', 'Data', 'truncated_title.basics.tsv');
+	const result = await executeCommand(`se2301 newtitles --filename ${filename}`);
 	t.true(result.includes('API call successful'));
 });
 
 test.serial('CLI - newtitles command failure', async (t) => {
-	const result = await executeCommand('se2301 newtitles --filename /Users/kostasbekis/WebstormProjects/softeng23-01/back-end/Database/Data/truncated_title.basicss.tsv');
+	const __filename = fileURLToPath(import.meta.url);
+	const currentDir = path.dirname(__filename);
+	const filename = path.join(currentDir, '..', '..', '..', 'back-end', 'Database', 'Data', 'truncated_title.basicss.tsv');
+	const result = await executeCommand(`se2301 newtitles --filename ${filename}`);
 	t.false(result.includes('Error: API call failed'));
 });
 
 test.serial('CLI - newtitles command forbidden as a user', async (t) => {
 	await executeCommand('se2301 logout');
 	await executeCommand('se2301 login --username sere --password sere');
-	const result = await executeCommand('se2301 newtitles --filename /Users/kostasbekis/WebstormProjects/softeng23-01/back-end/Database/Data/truncated_title.basics.tsv');
+	const __filename = fileURLToPath(import.meta.url);
+	const currentDir = path.dirname(__filename);
+	const filename = path.join(currentDir, '..', '..', '..', 'back-end', 'Database', 'Data', 'truncated_title.basics.tsv');
+	const result = await executeCommand(`se2301 newtitles --filename ${filename}`);
 	t.false(result.includes('Error: API call failed'));
 	await executeCommand('se2301 logout');
 	await executeCommand('se2301 login --username 1 --password 1');
@@ -174,26 +185,38 @@ test.serial('CLI - newtitles command forbidden as a user', async (t) => {
 
 test.serial('CLI - newtitles command forbidden as not logged in', async (t) => {
 	await executeCommand('se2301 logout');
-	const result = await executeCommand('se2301 newtitles --filename /Users/kostasbekis/WebstormProjects/softeng23-01/back-end/Database/Data/truncated_title.basics.tsv');
+	const __filename = fileURLToPath(import.meta.url);
+	const currentDir = path.dirname(__filename);
+	const filename = path.join(currentDir, '..', '..', '..', 'back-end', 'Database', 'Data', 'truncated_title.basics.tsv');
+	const result = await executeCommand(`se2301 newtitles --filename ${filename}`);
 	t.true(result.includes('Login required'));
 	await executeCommand('se2301 logout');
 	await executeCommand('se2301 login --username 1 --password 1');
 });
 
 test.serial('CLI - newnames command success', async (t) => {
-	const result = await executeCommand('se2301 newnames --filename /Users/kostasbekis/WebstormProjects/softeng23-01/back-end/Database/Data/truncated_name.basics.tsv');
+	const __filename = fileURLToPath(import.meta.url);
+	const currentDir = path.dirname(__filename);
+	const filename = path.join(currentDir, '..', '..', '..', 'back-end', 'Database', 'Data', 'truncated_name.basics.tsv');
+	const result = await executeCommand(`se2301 newnames --filename ${filename}`);
 	t.true(result.includes('API call successful'));
 });
 
 test.serial('CLI - newnames command failure', async (t) => {
-	const result = await executeCommand('se2301 newnames --filename /Users/kostasbekis/WebstormProjects/softeng23-01/back-end/Database/Data/truncated_name.basicss.tsv');
+	const __filename = fileURLToPath(import.meta.url);
+	const currentDir = path.dirname(__filename);
+	const filename = path.join(currentDir, '..', '..', '..', 'back-end', 'Database', 'Data', 'truncated_name.basicss.tsv');
+	const result = await executeCommand(`se2301 newnames --filename ${filename}`);
 	t.false(result.includes('Error: API call failed'));
 });
 
 test.serial('CLI - newnames command forbidden as a user', async (t) => {
 	await executeCommand('se2301 logout');
 	await executeCommand('se2301 login --username sere --password sere');
-	const result = await executeCommand('se2301 newnames --filename /Users/kostasbekis/WebstormProjects/softeng23-01/back-end/Database/Data/truncated_name.basics.tsv');
+	const __filename = fileURLToPath(import.meta.url);
+	const currentDir = path.dirname(__filename);
+	const filename = path.join(currentDir, '..', '..', '..', 'back-end', 'Database', 'Data', 'truncated_name.basics.tsv');
+	const result = await executeCommand(`se2301 newnames --filename ${filename}`);
 	t.false(result.includes('Error: API call failed'));
 	await executeCommand('se2301 logout');
 	await executeCommand('se2301 login --username 1 --password 1');
@@ -201,26 +224,38 @@ test.serial('CLI - newnames command forbidden as a user', async (t) => {
 
 test.serial('CLI - newnames command forbidden as not logged in', async (t) => {
 	await executeCommand('se2301 logout');
-	const result = await executeCommand('se2301 newnames --filename /Users/kostasbekis/WebstormProjects/softeng23-01/back-end/Database/Data/truncated_name.basics.tsv');
+	const __filename = fileURLToPath(import.meta.url);
+	const currentDir = path.dirname(__filename);
+	const filename = path.join(currentDir, '..', '..', '..', 'back-end', 'Database', 'Data', 'truncated_name.basics.tsv');
+	const result = await executeCommand(`se2301 newnames --filename ${filename}`);
 	t.true(result.includes('Login required'));
 	await executeCommand('se2301 logout');
 	await executeCommand('se2301 login --username 1 --password 1');
 });
 
 test.serial('CLI - newakas command success', async (t) => {
-	const result = await executeCommand('se2301 newakas --filename /Users/kostasbekis/WebstormProjects/softeng23-01/back-end/Database/Data/truncated_title.akas.tsv');
+	const __filename = fileURLToPath(import.meta.url);
+	const currentDir = path.dirname(__filename);
+	const filename = path.join(currentDir, '..', '..', '..', 'back-end', 'Database', 'Data', 'truncated_title.akas.tsv');
+	const result = await executeCommand(`se2301 newakas --filename ${filename}`);
 	t.true(result.includes('API call successful'));
 });
 
 test.serial('CLI - newakas command failure', async (t) => {
-	const result = await executeCommand('se2301 newakas --filename /Users/kostasbekis/WebstormProjects/softeng23-01/back-end/Database/Data/truncated_title.aka.tsv');
+	const __filename = fileURLToPath(import.meta.url);
+	const currentDir = path.dirname(__filename);
+	const filename = path.join(currentDir, '..', '..', '..', 'back-end', 'Database', 'Data', 'truncated_title.aka.tsv');
+	const result = await executeCommand(`se2301 newakas --filename ${filename}`);
 	t.false(result.includes('Error: API call failed'));
 });
 
 test.serial('CLI - newakas command forbidden as a user', async (t) => {
 	await executeCommand('se2301 logout');
 	await executeCommand('se2301 login --username sere --password sere');
-	const result = await executeCommand('se2301 newakas --filename /Users/kostasbekis/WebstormProjects/softeng23-01/back-end/Database/Data/truncated_title.akas.tsv');
+	const __filename = fileURLToPath(import.meta.url);
+	const currentDir = path.dirname(__filename);
+	const filename = path.join(currentDir, '..', '..', '..', 'back-end', 'Database', 'Data', 'truncated_title.akas.tsv');
+	const result = await executeCommand(`se2301 newakas --filename ${filename}`);
 	t.false(result.includes('Error: API call failed'));
 	await executeCommand('se2301 logout');
 	await executeCommand('se2301 login --username 1 --password 1');
@@ -228,26 +263,38 @@ test.serial('CLI - newakas command forbidden as a user', async (t) => {
 
 test.serial('CLI - newakas command forbidden as not logged in', async (t) => {
 	await executeCommand('se2301 logout');
-	const result = await executeCommand('se2301 newakas --filename /Users/kostasbekis/WebstormProjects/softeng23-01/back-end/Database/Data/truncated_title.akas.tsv');
+	const __filename = fileURLToPath(import.meta.url);
+	const currentDir = path.dirname(__filename);
+	const filename = path.join(currentDir, '..', '..', '..', 'back-end', 'Database', 'Data', 'truncated_title.akas.tsv');
+	const result = await executeCommand(`se2301 newakas --filename ${filename}`);
 	t.true(result.includes('Login required'));
 	await executeCommand('se2301 logout');
 	await executeCommand('se2301 login --username 1 --password 1');
 });
 
 test.serial('CLI - newcrew command success', async (t) => {
-	const result = await executeCommand('se2301 newcrew --filename /Users/kostasbekis/WebstormProjects/softeng23-01/back-end/Database/Data/truncated_title.crew.tsv');
+	const __filename = fileURLToPath(import.meta.url);
+	const currentDir = path.dirname(__filename);
+	const filename = path.join(currentDir, '..', '..', '..', 'back-end', 'Database', 'Data', 'truncated_title.crew.tsv');
+	const result = await executeCommand(`se2301 newcrew --filename ${filename}`);
 	t.true(result.includes('API call successful'));
 });
 
 test.serial('CLI - newcrew command failure', async (t) => {
-	const result = await executeCommand('se2301 newcrew --filename /Users/kostasbekis/WebstormProjects/softeng23-01/back-end/Database/Data/truncated_title.crews.tsv');
+	const __filename = fileURLToPath(import.meta.url);
+	const currentDir = path.dirname(__filename);
+	const filename = path.join(currentDir, '..', '..', '..', 'back-end', 'Database', 'Data', 'truncated_title.crews.tsv');
+	const result = await executeCommand(`se2301 newcrew --filename ${filename}`);
 	t.false(result.includes('Error: API call failed'));
 });
 
 test.serial('CLI - newcrew command forbidden as a user', async (t) => {
 	await executeCommand('se2301 logout');
 	await executeCommand('se2301 login --username sere --password sere');
-	const result = await executeCommand('se2301 newcrew --filename /Users/kostasbekis/WebstormProjects/softeng23-01/back-end/Database/Data/truncated_title.crew.tsv');
+	const __filename = fileURLToPath(import.meta.url);
+	const currentDir = path.dirname(__filename);
+	const filename = path.join(currentDir, '..', '..', '..', 'back-end', 'Database', 'Data', 'truncated_title.crew.tsv');
+	const result = await executeCommand(`se2301 newcrew --filename ${filename}`);
 	t.false(result.includes('Error: API call failed'));
 	await executeCommand('se2301 logout');
 	await executeCommand('se2301 login --username 1 --password 1');
@@ -255,26 +302,38 @@ test.serial('CLI - newcrew command forbidden as a user', async (t) => {
 
 test.serial('CLI - newcrew command forbidden as logged in', async (t) => {
 	await executeCommand('se2301 logout');
-	const result = await executeCommand('se2301 newcrew --filename /Users/kostasbekis/WebstormProjects/softeng23-01/back-end/Database/Data/truncated_title.crew.tsv');
+	const __filename = fileURLToPath(import.meta.url);
+	const currentDir = path.dirname(__filename);
+	const filename = path.join(currentDir, '..', '..', '..', 'back-end', 'Database', 'Data', 'truncated_title.crew.tsv');
+	const result = await executeCommand(`se2301 newcrew --filename ${filename}`);
 	t.true(result.includes('Login required'));
 	await executeCommand('se2301 logout');
 	await executeCommand('se2301 login --username 1 --password 1');
 });
 
 test.serial('CLI - newepisode command success', async (t) => {
-	const result = await executeCommand('se2301 newepisode --filename /Users/kostasbekis/WebstormProjects/softeng23-01/back-end/Database/Data/truncated_title.episode.tsv');
+	const __filename = fileURLToPath(import.meta.url);
+	const currentDir = path.dirname(__filename);
+	const filename = path.join(currentDir, '..', '..', '..', 'back-end', 'Database', 'Data', 'truncated_title.episode.tsv');
+	const result = await executeCommand(`se2301 newepisode --filename ${filename}`);
 	t.true(result.includes('API call successful'));
 });
 
 test.serial('CLI - newepisode command failure', async (t) => {
-	const result = await executeCommand('se2301 newepisode --filename /Users/kostasbekis/WebstormProjects/softeng23-01/back-end/Database/Data/truncated_title.episodes.tsv');
+	const __filename = fileURLToPath(import.meta.url);
+	const currentDir = path.dirname(__filename);
+	const filename = path.join(currentDir, '..', '..', '..', 'back-end', 'Database', 'Data', 'truncated_title.episodes.tsv');
+	const result = await executeCommand(`se2301 newepisode --filename ${filename}`);
 	t.false(result.includes('Error: API call failed'));
 });
 
 test.serial('CLI - newepisode command forbidden as a user', async (t) => {
 	await executeCommand('se2301 logout');
 	await executeCommand('se2301 login --username sere --password sere');
-	const result = await executeCommand('se2301 newepisode --filename /Users/kostasbekis/WebstormProjects/softeng23-01/back-end/Database/Data/truncated_title.episode.tsv');
+	const __filename = fileURLToPath(import.meta.url);
+	const currentDir = path.dirname(__filename);
+	const filename = path.join(currentDir, '..', '..', '..', 'back-end', 'Database', 'Data', 'truncated_title.episode.tsv');
+	const result = await executeCommand(`se2301 newepisode --filename ${filename}`);
 	t.false(result.includes('Error: API call failed'));
 	await executeCommand('se2301 logout');
 	await executeCommand('se2301 login --username 1 --password 1');
@@ -282,26 +341,38 @@ test.serial('CLI - newepisode command forbidden as a user', async (t) => {
 
 test.serial('CLI - newepisode command forbidden as logged in', async (t) => {
 	await executeCommand('se2301 logout');
-	const result = await executeCommand('se2301 newepisode --filename /Users/kostasbekis/WebstormProjects/softeng23-01/back-end/Database/Data/truncated_title.episode.tsv');
+	const __filename = fileURLToPath(import.meta.url);
+	const currentDir = path.dirname(__filename);
+	const filename = path.join(currentDir, '..', '..', '..', 'back-end', 'Database', 'Data', 'truncated_title.episode.tsv');
+	const result = await executeCommand(`se2301 newepisode --filename ${filename}`);
 	t.true(result.includes('Login required'));
 	await executeCommand('se2301 logout');
 	await executeCommand('se2301 login --username 1 --password 1');
 });
 
 test.serial('CLI - newprincipals command success', async (t) => {
-	const result = await executeCommand('se2301 newprincipals --filename /Users/kostasbekis/WebstormProjects/softeng23-01/back-end/Database/Data/truncated_title.principals.tsv');
+	const __filename = fileURLToPath(import.meta.url);
+	const currentDir = path.dirname(__filename);
+	const filename = path.join(currentDir, '..', '..', '..', 'back-end', 'Database', 'Data', 'truncated_title.principals.tsv');
+	const result = await executeCommand(`se2301 newprincipals --filename ${filename}`);
 	t.true(result.includes('API call successful'));
 });
 
 test.serial('CLI - newprincipals command failure', async (t) => {
-	const result = await executeCommand('se2301 newprincipals --filename /Users/kostasbekis/WebstormProjects/softeng23-01/back-end/Database/Data/truncated_title.principal.tsv');
+	const __filename = fileURLToPath(import.meta.url);
+	const currentDir = path.dirname(__filename);
+	const filename = path.join(currentDir, '..', '..', '..', 'back-end', 'Database', 'Data', 'truncated_title.principal.tsv');
+	const result = await executeCommand(`se2301 newprincipals --filename ${filename}`);
 	t.false(result.includes('Error: API call failed'));
 });
 
 test.serial('CLI - newprincipals command forbidden as a user', async (t) => {
 	await executeCommand('se2301 logout');
 	await executeCommand('se2301 login --username sere --password sere');
-	const result = await executeCommand('se2301 newprincipals --filename /Users/kostasbekis/WebstormProjects/softeng23-01/back-end/Database/Data/truncated_title.principals.tsv');
+	const __filename = fileURLToPath(import.meta.url);
+	const currentDir = path.dirname(__filename);
+	const filename = path.join(currentDir, '..', '..', '..', 'back-end', 'Database', 'Data', 'truncated_title.principals.tsv');
+	const result = await executeCommand(`se2301 newprincipals --filename ${filename}`);
 	t.false(result.includes('Error: API call failed'));
 	await executeCommand('se2301 logout');
 	await executeCommand('se2301 login --username 1 --password 1');
@@ -309,26 +380,38 @@ test.serial('CLI - newprincipals command forbidden as a user', async (t) => {
 
 test.serial('CLI - newprincipals command forbidden as logged in', async (t) => {
 	await executeCommand('se2301 logout');
-	const result = await executeCommand('se2301 newprincipals --filename /Users/kostasbekis/WebstormProjects/softeng23-01/back-end/Database/Data/truncated_title.principals.tsv');
+	const __filename = fileURLToPath(import.meta.url);
+	const currentDir = path.dirname(__filename);
+	const filename = path.join(currentDir, '..', '..', '..', 'back-end', 'Database', 'Data', 'truncated_title.principals.tsv');
+	const result = await executeCommand(`se2301 newprincipals --filename ${filename}`);
 	t.true(result.includes('Login required'));
 	await executeCommand('se2301 logout');
 	await executeCommand('se2301 login --username 1 --password 1');
 });
 
 test.serial('CLI - newratings command success', async (t) => {
-	const result = await executeCommand('se2301 newratings --filename /Users/kostasbekis/WebstormProjects/softeng23-01/back-end/Database/Data/truncated_title.ratings.tsv');
+	const __filename = fileURLToPath(import.meta.url);
+	const currentDir = path.dirname(__filename);
+	const filename = path.join(currentDir, '..', '..', '..', 'back-end', 'Database', 'Data', 'truncated_title.ratings.tsv');
+	const result = await executeCommand(`se2301 newratings --filename ${filename}`);
 	t.true(result.includes('API call successful'));
 });
 
 test.serial('CLI - newratings command failure', async (t) => {
-	const result = await executeCommand('se2301 newratings --filename /Users/kostasbekis/WebstormProjects/softeng23-01/back-end/Database/Data/truncated_title.rating.tsv');
+	const __filename = fileURLToPath(import.meta.url);
+	const currentDir = path.dirname(__filename);
+	const filename = path.join(currentDir, '..', '..', '..', 'back-end', 'Database', 'Data', 'truncated_title.rating.tsv');
+	const result = await executeCommand(`se2301 newratings --filename ${filename}`);
 	t.false(result.includes('Error: API call failed'));
 });
 
 test.serial('CLI - newratings command forbidden as a user', async (t) => {
 	await executeCommand('se2301 logout');
 	await executeCommand('se2301 login --username sere --password sere');
-	const result = await executeCommand('se2301 newratings --filename /Users/kostasbekis/WebstormProjects/softeng23-01/back-end/Database/Data/truncated_title.ratings.tsv');
+	const __filename = fileURLToPath(import.meta.url);
+	const currentDir = path.dirname(__filename);
+	const filename = path.join(currentDir, '..', '..', '..', 'back-end', 'Database', 'Data', 'truncated_title.ratings.tsv');
+	const result = await executeCommand(`se2301 newratings --filename ${filename}`);
 	t.false(result.includes('Error: API call failed'));
 	await executeCommand('se2301 logout');
 	await executeCommand('se2301 login --username 1 --password 1');
@@ -336,7 +419,10 @@ test.serial('CLI - newratings command forbidden as a user', async (t) => {
 
 test.serial('CLI - newratings command forbidden as logged in', async (t) => {
 	await executeCommand('se2301 logout');
-	const result = await executeCommand('se2301 newratings --filename /Users/kostasbekis/WebstormProjects/softeng23-01/back-end/Database/Data/truncated_title.ratings.tsv');
+	const __filename = fileURLToPath(import.meta.url);
+	const currentDir = path.dirname(__filename);
+	const filename = path.join(currentDir, '..', '..', '..', 'back-end', 'Database', 'Data', 'truncated_title.ratings.tsv');
+	const result = await executeCommand(`se2301 newratings --filename ${filename}`);
 	t.true(result.includes('Login required'));
 	await executeCommand('se2301 logout');
 	await executeCommand('se2301 login --username 1 --password 1');
