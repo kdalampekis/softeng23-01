@@ -20,7 +20,8 @@ export default function UserPage() {
         numberOfMovies: '',
         actor: '',
         movieTitle: '',
-        movieYear: ''
+        movieYear: '',
+        format: ''
     });
     const [genre, setGenre] = useState('a genre');
     const [numberOfMovies, setNumberOfMovies] = useState('N');
@@ -47,10 +48,15 @@ export default function UserPage() {
 
     const navigate = useNavigate();
 
-    const [dataFormat, setDataFormat] = useState('');
+    const [format, setFormat] = useState('');
     const handleDataFormatChange = (event) => {
-        setDataFormat(event.target.value);
-    }
+        const newFormat = event.target.value;
+        setInputValues(prevValues => ({
+            ...prevValues,
+            format: newFormat // This updates the format within inputValues
+        }));
+    };
+
 
 
     const handleExit = () => {
@@ -130,13 +136,15 @@ export default function UserPage() {
             numberOfMovies: '',
             actor: '',
             movieTitle: '',
-            movieYear: ''
+            movieYear: '',
+            format: ''
         });
         setGenre('a genre');
         setNumberOfMovies('N');
         setActor('actor/cast member');
         setMovieTitle('movie');
         setMovieYear('year');
+        setFormat('json');
     };
 
     const handleInputChange = (name, value) => {
@@ -160,7 +168,7 @@ export default function UserPage() {
 
     return (
         <div className="body">
-            <Header />
+            <Header/>
             {!selectedMovie && !selectedActor && (
                 <DynamicHeader
                     selectedFunctionality={selectedFunctionality}
@@ -172,12 +180,9 @@ export default function UserPage() {
                 />
             )}
 
-            {searchPerformed && (
+            {searchPerformed && !selectedMovie && !selectedActor && (
                 <div className="buttonContainer">
                     <button onClick={handleSearchAgain}>Search Again</button>
-                    {(selectedMovie || selectedActor) && (
-                        <button onClick={handleGoBack}>Go Back</button>
-                    )}
                     <button onClick={handleExit}>Exit</button>
                 </div>
             )}
@@ -199,9 +204,9 @@ export default function UserPage() {
                     )
                 )
             ) : selectedActor ? (
-                <ActorAnalytics actor={selectedActor} onSearchAgain={handleSearchAgain} onExit={handleExit} />
+                <ActorAnalytics actor={selectedActor} onSearchAgain={handleSearchAgain} onExit={handleExit}/>
             ) : (
-                <MovieAnalytics movie={selectedMovie} onSearchAgain={handleSearchAgain} onExit={handleExit} />
+                <MovieAnalytics movie={selectedMovie} onSearchAgain={handleSearchAgain} onExit={handleExit}/>
             )}
 
             {!searchPerformed && (
@@ -209,7 +214,8 @@ export default function UserPage() {
                     {!selectedFunctionality && (
                         <div className="functionalitiesContainer">
                             {UserOptions.map((option, index) => (
-                                <button key={index} className="functionality" onClick={() => handleFunctionalityClick(option)}>
+                                <button key={index} className="functionality"
+                                        onClick={() => handleFunctionalityClick(option)}>
                                     {option}
                                 </button>
                             ))}
@@ -218,10 +224,10 @@ export default function UserPage() {
                     {selectedFunctionality && (
                         <div className="buttonContainer">
                             {renderOptionContent(selectedFunctionality, inputValues, handleInputChange)}
-                            <select className="button" value={dataFormat} onChange={handleDataFormatChange}>
+                            <select className="button" value={inputValues.format} onChange={handleDataFormatChange}>
                                 <option value="">Data format</option>
-                                <option value="option1">JSON</option>
-                                <option value="option2">CSV</option>
+                                <option value="json">JSON</option>
+                                <option value="csv">CSV</option>
                             </select>
                             <button onClick={() => handleSearch(selectedFunctionality, inputValues)}
                                     disabled={isSearchButtonDisabled()}>{searchButtonText}</button>
@@ -231,8 +237,17 @@ export default function UserPage() {
                 </>
             )}
 
+            {(selectedMovie || selectedActor) && (
+                <div className="buttonContainer">
+                    <button onClick={handleSearchAgain}>Search Again</button>
+                    <button onClick={handleGoBack}>Go Back</button>
+                    <button onClick={handleExit}>Exit</button>
+                </div>
+            )}
 
-            <Footer role="user" />
+
+            <Footer role="user"/>
         </div>
-    );
+    )
+        ;
 }

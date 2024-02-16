@@ -69,6 +69,10 @@ button , .button {
     border: 2px solid var(--button);
 }
 
+option {
+    text-align: center;
+}
+
 button:hover {
     background: var(--button);
     color: white;

@@ -3,13 +3,14 @@ import axios from 'axios';
 
 const BASE_URL = 'http://127.0.0.1:9876/ntuaflix_api';
 
-export const searchNBestRatedGenre = async (genre, number) => {
+export const searchNBestRatedGenre = async (genre, number, format) => {
+    format = format || 'json'; // If format is not provided, default to 'json'
     try {
-        const response = await axios.get(`${BASE_URL}/SearchByGenre/`, {
+        const response = await axios.get(`${BASE_URL}/SearchByGenre?format=${format}`, {
             params: {
                 genre: genre,
                 number: number,
-                toprated: 'true'
+                toprated: 'true',
             }
         });
         return response.data;
@@ -20,13 +21,14 @@ export const searchNBestRatedGenre = async (genre, number) => {
 };
 
 
-export const searchHighestRatedMovieOfActor = async (actorName, number = 1) => {
+export const searchHighestRatedMovieOfActor = async (actorName, number = 1, format) => {
+    format = format || 'json'; // If format is not provided, default to 'json'
     try {
-        const response = await axios.get(`${BASE_URL}/SearchByName/`, {
+        const response = await axios.get(`${BASE_URL}/SearchByName/?format=${format}`, {
             params: {
                 name: actorName,
                 toprated: 'true',
-                number: number
+                number: number,
             }
         });
         return response.data;
@@ -36,13 +38,14 @@ export const searchHighestRatedMovieOfActor = async (actorName, number = 1) => {
     }
 };
 
-export const searchByActorNewest = async (actorName) => {
+export const searchByActorNewest = async (actorName, format) => {
+    format = format || 'json'; // If format is not provided, default to 'json'
     try {
-        const response = await axios.get(`${BASE_URL}/SearchByName/`, {
+        const response = await axios.get(`${BASE_URL}/SearchByName/?format=${format}`, {
             params: {
                 name: actorName,
                 newest: 'true',
-                number: '1' // maybe change
+                number: '1', // maybe change
             }
         });
         return response.data;
@@ -52,13 +55,14 @@ export const searchByActorNewest = async (actorName) => {
     }
 };
 
-export const searchByActorNTopRated = async (actorName, numberOfMovies) => {
+export const searchByActorNTopRated = async (actorName, numberOfMovies, format) => {
+    format = format || 'json'; // If format is not provided, default to 'json'
     try {
-        const response = await axios.get(`${BASE_URL}/SearchByName/`, {
+        const response = await axios.get(`${BASE_URL}/SearchByName/?format=${format}`, {
             params: {
                 name: actorName,
                 toprated: 'true',
-                number: numberOfMovies
+                number: numberOfMovies,
             }
         });
         return response.data;
@@ -68,9 +72,10 @@ export const searchByActorNTopRated = async (actorName, numberOfMovies) => {
     }
 };
 
-export const searchMoviesByActor = async (actorName) => {
+export const searchMoviesByActor = async (actorName, format) => {
+    format = format || 'json'; // If format is not provided, default to 'json'
     try {
-        const response = await axios.get(`${BASE_URL}/SearchByName/`, {
+        const response = await axios.get(`${BASE_URL}/SearchByName/?format=${format}`, {
             params: {
                 name: actorName
                 // No 'toprated' or 'newest' parameter here
@@ -83,18 +88,32 @@ export const searchMoviesByActor = async (actorName) => {
     }
 };
 
-export const searchMoviesByGenre = async (genre, number, toprated) => {
+export const searchMoviesByGenre = async (genre, number, toprated, format) => {
+    format = format || 'json'; // If format is not provided, default to 'json'
     try {
+        let url = `${BASE_URL}/SearchByGenre`;
         const token = localStorage.getItem('softeng20bAPI.token');
         // Set up the headers with the auth token
         const headers = {
             'Authorization': `${token}`,
         };
-        const response = await axios.get(`${BASE_URL}/SearchByGenre/`, {
+        if (format === 'json') {
+            headers['Content-Type'] = 'application/json';
+            headers['Accept'] = 'application/json';
+        } else if (format === 'csv') {
+            headers['Content-Type'] = 'text/csv';
+            headers['Accept'] = 'text/csv';
+        } else {
+            console.error('Invalid format specified:', format);
+            return;
+        }
+        url += `&?format=${format}`;
+        const response = await axios.get(`${url}`, {
             params: {
                 genre: genre,
                 number: number,
                 toprated: toprated,
+                // format: format
             },
             headers : headers,
         });
@@ -105,16 +124,17 @@ export const searchMoviesByGenre = async (genre, number, toprated) => {
     }
 };
 
-export const searchMoviesByYear = async (movieYear) => {
+export const searchMoviesByYear = async (movieYear, format) => {
+    format = format || 'json'; // If format is not provided, default to 'json'
     try {
         const token = localStorage.getItem('softeng20bAPI.token');
         // Set up the headers with the auth token
         const headers = {
             'Authorization': `${token}`,
         };
-        const response = await axios.get(`${BASE_URL}/SearchByYear/`, {
+        const response = await axios.get(`${BASE_URL}/SearchByYear/?format=${format}`, {
             params: {
-                year: movieYear
+                year: movieYear,
             },
             headers : headers
         });
@@ -125,7 +145,8 @@ export const searchMoviesByYear = async (movieYear) => {
     }
 };
 
-export const searchMovieByTitle = async (movieTitle) => {
+export const searchMovieByTitle = async (movieTitle, format) => {
+    format = format || 'json'; // If format is not provided, default to 'json'
     try {
         const token = localStorage.getItem('softeng20bAPI.token');
         // Set up the headers with the auth token
@@ -133,9 +154,9 @@ export const searchMovieByTitle = async (movieTitle) => {
             'Authorization': `${token}`,
         };
 
-        const response = await axios.get(`${BASE_URL}/searchtitle/`, {
+        const response = await axios.get(`${BASE_URL}/searchtitle/?format=${format}`, {
             params: {
-                title: movieTitle
+                title: movieTitle,
             },
             headers: headers,
         });
@@ -146,16 +167,17 @@ export const searchMovieByTitle = async (movieTitle) => {
     }
 };
 
-export const searchByActorName = async (actorName) => {
+export const searchByActorName = async (actorName, format) => {
+    format = format || 'json'; // If format is not provided, default to 'json'
     try {
         const token = localStorage.getItem('softeng20bAPI.token');
         // Set up the headers with the auth token
         const headers = {
             'Authorization': `${token}`,
         };
-        const response = await axios.get(`${BASE_URL}/searchname/`, {
+        const response = await axios.get(`${BASE_URL}/searchname/?format=${format}`, {
             params: {
-                name: actorName
+                name: actorName,
             },
             headers : headers,
         });

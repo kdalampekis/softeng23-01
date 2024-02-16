@@ -9,6 +9,20 @@ import {searchMoviesByYear} from "../api";
 import {searchMovieByTitle} from "../api";
 import {searchByActorName} from "../api";
 
+// Utility function to convert CSV to JSON
+function csvToJson(csv) {
+    const lines = csv.split('\n');
+    const headers = lines[0].split(',');
+    return lines.slice(1).map(line => {
+        const values = line.split(',');
+        return headers.reduce((object, header, index) => {
+            object[header] = values[index];
+            return object;
+        }, {});
+    });
+}
+
+
 const useSearch = () => {
     const [moviesData, setMoviesData] = useState([]);
     const [actorsData, setActorsData] = useState([]);
@@ -25,7 +39,7 @@ const useSearch = () => {
 
         if (selectedFunctionality === "The N highest rated movies in a genre") {
             try {
-                const movies = await searchNBestRatedGenre(inputValues.genre, inputValues.numberOfMovies);
+                const movies = await searchNBestRatedGenre(inputValues.genre, inputValues.numberOfMovies, inputValues.format);
                 setMoviesData(movies);
                 setSearchPerformed(true);
                 console.log("Movies:", movies);
@@ -36,7 +50,7 @@ const useSearch = () => {
 
         else if (selectedFunctionality === "Highest rated movie of an actor/cast member") {
             try {
-                const movies = await searchHighestRatedMovieOfActor(inputValues.actor);
+                const movies = await searchHighestRatedMovieOfActor(inputValues.actor, inputValues.format);
                 setMoviesData(movies);
                 setSearchPerformed(true);
                 console.log("Movies:", movies);
@@ -47,7 +61,8 @@ const useSearch = () => {
 
         else if (selectedFunctionality === "Most recent movie of an actor/cast member") {
             try {
-                const movies = await searchByActorNewest(inputValues.actor);
+                const movies = await searchByActorNewest(inputValues.actor, inputValues.format);
+                console.log(inputValues.format);
                 setMoviesData(movies);
                 setSearchPerformed(true);
                 console.log("Movies:", movies);
@@ -58,7 +73,7 @@ const useSearch = () => {
 
         else if (selectedFunctionality === "The N highest rated movies of an actor/cast member") {
             try {
-                const movies = await searchByActorNTopRated(inputValues.actor, inputValues.numberOfMovies);
+                const movies = await searchByActorNTopRated(inputValues.actor, inputValues.numberOfMovies, inputValues.format);
                 setMoviesData(movies);
                 setSearchPerformed(true);
                 console.log("Movies:", movies);
@@ -69,7 +84,7 @@ const useSearch = () => {
 
         else if (selectedFunctionality === "Search movies by actor/cast member") {
             try {
-                const movies = await searchMoviesByActor(inputValues.actor);
+                const movies = await searchMoviesByActor(inputValues.actor, inputValues.format);
                 setMoviesData(movies);
                 setSearchPerformed(true);
                 console.log("Movies:", movies);
@@ -80,7 +95,7 @@ const useSearch = () => {
 
         else if (selectedFunctionality === "Search movies by genre") {
             try {
-                const movies = await searchMoviesByGenre(inputValues.genre);
+                const movies = await searchMoviesByGenre(inputValues.genre, inputValues.format);
                 setMoviesData(movies);
                 setSearchPerformed(true);
                 console.log("Movies:", movies);
@@ -91,7 +106,7 @@ const useSearch = () => {
 
         else if (selectedFunctionality === "Search movies by year") {
             try {
-                const movies = await searchMoviesByYear(inputValues.movieYear);
+                const movies = await searchMoviesByYear(inputValues.movieYear, inputValues.format);
                 setMoviesData(movies);
                 setSearchPerformed(true);
                 console.log("Movies:", movies);
@@ -102,7 +117,7 @@ const useSearch = () => {
 
         else if (selectedFunctionality === "Search movie by title") {
             try {
-                const movie = await searchMovieByTitle(inputValues.movieTitle);
+                const movie = await searchMovieByTitle(inputValues.movieTitle, inputValues.format);
                 setMoviesData(movie);
                 setSearchPerformed(true);
                 console.log("Movie Details:", movie);
@@ -112,7 +127,7 @@ const useSearch = () => {
         }
         else if (selectedFunctionality === "Actor/cast member profile") {
             try {
-                const actors = await searchByActorName(inputValues.actor);
+                const actors = await searchByActorName(inputValues.actor, inputValues.format);
                 setActorsData(actors);
                 setSearchPerformed(true);
                 console.log("Actor Details:", actors);

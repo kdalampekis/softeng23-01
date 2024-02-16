@@ -144,7 +144,40 @@ async function user(username, format) {
 async function healthcheck(format ) {
 	format = format || 'json'; // If format is not provided, default to 'json'
 
-	try {
+	try {async function healthcheck(format ) {
+		format = format || 'json'; // If format is not provided, default to 'json'
+
+		try {
+			const homeDirectory = path.dirname(fileURLToPath(import.meta.url));
+			if (!fs.existsSync(`${homeDirectory}/softeng20bAPI.token`)) {
+				console.log('Login required'); // Output a message indicating login is required
+				return; // Stop execution if directory doesn't exist
+			}
+			const token = fs.readFileSync(`${homeDirectory}/softeng20bAPI.token`, 'utf8').trim();
+			const headers = {
+				'Authorization': `${token}`,
+			};
+			if (format === 'json') {
+				headers['Content-Type'] = 'application/json';
+				headers['Accept'] = 'application/json';
+			} else if (format === 'csv') {
+				headers['Content-Type'] = 'text/csv';
+				headers['Accept'] = 'text/csv';
+			} else {
+				console.error('Invalid format specified:', format);
+				return;
+			}
+			const response = await axios.post(`http://127.0.0.1:9876/ntuaflix_api/admin/healthcheck?format=${format}`,{}, {headers:headers});
+
+			if (response.status === 200) {
+				console.log('Health check passed');
+			} else {
+				console.log('Health check failed');
+			}
+		} catch (error) {
+			console.error('Error: Health check failed');
+		}
+	}
 		const homeDirectory = path.dirname(fileURLToPath(import.meta.url));
 		if (!fs.existsSync(`${homeDirectory}/softeng20bAPI.token`)) {
 			console.log('Login required'); // Output a message indicating login is required
