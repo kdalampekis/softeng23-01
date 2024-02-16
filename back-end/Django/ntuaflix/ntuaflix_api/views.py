@@ -117,11 +117,12 @@ class SearchTitleView(APIView):
                     serializer = TitleObjectSerializer(title_objects, many=True)
                     return Response(serializer.data)
                 else:
-                    return Response({"error": "No Movies Found"}, status=status.HTTP_404_NOT_FOUND)
+                    return Response({"error": "No Movies Found"})
+                # , status=status.HTTP_404_NOT_FOUND)
             else:
                 return render(request, 'search_title.html')
-        else:
-            return Response({"error": "Permission denied. You don't have an active user account."}, status=status.HTTP_403_FORBIDDEN)
+        # else:
+        #     return Response({"error": "Permission denied. You don't have an active user account."}, status=status.HTTP_403_FORBIDDEN)
 
 class FilteredTitleObjectsView(APIView):
 
