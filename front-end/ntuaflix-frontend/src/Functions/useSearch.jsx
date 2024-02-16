@@ -100,7 +100,7 @@ const useSearch = () => {
             }
         }
 
-        else if (selectedFunctionality === "Movie analytics" || selectedFunctionality === "Add a like/dislike to a movie") {
+        else if (selectedFunctionality === "Search movie by title") {
             try {
                 const movie = await searchMovieByTitle(inputValues.movieTitle);
                 setMoviesData(movie);

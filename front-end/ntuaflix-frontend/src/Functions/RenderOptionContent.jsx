@@ -34,18 +34,6 @@ const renderOptionContent = (option, inputValues, handleInputChange) => {
                     />
                 </div>
             );
-        case "Add a like/dislike to a movie":
-            return (
-                <div className= "query">
-                    <input
-                        type="text"
-                        value={inputValues.movieTitle || ""}
-                        onChange={(e) => handleInputChange('movieTitle', e.target.value)}
-                        placeholder="Enter movie title"
-                        required
-                    />
-                </div>
-            );
         case "Most recent movie of an actor/cast member":
             return (
                 <div className= "query">
@@ -101,7 +89,7 @@ const renderOptionContent = (option, inputValues, handleInputChange) => {
                     />
                 </div>
             );
-        case "Movie analytics":
+        case "Search movie by title":
             return (
                 <div className= "query">
                     <input

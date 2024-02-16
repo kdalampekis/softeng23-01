@@ -20,11 +20,6 @@ const DynamicHeader = ({ selectedFunctionality, numberOfMovies, genre, actor, mo
                     </span>
             )}
 
-            {selectedFunctionality === "Add a like/dislike to a movie" && (
-                <span>
-                    Add a like/dislike to <span className="dynamic-content">{movieTitle}</span>
-                </span>
-            )}
 
             {selectedFunctionality === "Most recent movie of an actor/cast member" && (
                 <span>
@@ -51,9 +46,9 @@ const DynamicHeader = ({ selectedFunctionality, numberOfMovies, genre, actor, mo
                     </span>
             )}
 
-            {selectedFunctionality === "Movie analytics" && (
+            {selectedFunctionality === "Search movie by title" && (
                 <span>
-                    Dive into the analytics of <span className="dynamic-content">{movieTitle}</span>
+                    Search movie by title <span className="dynamic-content">{movieTitle}</span>
                 </span>
             )}
 

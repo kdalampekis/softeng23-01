@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, {useEffect, useState} from "react";
 import Header from "./Header";
 import "../styles.css";
 import renderOptionContent from "../Functions/RenderOptionContent";
@@ -9,7 +9,8 @@ import MoviesDisplay from "../Functions/MoviesDisplay";
 import useSearch from "../Functions/useSearch";
 import MovieAnalytics from "./Items/MovieAnalytics";
 import ActorsDisplay from "../Functions/ActorsDisplay";
-import ActorAnalytics from "./Items/ActorAnalytics"; // Import ActorAnalytics if you've created it
+import ActorAnalytics from "./Items/ActorAnalytics";
+import {useNavigate} from "react-router-dom"; // Import ActorAnalytics if you've created it
 
 
 export default function UserPage() {
@@ -35,15 +36,76 @@ export default function UserPage() {
     const functionalityInputRequirements = {
         "The N highest rated movies in a genre": ['numberOfMovies', 'genre'],
         "Highest rated movie of an actor/cast member": ['actor'],
-        "Add a like/dislike to a movie": ['movieTitle'],
         "Most recent movie of an actor/cast member": ['actor'],
         "The N highest rated movies of an actor/cast member": ['numberOfMovies', 'actor'],
         "Search movies by actor/cast member": ['actor'],
         "Search movies by genre": ['genre'],
-        "Movie analytics": ['movieTitle'],
+        "Search movie by title": ['movieTitle'],
         "Search movies by year": ['movieYear'],
         "Actor/cast member profile": ['actor'],
     };
+
+    const navigate = useNavigate();
+
+    const [dataFormat, setDataFormat] = useState('');
+    const handleDataFormatChange = (event) => {
+        setDataFormat(event.target.value);
+    }
+
+
+    const handleExit = () => {
+        setSearchButtonText("Search");
+        setSelectedFunctionality(null);
+        updateSearchPerformed(false);
+        resetInputFields();
+        setSelectedMovie(null);
+        setSelectedActor(null);
+    };
+
+    const handleSearchAgain = () => {
+        updateSearchPerformed(false);
+        resetInputFields();
+        setSelectedMovie(null);
+        setSelectedActor(null);
+    };
+
+    const handleGoBack = () => {
+        if (selectedMovie || selectedActor) {
+            setSelectedMovie(null);
+            setSelectedActor(null);
+        } else if (searchPerformed) {
+            handleSearchAgain();
+        } else {
+            handleExit();
+        }
+    };
+
+    useEffect(() => {
+        // Function to decide which action to trigger on back navigation
+        const handleBackNavigation = () => {
+            // Determine whether "Go Back" is applicable based on your state
+            if (canGoBack()) {
+                handleGoBack();
+            } else {
+                handleExit();
+            }
+        };
+
+        // Determine if the "Go Back" condition is met
+        const canGoBack = () => {
+            return selectedFunctionality; // Or any other condition you define
+        };
+
+        // Inject a state into history to capture the "back" navigation
+        window.history.pushState({ page: "UserPage" }, "");
+
+        // Listen to popstate event triggered by browser navigation
+        window.addEventListener('popstate', handleBackNavigation);
+
+        // Cleanup listener on component unmount
+        return () => window.removeEventListener('popstate', handleBackNavigation);
+    }, [selectedFunctionality]); // Add other dependencies as needed
+
 
     const isSearchButtonDisabled = () => {
         if (!selectedFunctionality) return true;
@@ -53,9 +115,6 @@ export default function UserPage() {
 
         return requiredInputs.some(input => !inputValues[input]);
     };
-
-
-
 
     const handleMovieSelect = (movie) => {
         setSelectedMovie(movie);
@@ -94,29 +153,9 @@ export default function UserPage() {
 
     const handleFunctionalityClick = (option) => {
         setSelectedFunctionality(option);
-        setSearchButtonText(option === "Add a like/dislike to a movie" ? "Add" : "Search");
-    };
-
-    const handleExit = () => {
         setSearchButtonText("Search");
-        setSelectedFunctionality(null);
-        updateSearchPerformed(false);
-        resetInputFields();
-        setSelectedMovie(null);
-        setSelectedActor(null);
     };
 
-    const handleSearchAgain = () => {
-        updateSearchPerformed(false);
-        resetInputFields();
-        setSelectedMovie(null);
-        setSelectedActor(null);
-    };
-
-    const handleGoBack = () => {
-        setSelectedMovie(null);
-        setSelectedActor(null);
-    };
 
 
     return (
@@ -131,6 +170,16 @@ export default function UserPage() {
                     movieTitle={movieTitle}
                     movieYear={movieYear}
                 />
+            )}
+
+            {searchPerformed && (
+                <div className="buttonContainer">
+                    <button onClick={handleSearchAgain}>Search Again</button>
+                    {(selectedMovie || selectedActor) && (
+                        <button onClick={handleGoBack}>Go Back</button>
+                    )}
+                    <button onClick={handleExit}>Exit</button>
+                </div>
             )}
 
             {(!selectedActor && !selectedMovie) ? (
@@ -169,6 +218,11 @@ export default function UserPage() {
                     {selectedFunctionality && (
                         <div className="buttonContainer">
                             {renderOptionContent(selectedFunctionality, inputValues, handleInputChange)}
+                            <select className="button" value={dataFormat} onChange={handleDataFormatChange}>
+                                <option value="">Data format</option>
+                                <option value="option1">JSON</option>
+                                <option value="option2">CSV</option>
+                            </select>
                             <button onClick={() => handleSearch(selectedFunctionality, inputValues)}
                                     disabled={isSearchButtonDisabled()}>{searchButtonText}</button>
                             <button onClick={handleExit}>Go Back</button>
@@ -177,15 +231,6 @@ export default function UserPage() {
                 </>
             )}
 
-            {searchPerformed && (
-                <div className="buttonContainer">
-                    <button onClick={handleSearchAgain}>Search Again</button>
-                    {(selectedMovie || selectedActor) && (
-                        <button onClick={handleGoBack}>Go Back</button>
-                    )}
-                    <button onClick={handleExit}>Exit</button>
-                </div>
-            )}
 
             <Footer role="user" />
         </div>
