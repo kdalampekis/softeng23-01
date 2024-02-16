@@ -30,7 +30,7 @@ def main():
                 return
         
         # Append the default port if not already specified
-        sys.argv.insert(runserver_index + 1, '9876')
+        sys.argv.insert(runserver_index + 1, 'localhost:9876')
     
     execute_from_command_line(sys.argv)
 
