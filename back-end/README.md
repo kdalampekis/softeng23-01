@@ -7,7 +7,7 @@
 ## 1ον: Δημιουργία Virtual Environment και εγκατλασταση αναγκαίων πακέτων
 -  To do this, the following steps must be executed:
 -  
--  Assume you are in the folder C:/Software_Engineer_2023/softeng23/softeng23_01 (where you have cloned the git repo in the folder: C:/Software_Engineer_2023/softeng23/softeng23_01)
+### Assume you are in the folder C:/Software_Engineer_2023/softeng23/softeng23_01 (where you have cloned the git repo in the folder: C:/Software_Engineer_2023/softeng23/softeng23_01)
 
   ```bash
 
@@ -17,21 +17,21 @@
   pip install -r requirements.txt
 
   ```
--  Now the structure of the folder C:/Software_Engineer_2023/soft_eng_01 is as follows:
--  
--  softeng23_01
--  
--  ntua_env
--  
--  Now, having activated and with the correct packages in our environment, we will head to the back-end folder:
--  
--  cd softeng23_01/back-end/Django/ntuaflix
--  
--  Now we will run our server (i.e., the back-end) through the command:
--  
--  python manage.py runserver
--  
--  We head to the link that appears
+### Now the structure of the folder C:/Software_Engineer_2023/soft_eng_01 is as follows:
+
+```bash
+softeng23_01
+ntua_env
+```
+### Now, having activated and with the correct packages in our environment, we will head to the back-end folder:
+```bash
+cd softeng23_01/back-end/Django/ntuaflix
+```
+### Now we will run our server (i.e., the back-end) through the command:
+```bash
+python manage.py runserver
+```
+### We head to the link that appears
 
 
 
