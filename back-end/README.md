@@ -1,34 +1,45 @@
 # Back-end
 
-
-
-Ενδεικτικά περιεχόμενα:
-
-- Η εφαρμογή χρησιμοποιεί την #Django που είναι framework της Python
-- Η υλοποίηση της βάσης γίνεται "αυτόματα" σε sqlite3 όπως ορίζει η Django.
-- Η βάση μπορεί να βρεθεί στο αρχείο db.sqlite3
-- Το backend framework ψρειάζεται ορισμένα βήματα για να λειτουργήσει:
+- The application uses #Django, which is a Python framework.
+- The database implementation is done "automatically" in sqlite3 as defined by Django.
+- The database can be found in the db.sqlite3 file.
+- The backend framework requires certain steps to operate:
 ## 1ον: Δημιουργία Virtual Environment και εγκατλασταση αναγκαίων πακέτων
--  Αυτό για να γίνει θα πρέπει να εκτελεστούν τα παρακάτω βήματα:
--  Έστω ότι βρίσκεστε στον φάκελο C:/Software_Engineer_2023/softeng23/softeng23_01 ( όπου έχετε κάνει clone το git repo στον φάκελο: C:/Software_Engineer_2023/softeng23/softeng23_01)
-
--  pip install virtualenv
--  virtualenv ntua_env
--  ntua_env\scripts\activate  
--  pip install -r requirements.txt
+-  To do this, the following steps must be executed:
 -  
--  Τώρα η δομή του φακέλου C:/Software_Engineer_2023/soft_eng_01 είναι η εξής:
--   softeng23_01 
--   ntua_env
+-  Assume you are in the folder C:/Software_Engineer_2023/softeng23/softeng23_01 (where you have cloned the git repo in the folder: C:/Software_Engineer_2023/softeng23/softeng23_01)
+
+  ```bash
+
+  pip install virtualenv
+  virtualenv ntua_env
+  ntua_env\scripts\activate
+  pip install -r requirements.txt
+
+  ```
+-  Now the structure of the folder C:/Software_Engineer_2023/soft_eng_01 is as follows:
+-  
+-  softeng23_01
+-  
+-  ntua_env
+-  
+-  Now, having activated and with the correct packages in our environment, we will head to the back-end folder:
+-  
+-  cd softeng23_01/back-end/Django/ntuaflix
+-  
+-  Now we will run our server (i.e., the back-end) through the command:
+-  
+-  python manage.py runserver
+-  
+-  We head to the link that appears
+
+
+
+
+
+
 -   
--   Τώρα έχοντας ενεργοποιημένο και με τα σωστά πακέτα το environment μας θα κατευθυνθούμε στον φάκελο του back-end:
--   
--   cd softeng23_01/back-end/Django/ntuaflix
--   Τώρα θα τρέξουμε τον server μας (Δηλαδή το back-end) μέσω της εντολής:
--   
--   python manage.py runserver
--   Κατευθυνόμαστε στο link που μας εμφανίζεται
--   
+
 
 
 
