@@ -100,7 +100,6 @@ class TitleBasicListViewTest(APITestCase):
         response = self.client.get(self.url_name_bio)
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)  # Assuming your view correctly handles unauthorized access
 
-######## Problem with is_active=False #####################
         
     def test_get_name_biography_inactive_user(self):
         self.client.credentials(HTTP_AUTHORIZATION=self.inactive_user_token.key)

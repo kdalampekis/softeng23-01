@@ -1,5 +1,5 @@
 from django.test import TestCase
-from ntuaflix_api.administrator.models import *
+from ..models import *
 
 class BasicModelsTest(TestCase):
     def setUp(self):
@@ -66,16 +66,25 @@ class BasicModelsTest(TestCase):
             averageRating=8.5,
             numVotes=100
         )
+        
+        self.user = User.objects.create_user(
+            username='testuser',
+            password='testpassword'
+        )
+        
+        self.likes = Likes.objects.create(
+            tconst=self.title_basic,
+            userId=self.user,
+            liked=True
+        )
+
 
     def test_title_object_creation(self):
         # Test that the title object is created correctly
         self.assertEqual(self.title_basic.tconst, "tt1234567")
         self.assertEqual(self.title_basic.titleType, "movie")
-        
         self.assertEqual(self.title_basic.primaryTitle,"Test Primary Title")
         self.assertEqual(self.title_basic.originalTitle, "Test Original Title")
-
-
         self.assertEqual(self.title_basic.isAdult,0)
         self.assertEqual(self.title_basic.startYear,2020)
         self.assertEqual(self.title_basic.endYear,2021)
@@ -83,9 +92,6 @@ class BasicModelsTest(TestCase):
         self.assertEqual(self.title_basic.genres,"Comedy,Drama")
         self.assertEqual(self.title_basic.img_url_asset,"https://example.com/image.jpg")
         
-        
-        # Add more assertions for other fields
-
     def test_title_aka_creation(self):
         # Test that the TitleAka object is created correctly
         self.assertEqual(self.title_aka.ordering, 1)
@@ -98,7 +104,6 @@ class BasicModelsTest(TestCase):
 
     def test_names_creation(self):
         # Test that the Names object is created correctly
-        
         self.assertEqual(self.names.nconst, "nm1234567")
         self.assertEqual(self.names.primaryName, "John Doe")
         self.assertEqual(self.names.birthYear, 1980)
@@ -121,6 +126,7 @@ class BasicModelsTest(TestCase):
         self.assertEqual(self.episode.episodeNumber, 2)
 
     def test_principals_creation(self):
+        # Test that the Principals object is created correctly
         self.assertEqual(self.principals.tconst.tconst, "tt1234567")
         self.assertEqual(self.principals.nconst.nconst, "nm1234567")
         self.assertEqual(self.principals.ordering, 1)
@@ -129,10 +135,14 @@ class BasicModelsTest(TestCase):
         self.assertEqual(self.principals.characters, "Main Character")
         self.assertEqual(self.principals.img_url_asset,"https://example.com/image.jpg")
 
-
     def test_rating_creation(self):
         # Test that the Rating object is created correctly
         self.assertEqual(self.rating.tconst.tconst, "tt1234567")
         self.assertEqual(self.rating.averageRating, 8.5)
         self.assertEqual(self.rating.numVotes, 100)
-    # You can add more tests to cover different aspects of your model, such as custom methods, model validation, etc.
+
+    def test_like_creation(self):
+        # Test that the Likes object is created correctly
+        self.assertEqual(self.likes.tconst.tconst, "tt1234567")
+        self.assertEqual(self.likes.userId.username, 'testuser')
+        self.assertTrue(self.likes.liked)
