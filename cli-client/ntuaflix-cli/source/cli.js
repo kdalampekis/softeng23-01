@@ -25,7 +25,7 @@ const cli = meow(`
     $ se2301 title --titleID <title_ID> (--format <json/csv>)
     $ se2301 searchtitle --titlepart <title_part> (--format <json/csv>)
     $ se2301 bygenre --genre <genre> --min <min_rating> (--from <from_year>) (--to <to_year>) (--format <json/csv>)
-    $ se2301 name --nameid <name_ID> (--format <json/csv>)
+    $ se2301 name --nameid <name_id> (--format <json/csv>)
     $ se2301 searchname --name <searched_name> (--format <json/csv>)
 
   Options

@@ -25,7 +25,7 @@ async function login(username, password, format) {
 			console.log('Login failed');
 		}
 	} catch (error) {
-		console.error('Error:', error.message);
+		console.error('Error: Authentication failed');
 	}
 }
 
@@ -37,7 +37,10 @@ async function logout(format) {
 		const currentDir = path.dirname(__filename);
 		const tokenFileName = 'softeng20bAPI.token';
 		const tokenFilePath = path.join(currentDir, tokenFileName);
-
+		if (!fs.existsSync(tokenFilePath)) {
+			console.log('Login required'); // Output a message indicating login is required
+			return; // Stop execution if directory doesn't exist
+		}
 		const token = fs.readFileSync(tokenFilePath, 'utf-8').trim();
 
 		const response = await axios.post(
@@ -69,8 +72,11 @@ async function adduser(username, password, format ) {
 	try {
 		// Read the token from the saved file
 		const homeDirectory = path.dirname(fileURLToPath(import.meta.url));
+		if (!fs.existsSync(`${homeDirectory}/softeng20bAPI.token`)) {
+			console.log('Login required'); // Output a message indicating login is required
+			return; // Stop execution if directory doesn't exist
+		}
 		const token = fs.readFileSync(`${homeDirectory}/softeng20bAPI.token`, 'utf8').trim();
-		console.log(token);
 		// Set the API endpoint URL
 		const apiUrl = `http://127.0.0.1:9876/ntuaflix_api/admin/usermod/${username}/${password}/?format=${format}`;
 
@@ -88,7 +94,6 @@ async function adduser(username, password, format ) {
 			console.error('Invalid format specified:', format);
 			return;
 		}
-		console.log(headers);
 
 		// Make the POST request with the headers
 		const response = await axios.post(apiUrl, null, { headers: headers });
@@ -98,7 +103,7 @@ async function adduser(username, password, format ) {
 			console.log('Failed to add user');
 		}
 	} catch (error) {
-		console.error('Error:', error.message);
+		console.error('Error: Failed to add user');
 	}
 }
 
@@ -108,8 +113,11 @@ async function user(username, format) {
 
 	try {
 		const homeDirectory = path.dirname(fileURLToPath(import.meta.url));
+		if (!fs.existsSync(`${homeDirectory}/softeng20bAPI.token`)) {
+			console.log('Login required'); // Output a message indicating login is required
+			return; // Stop execution if directory doesn't exist
+		}
 		const token = fs.readFileSync(`${homeDirectory}/softeng20bAPI.token`, 'utf8').trim();
-		console.log(token);
 		const headers = {
 			'Authorization': `${token}`,
 		};
@@ -123,16 +131,14 @@ async function user(username, format) {
 			console.error('Invalid format specified:', format);
 			return;
 		}
-		console.log(headers);
 		const response = await axios.get(`http://127.0.0.1:9876/ntuaflix_api/admin/users/${username}?format=${format}`,{headers : headers});
-
 		if (response.status === 200) {
 			console.log(response.data); // Assuming the server sends user details
 		} else {
 			console.log('User not found');
 		}
 	} catch (error) {
-		console.error('Error:', error.message);
+		console.error('Error: User not found');
 	}
 }
 async function healthcheck(format ) {
@@ -140,8 +146,11 @@ async function healthcheck(format ) {
 
 	try {
 		const homeDirectory = path.dirname(fileURLToPath(import.meta.url));
+		if (!fs.existsSync(`${homeDirectory}/softeng20bAPI.token`)) {
+			console.log('Login required'); // Output a message indicating login is required
+			return; // Stop execution if directory doesn't exist
+		}
 		const token = fs.readFileSync(`${homeDirectory}/softeng20bAPI.token`, 'utf8').trim();
-		console.log(token);
 		const headers = {
 			'Authorization': `${token}`,
 		};
@@ -155,7 +164,6 @@ async function healthcheck(format ) {
 			console.error('Invalid format specified:', format);
 			return;
 		}
-		console.log(headers);
 		const response = await axios.post(`http://127.0.0.1:9876/ntuaflix_api/admin/healthcheck?format=${format}`,{}, {headers:headers});
 
 		if (response.status === 200) {
@@ -164,7 +172,7 @@ async function healthcheck(format ) {
 			console.log('Health check failed');
 		}
 	} catch (error) {
-		console.error('Error:', error.message);
+		console.error('Error: Health check failed');
 	}
 }
 
@@ -173,8 +181,11 @@ async function resetall(format ) {
 
 	try {
 		const homeDirectory = path.dirname(fileURLToPath(import.meta.url));
+		if (!fs.existsSync(`${homeDirectory}/softeng20bAPI.token`)) {
+			console.log('Login required'); // Output a message indicating login is required
+			return; // Stop execution if directory doesn't exist
+		}
 		const token = fs.readFileSync(`${homeDirectory}/softeng20bAPI.token`, 'utf8').trim();
-		console.log(token);
 		const headers = {
 			'Authorization': `${token}`,
 		};
@@ -188,8 +199,7 @@ async function resetall(format ) {
 			console.error('Invalid format specified:', format);
 			return;
 		}
-		console.log(headers);
-		const response = await axios.post(`http://127.0.0.1:9876/ntuaflix_api/admin/resetall/?format=${format}`, {headers:headers});
+		const response = await axios.post(`http://127.0.0.1:9876/ntuaflix_api/admin/resetall/?format=${format}`, {},  {headers:headers});
 
 		if (response.status === 200) {
 			console.log('Reset all successful');
@@ -197,7 +207,7 @@ async function resetall(format ) {
 			console.log('Failed to reset all');
 		}
 	} catch (error) {
-		console.error('Error:', error.message);
+		console.error('Error: Failed to reset all');
 	}
 }
 
@@ -224,8 +234,11 @@ async function newtitles(filename, format ) {
 		const file = await readFile(filename);
 		formData.append('tsv_file', file, filename);
 		const homeDirectory = path.dirname(fileURLToPath(import.meta.url));
+		if (!fs.existsSync(`${homeDirectory}/softeng20bAPI.token`)) {
+			console.log('Login required'); // Output a message indicating login is required
+			return; // Stop execution if directory doesn't exist
+		}
 		const token = fs.readFileSync(`${homeDirectory}/softeng20bAPI.token`, 'utf8').trim();
-		console.log(token);
 		const response = await axios.post(`http://127.0.0.1:9876/ntuaflix_api/admin/upload/titlebasics/`, formData, {
 			headers: {
 				'Authorization': `${token}`,
@@ -239,7 +252,7 @@ async function newtitles(filename, format ) {
 			console.error('API call failed:', response.statusText);
 		}
 	} catch (error) {
-		console.error('Error:', error.message);
+		console.error('Error: API call failed');
 	}
 }
 
@@ -255,8 +268,11 @@ async function newakas(filename, format ) {
 		const file = await readFile(filename);
 		formData.append('tsv_file', file, filename);
 		const homeDirectory = path.dirname(fileURLToPath(import.meta.url));
+		if (!fs.existsSync(`${homeDirectory}/softeng20bAPI.token`)) {
+			console.log('Login required'); // Output a message indicating login is required
+			return; // Stop execution if directory doesn't exist
+		}
 		const token = fs.readFileSync(`${homeDirectory}/softeng20bAPI.token`, 'utf8').trim();
-		console.log(token);
 		const response = await axios.post(`http://127.0.0.1:9876/ntuaflix_api/admin/upload/titleakas/?format=${format}`, formData, {
 			headers: {
 				'Authorization': `${token}`,
@@ -271,7 +287,7 @@ async function newakas(filename, format ) {
 			console.error('API call failed:', response.statusText);
 		}
 	} catch (error) {
-		console.error('Error:', error.message);
+		console.error('Error: API call failed');
 	}
 }
 
@@ -285,8 +301,11 @@ async function newnames(filename, format ) {
 		const file = await readFile(filename);
 		formData.append('tsv_file', file, filename);
 		const homeDirectory = path.dirname(fileURLToPath(import.meta.url));
+		if (!fs.existsSync(`${homeDirectory}/softeng20bAPI.token`)) {
+			console.log('Login required'); // Output a message indicating login is required
+			return; // Stop execution if directory doesn't exist
+		}
 		const token = fs.readFileSync(`${homeDirectory}/softeng20bAPI.token`, 'utf8').trim();
-		console.log(token);
 		const response = await axios.post(`http://127.0.0.1:9876/ntuaflix_api/admin/upload/namebasics/?format=${format}`, formData, {
 			headers: {
 				'Authorization': `${token}`,
@@ -301,7 +320,7 @@ async function newnames(filename, format ) {
 			console.error('API call failed:', response.statusText);
 		}
 	} catch (error) {
-		console.error('Error:', error.message);
+		console.error('Error: API call failed');
 	}
 }
 
@@ -316,8 +335,11 @@ async function newcrew(filename, format ) {
 		const file = await readFile(filename);
 		formData.append('tsv_file', file, filename);
 		const homeDirectory = path.dirname(fileURLToPath(import.meta.url));
+		if (!fs.existsSync(`${homeDirectory}/softeng20bAPI.token`)) {
+			console.log('Login required'); // Output a message indicating login is required
+			return; // Stop execution if directory doesn't exist
+		}
 		const token = fs.readFileSync(`${homeDirectory}/softeng20bAPI.token`, 'utf8').trim();
-		console.log(token);
 		const response = await axios.post(`http://127.0.0.1:9876/ntuaflix_api/admin/upload/titlecrew/?format=${format}`, formData, {
 			headers: {
 				'Authorization': `${token}`,
@@ -332,7 +354,7 @@ async function newcrew(filename, format ) {
 			console.error('API call failed:', response.statusText);
 		}
 	} catch (error) {
-		console.error('Error:', error.message);
+		console.error('Error: API call failed');
 	}
 }
 
@@ -347,8 +369,11 @@ async function newepisode(filename, format ) {
 		const file = await readFile(filename);
 		formData.append('tsv_file', file, filename);
 		const homeDirectory = path.dirname(fileURLToPath(import.meta.url));
+		if (!fs.existsSync(`${homeDirectory}/softeng20bAPI.token`)) {
+			console.log('Login required'); // Output a message indicating login is required
+			return; // Stop execution if directory doesn't exist
+		}
 		const token = fs.readFileSync(`${homeDirectory}/softeng20bAPI.token`, 'utf8').trim();
-		console.log(token);
 		const response = await axios.post(`http://127.0.0.1:9876/ntuaflix_api/admin/upload/titleepisode/?format=${format}`, formData, {
 			headers: {
 				'Authorization': `${token}`,
@@ -363,7 +388,7 @@ async function newepisode(filename, format ) {
 			console.error('API call failed:', response.statusText);
 		}
 	} catch (error) {
-		console.error('Error:', error.message);
+		console.error('Error: API call failed');
 	}
 }
 
@@ -378,8 +403,11 @@ async function newprincipals(filename, format ) {
 		const file = await readFile(filename);
 		formData.append('tsv_file', file, filename);
 		const homeDirectory = path.dirname(fileURLToPath(import.meta.url));
+		if (!fs.existsSync(`${homeDirectory}/softeng20bAPI.token`)) {
+			console.log('Login required'); // Output a message indicating login is required
+			return; // Stop execution if directory doesn't exist
+		}
 		const token = fs.readFileSync(`${homeDirectory}/softeng20bAPI.token`, 'utf8').trim();
-		console.log(token);
 		const response = await axios.post(`http://127.0.0.1:9876/ntuaflix_api/admin/upload/titleprincipals/?format=${format}`, formData, {
 			headers: {
 				'Authorization': `${token}`,
@@ -394,7 +422,7 @@ async function newprincipals(filename, format ) {
 			console.error('API call failed:', response.statusText);
 		}
 	} catch (error) {
-		console.error('Error:', error.message);
+		console.error('Error: API call failed');
 	}
 }
 
@@ -410,8 +438,11 @@ async function newratings(filename, format ) {
 		const file = await readFile(filename);
 		formData.append('tsv_file', file, filename);
 		const homeDirectory = path.dirname(fileURLToPath(import.meta.url));
+		if (!fs.existsSync(`${homeDirectory}/softeng20bAPI.token`)) {
+			console.log('Login required'); // Output a message indicating login is required
+			return; // Stop execution if directory doesn't exist
+		}
 		const token = fs.readFileSync(`${homeDirectory}/softeng20bAPI.token`, 'utf8').trim();
-		console.log(token);
 
 		const response = await axios.post(`http://127.0.0.1:9876/ntuaflix_api/admin/upload/titleratings/?format=${format}`, formData, {
 			headers: {
@@ -426,7 +457,7 @@ async function newratings(filename, format ) {
 			console.error('API call failed:', response.statusText);
 		}
 	} catch (error) {
-		console.error('Error:', error.message);
+		console.error('Error: API call failed');
 	}
 }
 
@@ -435,6 +466,10 @@ async function newratings(filename, format ) {
 async function title(titleID, format) {
 	format = format || 'json'; // If format is not provided, default to 'json'
 	const homeDirectory = path.dirname(fileURLToPath(import.meta.url));
+	if (!fs.existsSync(`${homeDirectory}/softeng20bAPI.token`)) {
+		console.log('Login required'); // Output a message indicating login is required
+		return; // Stop execution if directory doesn't exist
+	}
 	const token = fs.readFileSync(`${homeDirectory}/softeng20bAPI.token`, 'utf8').trim();
 	const headers = {
 		'Authorization': `${token}`,
@@ -460,14 +495,18 @@ async function title(titleID, format) {
 			console.log('Failed to fetch title details');
 		}
 	} catch (error) {
-		console.error('Error:', error.message);
+		console.error('Error: Failed to fetch title details');
 	}
 }
 
 async function searchtitle(titlepart, format ) {
 	format = format || 'json'; // If format is not provided, default to 'json'
-	const url = `${BASE_URL}/searchtitle/?title=${encodeURIComponent(titlepart)}?format=${format}`;
+	const url = `${BASE_URL}/searchtitle/?title=${encodeURIComponent(titlepart)}&?format=${format}`;
 	const homeDirectory = path.dirname(fileURLToPath(import.meta.url));
+	if (!fs.existsSync(`${homeDirectory}/softeng20bAPI.token`)) {
+		console.log('Login required'); // Output a message indicating login is required
+		return; // Stop execution if directory doesn't exist
+	}
 	const token = fs.readFileSync(`${homeDirectory}/softeng20bAPI.token`, 'utf8').trim();
 	const headers = {
 		'Authorization': `${token}`,
@@ -491,7 +530,7 @@ async function searchtitle(titlepart, format ) {
 			console.log('Failed to fetch search results');
 		}
 	} catch (error) {
-		console.error('Error:', error.message);
+		console.error('Error: Failed to fetch search results');
 	}
 }
 
@@ -499,8 +538,11 @@ async function bygenre(genre, minimumRating, yearFrom = null, yearTo = null, for
 	format = format || 'json'; // If format is not provided, default to 'json'
 	let url = `${BASE_URL}/bygenre/?genre=${encodeURIComponent(genre)}&minimumrating=${minimumRating}`;
 	const homeDirectory = path.dirname(fileURLToPath(import.meta.url));
+	if (!fs.existsSync(`${homeDirectory}/softeng20bAPI.token`)) {
+		console.log('Login required'); // Output a message indicating login is required
+		return; // Stop execution if directory doesn't exist
+	}
 	const token = fs.readFileSync(`${homeDirectory}/softeng20bAPI.token`, 'utf8').trim();
-	console.log(token);
 	const headers = {
 		'Authorization': `${token}`,
 	};
@@ -534,7 +576,7 @@ async function bygenre(genre, minimumRating, yearFrom = null, yearTo = null, for
 			console.log('Failed to fetch By Genre results');
 		}
 	} catch (error) {
-		console.error('Error:', error.message);
+		console.error('Error: Failed to fetch By Genre results');
 	}
 }
 
@@ -542,10 +584,13 @@ async function bygenre(genre, minimumRating, yearFrom = null, yearTo = null, for
 
 async function name(nameID, format) {
 	format = format || 'json'; // If format is not provided, default to 'json'
-	const url = `${BASE_URL}/name/${nameID}?format=${format}`;
+	let url = `${BASE_URL}/name/${nameID}?format=${format}`;
 	const homeDirectory = path.dirname(fileURLToPath(import.meta.url));
+	if (!fs.existsSync(`${homeDirectory}/softeng20bAPI.token`)) {
+		console.log('Login required'); // Output a message indicating login is required
+		return; // Stop execution if directory doesn't exist
+	}
 	const token = fs.readFileSync(`${homeDirectory}/softeng20bAPI.token`, 'utf8').trim();
-	console.log(token);
 	const headers = {
 		'Authorization': `${token}`,
 	};
@@ -568,16 +613,19 @@ async function name(nameID, format) {
 			console.log('Failed to fetch Name Biography');
 		}
 	} catch (error) {
-		console.error('Error:', error.message);
+		console.error('Error: Failed to fetch Name Biography: Actor/actress not found', );
 	}
 }
 
 async function searchname(name, format) {
 	format = format || 'json'; // If format is not provided, default to 'json'
-	const url = `${BASE_URL}/searchname/?name=${encodeURIComponent(name)}?format=${format}`;
+	let url = `${BASE_URL}/searchname/?name=${encodeURIComponent(name)}&?format=${format}`;
 	const homeDirectory = path.dirname(fileURLToPath(import.meta.url));
+	if (!fs.existsSync(`${homeDirectory}/softeng20bAPI.token`)) {
+		console.log('Login required'); // Output a message indicating login is required
+		return; // Stop execution if directory doesn't exist
+	}
 	const token = fs.readFileSync(`${homeDirectory}/softeng20bAPI.token`, 'utf8').trim();
-	console.log(token);
 	const headers = {
 		'Authorization': `${token}`,
 	};
@@ -600,7 +648,7 @@ async function searchname(name, format) {
 			console.log('Failed to fetch Search Name results');
 		}
 	} catch (error) {
-		console.error('Error:', error.message);
+		console.error('Error: Failed to fetch Search Name results: No results found');
 	}
 }
 
