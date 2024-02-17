@@ -1,72 +1,6 @@
-# Back-end
-
-- The application uses #Django, which is a Python framework.
-- The database implementation is done "automatically" in sqlite3 as defined by Django.
-- The database can be found in the db.sqlite3 file.
-- The backend framework requires certain steps to operate:
-## 1ον: Δημιουργία Virtual Environment και εγκατλασταση αναγκαίων πακέτων
--  To do this, the following steps must be executed:
--  
-### Assume you are in the folder C:/Software_Engineer_2023/softeng23/softeng23_01 (where you have cloned the git repo in the folder: C:/Software_Engineer_2023/softeng23/softeng23_01)
-
-  ```bash
-
-  pip install virtualenv
-  virtualenv ntua_env
-  ntua_env\scripts\activate
-  pip install -r requirements.txt
-
-  ```
-### Now the structure of the folder C:/Software_Engineer_2023/soft_eng_01 is as follows:
-
-```bash
-softeng23_01
-ntua_env
-```
-### Now, having activated and with the correct packages in our environment, we will head to the back-end folder:
-```bash
-cd softeng23_01/back-end/Django/ntuaflix
-```
-### Now we will run our server (i.e., the back-end) through the command:
-```bash
-python manage.py runserver
-```
-### We head to the link that appears
-
-
-
-# Αuthentication!!
-
--Μερικά απο τα παραπάνω endpoints έχουν authentication protocols τα οποία δεν επιτρέπουν στον χρήστη να ανοίξει τα endpoints του back-end
-
-```bash
-title/<str:titleID>
-searchtitle/
-bygenre/
-name/<str:nameID>/
-searchname/
-```
-
-- Αυτό γίνεται για λόγους ασφαλείας και σύμφωνα με την εκφώνηση της εργασίας
-
-
-
-
-
-
-
-- Πηγαίος κώδικας εφαρμογής για εισαγωγή, διαχείριση και
-  πρόσβαση σε δεδομένα (backend).
-- Database dump (sql ή json)
-- Back-end functional tests.
-- Back-end unit tests.
-- RESTful API.
-
-# -----------------------------------------------------------------------------
-
 # Ntuaflix Back-end
 
-The Back-end part of our website was implemented using Python and more specifically the Django framework. The structure of this framework allowed us to incorporate the source code of the project as well as the Database (inside the models.py files) and the testing (inside the tests folders).
+The Back-end part of our website was implemented using Python and more specifically the Django framework. The structure of this framework allowed us to incorporate the source code of the project as well as the Database (inside the models.py files) and the testing (inside the tests folders). The database is then automatically created and saved in the db.sqlite3 file in SQLite.
 
 ## Installation
 
@@ -74,23 +8,21 @@ To be able to properly use the back-end part of the website, the following steps
 
 1. Install Python on your computer (v.3.x or newer) and insert the python directory in the PATH variables
 2. Ensure you are in the correct directory, else move to the directory:
-softeng23-01/back-end/Django/ntuaflix
+C:/path/to_repository/softeng23_01
 3. Create a virtual environment and activate it:
 
 ```bash
-python -m venv .
-scripts/activate
+pip install virtualenv
+virtualenv ntua_env
+ntua_env\scripts\activate
 ```
+Now the structure of the folder C:/Software_Engineer_2023/soft_eng_01 is as follows:
 
 ```bash
-
-  pip install virtualenv
-  virtualenv ntua_env
-  ntua_env\scripts\activate
-  
-
-  ```
-
+path/to_repository/
+├── softeng23_01/   # ntuaflix repository
+└── ntua_env/       # virtual environment
+```
 
 4. Install the following libraries:
 
@@ -98,13 +30,19 @@ scripts/activate
 pip install -r requirements.txt
 ```
 
-5. Make all the migtations needed:
+5. Move to the directory where manage.py file is located
+
+```bash
+cd softeng23_01/back-end/Django/ntuaflix
+```
+
+6. Make all the migtations needed:
 
 ```bash
 python manage.py makemigrations
 python manage.py migrate
 ```
-6. Start the server. The server will run in the port 9876 as told:
+7. Start the server. The server will run in the link http://localhost:9876/ as told:
 
 ```bash
 python manage.py runserver
@@ -114,160 +52,207 @@ python manage.py runserver
 
 The project has the following structure as far as the back-end is concerned:
 
-- ntuaflix--------manage.py   <!-- main file -->
--    |
--    |----> ntuaflix--------settings.py
--    |         |--------urls.py
--    |          
--    |----> ntuaflix_api   <!--app containing everything regarding ntuaflix_api urls-->
--              |--------views.py
--              |--------models.py   <!--models TitleObject, NameObject, NameProfile-->
--              |--------urls.py
--              |--------serializers.py
--              |----> templates
--              |
--              |----> tests <!--tests for the /ntuaflix_api urls-->
--              |
--              |----> administrator   <!--app containing everything regarding ntuaflix_api/admin urls-->
--                           |--------views.py
--                           |--------models.py   <!--models like TitleBasic, TitleCrew, Likes etc-->
--                           |--------urls.py
--                           |--------serializers.py
--                           |----> templates
--                           |
--                           |----> tests <!-- folder containing the tests for the /ntuaflix_api/admin urls-->
+```bash
+ntuaflix/
+├── manage.py           # Main file
+├── ntuaflix/           # App containing settings and main URLs
+│   ├── settings.py
+│   └── urls.py
+└── ntuaflix_api/       # App containing everything regarding /ntuaflix_api URLs
+    ├── views.py
+    ├── models.py       # Models: TitleObject, NameObject, NameProfile
+    ├── urls.py
+    ├── serializers.py
+    ├── templates/
+    └── tests/          # Tests for the /ntuaflix_api URLs
+└── administrator/      # App containing everything regarding /ntuaflix_api/admin URLs
+    ├── views.py
+    ├── models.py       # Models: TitleBasic, TitleCrew, Likes, etc.
+    ├── urls.py
+    ├── serializers.py
+    ├── templates/
+    └── tests/          # Tests for the /ntuaflix_api/admin URLs
+```
 
-The app ntuaflix_api contains and implements all the apis with urls starting with /ntuaflix_api (eg ntuaflix_api/login), whereas the app administrator inside the ntuaflix_api app implements all the apis with urls starting with /ntuaflix_api/admin (eg ntuaflix_api/admin/healthcheck)
+The app `ntuaflix_api` contains and implements all the apis with urls starting with /ntuaflix_api (eg ntuaflix_api/login), whereas the app `administrator` inside the ntuaflix_api app implements all the apis with urls starting with /ntuaflix_api/admin (eg ntuaflix_api/admin/healthcheck)
 
-## APIs
+# Usage
 
 We have defined a variety of apis, both POST and GET:
-- `login/`,  (POST): the user is transferred to the user's or the admin's page
-- `logout/`, (POST): the user is transferred to the main page
-- `signup/`, (POST): creates a new account for the user, with status pending
-- `title/`, (GET): 
-- `title/<str:titleID>/`, (GET): 
-- `searchtitle/`, (GET): 
-- `bygenre/`, (GET): 
-- `name/`, (GET): 
-- `name/<str:nameID>/`, (GET): 
-- `searchname/`, (GET): 
-- `SearchByGenre/`, (GET): 
-- `SearchByYear/`, (GET): 
-- `SearchByName/`, (GET): 
-- `NameProfile/`, (GET): 
-- `title_likes/<str:titleID>/`, (GET): 
-- `title_likes/press_like/<str:titleID>/`, (POST): 
-- `title_likes/press_dislike/<str:titleID>/`, (POST): 
+- `localhost:9876/ntuaflix_api/login/`:
+  - Method: POST
+  - Description: Endpoint for user authentication. Users can log in using their username and password.
 
-## Endpoints:
+- `localhost:9876/ntuaflix_api/logout/`:
+  - Method: POST
+  - Description: Endpoint for user logout. Users can log out of their accounts, and the authentication token associated with the session is deleted.
+
+- `localhost:9876/ntuaflix_api/signup/`:
+  - Method: POST
+  - Description: Endpoint for user registration. Users can sign up by providing their username, password, email, first name, and last name.
+
+- `localhost:9876/ntuaflix_api/title/`:
+  - Method: GET
+  - Description: Endpoint to retrieve a list of all titles.
+
+- `localhost:9876/ntuaflix_api/title/<str:titleID>/`:
+  - Method: GET
+  - Description: Endpoint to retrieve details of a specific title identified by its ID.
+
+- `localhost:9876/ntuaflix_api/searchtitle/`:
+  - Method: GET
+  - Description: Endpoint to search for titles based on their names.
+
+- `localhost:9876/ntuaflix_api/bygenre/`:
+  - Method: GET
+  - Description: Endpoint to retrieve titles filtered by genre, minimum rating, and year.
+
+- `localhost:9876/ntuaflix_api/name/`:
+  - Method: GET
+  - Description: Endpoint to retrieve a list of all names.
+
+- `localhost:9876/ntuaflix_api/name/<str:nameID>/`:
+  - Method: GET
+  - Description: Endpoint to retrieve details of a specific name identified by its ID.
+
+- `localhost:9876/ntuaflix_api/searchname/`:
+  - Method: GET
+  - Description: Endpoint to search for names based on their primary names.
+
+- `localhost:9876/ntuaflix_api/SearchByGenre/`:
+  - Method: GET
+  - Description: Endpoint to search for titles by genre.
+
+- `localhost:9876/ntuaflix_api/SearchByYear/`:
+  - Method: GET
+  - Description: Endpoint to search for titles by release year.
+
+- `localhost:9876/ntuaflix_api/SearchByName/`:
+  - Method: GET
+  - Description: Endpoint to search for titles by name.
+
+- `localhost:9876/ntuaflix_api/NameProfile/`:
+  - Method: GET
+  - Description: Endpoint to retrieve profile details of a name.
+
+- `localhost:9876/ntuaflix_api/title_likes/<str:titleID>/`:
+  - Method: GET
+  - Description: Get the number of likes and dislikes for a specific title. Additionally, check if the current user has liked or disliked the title.
+
+- `localhost:9876/ntuaflix_api/title_likes/press_like/<str:titleID>/`:
+  - Method: POST
+  - Description: Allow the current user to press the like button for a specific title. If the user has already liked the title, remove the like. If the user has previously disliked the title, switch from dislike to like.
+
+- `localhost:9876/ntuaflix_api/title_likes/press_dislike/<str:titleID>/`:
+  - Method: POST
+  - Description: Allow the current user to press the dislike button for a specific title. If the user has already disliked the title, remove the dislike. If the user has previously liked the title, switch from like to dislike.
+
+- `localhost:9876/ntuaflix_api/admin/upload/titlebasics/`
+  - Method: POST
+  - Description: Endpoint for administrators to upload basic information about titles.
+
+- `localhost:9876/ntuaflix_api/admin/upload/titleakas/`
+  - Method: POST
+  - Description: Endpoint for administrators to upload alternative titles for titles.
+
+- `localhost:9876/ntuaflix_api/admin/upload/namebasics/`
+  - Method: POST
+  - Description: Endpoint for administrators to upload basic information about names.
+
+- `localhost:9876/ntuaflix_api/admin/upload/titlecrew/`
+  - Method: POST
+  - Description: Endpoint for administrators to upload crew information for titles.
+
+- `localhost:9876/ntuaflix_api/admin/upload/titleepisode/`
+  - Method: POST
+  - Description: Endpoint for administrators to upload episode information for titles.
+
+- `localhost:9876/ntuaflix_api/admin/upload/titleprincipals/`
+  - Method: POST
+  - Description: Endpoint for administrators to upload principal information for titles.
+
+- `localhost:9876/ntuaflix_api/admin/upload/titleratings/`
+  - Method: POST
+  - Description: Endpoint for administrators to upload ratings information for titles.
+
+- `localhost:9876/ntuaflix_api/admin/healthcheck`
+  - Method: POST
+  - Description: Check the health status of the backend server.
+
+- `localhost:9876/ntuaflix_api/admin/usermod/<str:username>/<str:password>/`
+  - Method: POST
+  - Description: Approve a specific user identified by their username and password. This endpoint is accessible to administrators only.
+
+- `localhost:9876/ntuaflix_api/admin/users/<str:username>/`
+  - Method: GET
+  - Description: Get details of a specific user identified by their username. This endpoint is accessible to administrators only.
+
+- `localhost:9876/ntuaflix_api/admin/resetall/`
+  - Method: POST
+  - Description: Reset all data in the database. This endpoint is accessible to administrators only.
+
+
+# Αuthentication
+
+In addition to the login/sign-up services, we have added authentication to some of the previous endpoints to add additional security to the website. As a result the following urls won't open just by inserting them into the browsing bar:
+
 ```bash
-localhost:9876/ntuaflix_api/login/ 
-localhost:9876/ntuaflix_api/logout/
-localhost:9876/ntuaflix_api/signup/
-
-localhost:9876/ntuaflix_api/title/
-localhost:9876/ntuaflix_api/title/<str:titleID>/
-localhost:9876/ntuaflix_api/searchtitle/
-localhost:9876/ntuaflix_api/bygenre/
-localhost:9876/ntuaflix_api/name/
-localhost:9876/ntuaflix_api/name/<str:nameID>/
-localhost:9876/ntuaflix_api/searchname/
-
-localhost:9876/ntuaflix_api/SearchByGenre/
-localhost:9876/ntuaflix_api/SearchByYear/
-localhost:9876/ntuaflix_api/SearchByName/
-localhost:9876/ntuaflix_api/NameProfile/
-
-localhost:9876/ntuaflix_api/title_likes/<str:titleID>/
-localhost:9876/ntuaflix_api/title_likes/press_like/<str:titleID>/
-localhost:9876/ntuaflix_api/title_likes/press_dislike/<str:titleID>/
-
-localhost:9876/ntuaflix_api/admin/upload/titlebasics/
-localhost:9876/ntuaflix_api/admin/upload/titleakas/
-localhost:9876/ntuaflix_api/admin/upload/namebasics/
-localhost:9876/ntuaflix_api/admin/upload/titlecrew/
-localhost:9876/ntuaflix_api/admin/upload/titleepisode/
-localhost:9876/ntuaflix_api/admin/upload/titleprincipals/
-localhost:9876/ntuaflix_api/admin/upload/titleratings/
-localhost:9876/ntuaflix_api/admin/healthcheck
-localhost:9876/ntuaflix_api/admin/usermod/<str:username>/
-localhost:9876/ntuaflix_api/admin/users/<str:username>/
-localhost:9876/ntuaflix_api/admin/resetall/
-
+title/<str:titleID>
+searchtitle/
+bygenre/
+name/<str:nameID>/
+searchname/
 ```
-# Αuthentication!!
 
-  -Μερικά απο τα παραπάνω endpoints έχουν authentication protocols τα οποία δεν επιτρέπουν στον χρήστη να ανοίξει τα endpoints του back-end
+As a result, the only way to test these urls is either by using the front-end and loging in properly or by sending a proper request with a proper header.
 
-  ```bash
-  title/<str:titleID>
-  searchtitle/
-  bygenre/
-  name/<str:nameID>/
-  searchname/
-  ```
+# Testing
 
+For testing we used the integrated Django testing tools and implemented them in the files named `tests`. There are two such files:
+One in the directory `softeng23_01\back-end\Django\ntuaflix\ntuaflix_api\tests` regarding the urls `ntuaflix_api\`, their models and views.
+The other in the directory `softeng23_01\back-end\Django\ntuaflix\ntuaflix_api\administrator\tests` regarding the urls `ntuaflix_api\admin\`, their models and views.
 
-## Tests
+To run each testing file, the following steps must be followed:
 
-### To run the tests we use the following command.
-### We have to be in the directory ../softeng23_01/back-end/Django/ntuaflix
+1. Ensure you are in the correct directory inside the repository, else move to the directory:
+softeng23_01/back-end/Django/ntuaflix
+
+2. To run the tests regarding the `ntuaflix_api\` urls type:
+
+```bash
+python manage.py test ntuaflix_api/tests
+```
+
+3. To run the tests regarding the `ntuaflix_api\admin` urls type:
+
+```bash
+python manage.py test ntuaflix_api/administrator/tests
+```
+
+4. To run all the tests combined type:
 
 ```bash
 python manage.py test
 ```
-#### The tests basically create a fake (test) environment with dummy data and then call the respective apis.
-#### We also define the expected outcome and then compare it with the return of the api.
-#### The structure is:
-#### Creating dummy data (dummy database)
-####   Calling the api for these datas
-####   Querying the dummy database to create the expected results
-####   Comparing the expected and the apis returned data.
 
-```bash
+The previous testing proccess creates an empty database and uses it to call the respective apis. More specifically, we create dummy data and call the apis for this data. Then we insert the outcome to the database and compare the expected values with the returned ones.
 
-self.title_object =TitleObject.objects.create(
-            tconst='tt1234567',
-            titleType='movie',
-            originalTitle='Test Movie',
-            img_url_asset='url/to/image.jpg',
-            startYear=2020,
-            endYear=2021,
-            titles='Title1,Title2',
-            regions='US,UK',
-            genres='Comedy,Drama',
-            averageRating=7.5,
-            numVotes=100,
-            nconsts='nm0000001,nm0000002',
-            categories='Director,Actor',
-            primaryName='Name1,Name2'
-        )
+# Troubleshooting
 
-```
-#### Next we showcase an example of testing  
+If you encounter any issues or errors while using Ntuaflix Back-end, refer to the documentation or reach out to the project maintainers for assistance.
 
-```bash
-    def test_get_title_basic_list(self):
-        response = self.client.get(self.url_title_objects)
+# Contributing
 
-        # Get the data from the database to compare with the response
-        titles = TitleObject.objects.all()
-        serializer = TitleObjectSerializer(titles, many=True)
+Contributions to Ntuaflix Back-end are welcome! Please follow the guidelines outlined in the project repository to submit bug reports, feature requests, or pull requests.
 
-        # Check that the response status code is 200 (OK)
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
+# License
 
-        # Check that the response data matches the serialized data
-        self.assertEqual(response.data, serializer.data)
-```
+Ntuaflix Back-end is licensed under the MIT License. See the LICENSE file for more details.
 
+# Acknowledgements
 
-<!-- Ενδεικτικά περιεχόμενα:
+Ntuaflix Back-end makes use of the django.test library for building the command-line interface.
 
-- Πηγαίος κώδικας εφαρμογής για εισαγωγή, διαχείριση και
-  πρόσβαση σε δεδομένα (backend).
-- Database dump (sql ή json)
-- Back-end functional tests.
-- Back-end unit tests.
-- RESTful API. -->
+# Contact
+
+For questions, feedback, or support requests, contact the project maintainers at stelioskatsis12@gmail.com.
