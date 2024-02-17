@@ -16,12 +16,16 @@ function Footer({role}) {
             const response = await axios.post('http://127.0.0.1:9876/ntuaflix_api/logout/', {}, {headers : headers});
 
             if (response.status === 200) {
-                // Clear the token from localStorage or sessionStorage
                 localStorage.removeItem('softeng20bAPI.token');
-                // Alternatively, you can use sessionStorage:
-                // sessionStorage.removeItem('softeng20bAPI.token');
-                // Redirect to the home page or any other desired page
-                navigate('/');
+
+                // Use React Router for navigation first
+                navigate('/', { replace: true });
+
+                // Optionally, ensure this page cannot be navigated back to using the browser's back button
+                setTimeout(() => {
+                    window.location.replace('/');
+                }, 0);
+
             } else {
                 console.log('Logout failed');
             }
@@ -36,9 +40,12 @@ function Footer({role}) {
     return <footer>
         <p>
             Logged in as {role}.
-            <Link className="link" onClick={handleLogout} to="/"> Log out?</Link>
+            {/* Use a button or span for logout to directly call handleLogout */}
+            <button className="link" onClick={handleLogout}>
+                Log out?
+            </button>
         </p>
-    </footer>;
+    </footer>
 }
 
 export default Footer;
