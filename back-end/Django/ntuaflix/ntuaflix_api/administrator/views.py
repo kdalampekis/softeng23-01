@@ -71,11 +71,12 @@ def ProcessTitleBasicsTSV(request, file, reset = False):
 
 def UploadTitleBasics(request):
     if request.method == 'POST':
-        superuser_token = User.objects.filter(is_superuser=True).values_list('auth_token', flat=True).first()
+        superuser_token = User.objects.filter(is_superuser=True).values_list('auth_token', flat=True)
         token = request.META.get('HTTP_AUTHORIZATION')
+        print(token, superuser_token)
 
         # Check if the authenticated user is a superuser
-        if token == superuser_token:
+        if token in superuser_token and token != None:
             form = BasicForm(request.POST, request.FILES)
             if form.is_valid():
                 file = form.cleaned_data['tsv_file']
@@ -137,11 +138,11 @@ def ProcessTitleAkasTSV(request, file, reset = False):
 
 def UploadTitleAkas(request):
     if request.method == 'POST':
-        superuser_token = User.objects.filter(is_superuser=True).values_list('auth_token', flat=True).first()
+        superuser_token = User.objects.filter(is_superuser=True).values_list('auth_token', flat=True)
         token = request.META.get('HTTP_AUTHORIZATION')
 
         # Check if the authenticated user is a superuser
-        if token == superuser_token:
+        if token in superuser_token and token != None:
             form = BasicForm(request.POST, request.FILES)
             if form.is_valid():
                 file = form.cleaned_data['tsv_file']
@@ -215,11 +216,11 @@ def ProcessNameBasicsTSV(request, file, reset = False):
 
 def UploadNameBasics(request):
     if request.method == 'POST':
-        superuser_token = User.objects.filter(is_superuser=True).values_list('auth_token', flat=True).first()
+        superuser_token = User.objects.filter(is_superuser=True).values_list('auth_token', flat=True)
         token = request.META.get('HTTP_AUTHORIZATION')
 
         # Check if the authenticated user is a superuser
-        if token == superuser_token:
+        if token in superuser_token and token != None:
             form = BasicForm(request.POST, request.FILES)
             if form.is_valid():
                 file = form.cleaned_data['tsv_file']
@@ -282,11 +283,11 @@ def ProcessTitleCrewTSV(request, file, reset = False):
 
 def UploadTitleCrew(request):
     if request.method == 'POST':
-        superuser_token = User.objects.filter(is_superuser=True).values_list('auth_token', flat=True).first()
+        superuser_token = User.objects.filter(is_superuser=True).values_list('auth_token', flat=True)
         token = request.META.get('HTTP_AUTHORIZATION')
 
         # Check if the authenticated user is a superuser
-        if token == superuser_token:
+        if token in superuser_token and token != None:
             form = BasicForm(request.POST, request.FILES)
             if form.is_valid():
                 file = form.cleaned_data['tsv_file']
@@ -350,11 +351,11 @@ def ProcessTitleEpisodeTSV(request, file, reset = False):
 
 def UploadTitleEpisode(request):
     if request.method == 'POST':
-        superuser_token = User.objects.filter(is_superuser=True).values_list('auth_token', flat=True).first()
+        superuser_token = User.objects.filter(is_superuser=True).values_list('auth_token', flat=True)
         token = request.META.get('HTTP_AUTHORIZATION')
 
         # Check if the authenticated user is a superuser
-        if token == superuser_token:
+        if token in superuser_token and token != None:
             form = BasicForm(request.POST, request.FILES)
             if form.is_valid():
                 file = form.cleaned_data['tsv_file']
@@ -428,11 +429,11 @@ def ProcessTitlePrincipalsTSV(request, file, reset = False):
 
 def UploadTitlePrincipals(request):
     if request.method == 'POST':
-        superuser_token = User.objects.filter(is_superuser=True).values_list('auth_token', flat=True).first()
+        superuser_token = User.objects.filter(is_superuser=True).values_list('auth_token', flat=True)
         token = request.META.get('HTTP_AUTHORIZATION')
 
         # Check if the authenticated user is a superuser
-        if token == superuser_token:
+        if token in superuser_token and token != None:
             form = BasicForm(request.POST, request.FILES)
             if form.is_valid():
                 file = form.cleaned_data['tsv_file']
@@ -497,11 +498,11 @@ def ProcessTitleRatingsTSV(request, file, reset = False):
 
 def UploadTitleRatings(request):
     if request.method == 'POST':
-        superuser_token = User.objects.filter(is_superuser=True).values_list('auth_token', flat=True).first()
+        superuser_token = User.objects.filter(is_superuser=True).values_list('auth_token', flat=True)
         token = request.META.get('HTTP_AUTHORIZATION')
 
         # Check if the authenticated user is a superuser
-        if token == superuser_token:
+        if token in superuser_token and token != None:
             form = BasicForm(request.POST, request.FILES)
             if form.is_valid():
                 file = form.cleaned_data['tsv_file']
@@ -528,11 +529,11 @@ def ResetTitleRatings(request):
 # ///////////////////////////////// OTHER VIEWS //////////////////////////////////////////////
 def health_check(request):
     if request.method == 'POST':
-        superuser_token = User.objects.filter(is_superuser=True).values_list('auth_token', flat=True).first()
+        superuser_token = User.objects.filter(is_superuser=True).values_list('auth_token', flat=True)
         token = request.META.get('HTTP_AUTHORIZATION')
 
         # Check if the authenticated user is a superuser
-        if token == superuser_token:
+        if token in superuser_token and token != None:
             try:
                 # Example: attempting to fetch the first row of some table
                 # Replace 'your_model' with an actual model from your app
@@ -551,12 +552,12 @@ def health_check(request):
 
 def reset_all(request):
     if request.method == 'POST':
-        superuser_token = User.objects.filter(is_superuser=True).values_list('auth_token', flat=True).first()
+        superuser_token = User.objects.filter(is_superuser=True).values_list('auth_token', flat=True)
         token = request.META.get('HTTP_AUTHORIZATION')
         print(superuser_token)
         print(token)
         # Check if the authenticated user is a superuser
-        if token == superuser_token:
+        if token in superuser_token and token != None:
             try:
                 ResetTitleBasics(request)
                 ResetTitleAkas(request)
@@ -579,11 +580,16 @@ def reset_all(request):
 
 class UserInfoAPIView(APIView):
     def get(self, request, username):
-        superuser_token = User.objects.filter(is_superuser=True).values_list('auth_token', flat=True).first()
+        print(1)
+        print(User.objects.filter(is_superuser=True))
+        print(User.objects.filter(is_superuser=True).values_list('auth_token', flat=True))
+        print(User.objects.filter(is_superuser=True).values_list('auth_token', flat=True).first())
+        superuser_token = User.objects.filter(is_superuser=True).values_list('auth_token', flat=True)
         token = request.META.get('HTTP_AUTHORIZATION')
+        print(token, superuser_token, 'Hi')
 
         # Check if the authenticated user is a superuser
-        if token == superuser_token:
+        if token in superuser_token and token != None:
             try:
                 # Retrieve the user based on the provided username
                 user = User.objects.get(username=username)
@@ -602,11 +608,11 @@ class UserInfoAPIView(APIView):
 @csrf_exempt
 def add_user(request, username, password):
     if request.method == 'POST':
-        superuser_token = User.objects.filter(is_superuser=True).values_list('auth_token', flat=True).first()
+        superuser_token = User.objects.filter(is_superuser=True).values_list('auth_token', flat=True)
         token = request.META.get('HTTP_AUTHORIZATION')
         
         # Check if the authenticated user is a superuser
-        if token == superuser_token:
+        if token in superuser_token and token != None:
             try:
                 # Retrieve the user by username
                 user = User.objects.get(username=username)
