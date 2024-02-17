@@ -39,7 +39,7 @@ localhost:9876/ntuaflix_api/login/
 localhost:9876/ntuaflix_api/logout/
 localhost:9876/ntuaflix_api/signup/
 
-localhost:9876/ntuaflix_api/title/'
+localhost:9876/ntuaflix_api/title/
 localhost:9876/ntuaflix_api/title/<str:titleID>/
 localhost:9876/ntuaflix_api/searchtitle/
 localhost:9876/ntuaflix_api/bygenre/
@@ -53,7 +53,7 @@ localhost:9876/ntuaflix_api/SearchByName/
 localhost:9876/ntuaflix_api/NameProfile/
 
 localhost:9876/ntuaflix_api/title_likes/<str:titleID>/
-localhost:9876/ntuaflix_api/title_likes/press_like/<str:titleID>/', 
+localhost:9876/ntuaflix_api/title_likes/press_like/<str:titleID>/
 localhost:9876/ntuaflix_api/title_likes/press_dislike/<str:titleID>/
 
 localhost:9876/ntuaflix_api/admin/upload/titlebasics/
@@ -82,6 +82,9 @@ bygenre/
 name/<str:nameID>/
 searchname/
 ```
+
+- Αυτό γίνεται για λόγους ασφαλείας και σύμφωνα με την εκφώνηση της εργασίας
+- Για να γίνει ο έλεγχος τ
 
 
 
