@@ -174,7 +174,7 @@ const UploadComponent = () => {
                 </div>
             )}
 
-            <Footer role="admin"/>
+            {/*<Footer role="admin"/>*/}
         </div>
     );
 };

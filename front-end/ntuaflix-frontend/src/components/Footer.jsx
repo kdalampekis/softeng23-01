@@ -18,13 +18,7 @@ function Footer({role}) {
             if (response.status === 200) {
                 localStorage.removeItem('softeng20bAPI.token');
 
-                // Use React Router for navigation first
-                navigate('/', { replace: true });
-
-                // Optionally, ensure this page cannot be navigated back to using the browser's back button
-                setTimeout(() => {
-                    window.location.replace('/');
-                }, 0);
+                window.location.replace('/');
 
             } else {
                 console.log('Logout failed');

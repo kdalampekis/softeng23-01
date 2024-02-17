@@ -218,3 +218,17 @@ export const searchUserByUsername = async (username) => {
         throw error;
     }
 };
+
+export const getActorPercentages = async (actorName) => {
+    try {
+        const response = await axios.get(`${BASE_URL}/NameProfile/`, {
+            params: {
+                name: actorName,
+            }
+        });
+        return response.data;
+    } catch (error) {
+        console.error('Error:', error);
+        throw error; // Re-throwing the error to handle it where the function is called
+    }
+};

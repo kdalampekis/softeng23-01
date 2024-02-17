@@ -85,32 +85,27 @@ export default function UserPage() {
             handleExit();
         }
     };
-
-    useEffect(() => {
-        // Function to decide which action to trigger on back navigation
-        const handleBackNavigation = () => {
-            // Determine whether "Go Back" is applicable based on your state
-            if (canGoBack()) {
-                handleGoBack();
-            } else {
-                handleExit();
-            }
-        };
-
-        // Determine if the "Go Back" condition is met
-        const canGoBack = () => {
-            return selectedFunctionality; // Or any other condition you define
-        };
-
-        // Inject a state into history to capture the "back" navigation
-        window.history.pushState({ page: "UserPage" }, "");
-
-        // Listen to popstate event triggered by browser navigation
-        window.addEventListener('popstate', handleBackNavigation);
-
-        // Cleanup listener on component unmount
-        return () => window.removeEventListener('popstate', handleBackNavigation);
-    }, [selectedFunctionality]); // Add other dependencies as needed
+    //
+    // // const [goBackPressed, setGoBackPressed] = useState(false);
+    //
+    // useEffect(() => {
+    //     const handleBackNavigation = () => {
+    //         if (window.history.state && window.history.state.fromUserPage) {
+    //             // Prevent the default back action
+    //             window.history.push("/user", { replace: true });
+    //
+    //             if (selectedFunctionality) {
+    //                 handleGoBack();
+    //             } else {
+    //                 handleExit();
+    //             }
+    //         }
+    //     };
+    //
+    //     window.addEventListener('popstate', handleBackNavigation);
+    //
+    //     return () => window.removeEventListener('popstate', handleBackNavigation);
+    // }, [selectedFunctionality, navigate]); // Ensure all used state and props are listed in dependency array
 
 
     const isSearchButtonDisabled = () => {
@@ -212,14 +207,17 @@ export default function UserPage() {
             {!searchPerformed && (
                 <>
                     {!selectedFunctionality && (
-                        <div className="functionalitiesContainer">
-                            {UserOptions.map((option, index) => (
-                                <button key={index} className="functionality"
-                                        onClick={() => handleFunctionalityClick(option)}>
-                                    {option}
-                                </button>
-                            ))}
-                        </div>
+                        <>
+                            <div className="functionalitiesContainer">
+                                {UserOptions.map((option, index) => (
+                                    <button key={index} className="functionality"
+                                            onClick={() => handleFunctionalityClick(option)}>
+                                        {option}
+                                    </button>
+                                ))}
+                            </div>
+                            <Footer role="user"/>
+                        </>
                     )}
                     {selectedFunctionality && (
                         <div className="buttonContainer">
@@ -231,7 +229,7 @@ export default function UserPage() {
                             </select>
                             <button onClick={() => handleSearch(selectedFunctionality, inputValues)}
                                     disabled={isSearchButtonDisabled()}>{searchButtonText}</button>
-                            <button onClick={handleExit}>Go Back</button>
+                            <button onClick={handleExit} id="#go-back-button">Go Back</button>
                         </div>
                     )}
                 </>
@@ -240,14 +238,11 @@ export default function UserPage() {
             {(selectedMovie || selectedActor) && (
                 <div className="buttonContainer">
                     <button onClick={handleSearchAgain}>Search Again</button>
-                    <button onClick={handleGoBack}>Go Back</button>
+                    <button onClick={handleGoBack} id="#go-back-button">Go Back</button>
                     <button onClick={handleExit}>Exit</button>
                 </div>
             )}
 
-
-            <Footer role="user"/>
         </div>
-    )
-        ;
+    );
 }

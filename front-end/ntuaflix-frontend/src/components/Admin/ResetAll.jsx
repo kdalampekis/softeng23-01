@@ -50,7 +50,7 @@ export default function ResetAll() {
                     </div>
                 )}
 
-                <Footer role="admin"/>
+                {/*<Footer role="admin"/>*/}
             </div>
     );
 }
