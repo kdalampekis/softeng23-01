@@ -37,6 +37,8 @@ INSTALLED_APPS = [
     'ntuaflix_api',
     'ntuaflix_api.administrator',
     'corsheaders',
+    "django_extensions",
+    'sslserver',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -92,19 +94,6 @@ DATABASES = {
 }
 
 
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.mysql',
-#         'NAME': 'soft_eng_2023',
-#         'USER': 'root',
-#         'PASSWORD': '',
-#         'HOST': 'localhost',  # Or an IP Address that your DB is hosted on
-#         'PORT': '3306',
-#         # 'OPTIONS': {
-#         #     'init_command': "SET sql_mode='STRICT_TRANS_TABLES'",
-#         # },      # The default MySQL port
-#     }
-# }
 
 REST_FRAMEWORK = {
     'DEFAULT_RENDERER_CLASSES': (
