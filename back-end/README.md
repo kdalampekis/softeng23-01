@@ -33,43 +33,7 @@ python manage.py runserver
 ```
 ### We head to the link that appears
 
-## Endpoints:
-```bash
-localhost:9876/ntuaflix_api/login/ 
-localhost:9876/ntuaflix_api/logout/
-localhost:9876/ntuaflix_api/signup/
 
-localhost:9876/ntuaflix_api/title/'
-localhost:9876/ntuaflix_api/title/<str:titleID>/
-localhost:9876/ntuaflix_api/searchtitle/
-localhost:9876/ntuaflix_api/bygenre/
-localhost:9876/ntuaflix_api/name/
-localhost:9876/ntuaflix_api/name/<str:nameID>/
-localhost:9876/ntuaflix_api/searchname/
-
-localhost:9876/ntuaflix_api/SearchByGenre/
-localhost:9876/ntuaflix_api/SearchByYear/
-localhost:9876/ntuaflix_api/SearchByName/
-localhost:9876/ntuaflix_api/NameProfile/
-
-localhost:9876/ntuaflix_api/title_likes/<str:titleID>/
-localhost:9876/ntuaflix_api/title_likes/press_like/<str:titleID>/', 
-localhost:9876/ntuaflix_api/title_likes/press_dislike/<str:titleID>/
-
-localhost:9876/ntuaflix_api/admin/upload/titlebasics/
-localhost:9876/ntuaflix_api/admin/upload/titleakas/
-localhost:9876/ntuaflix_api/admin/upload/namebasics/
-localhost:9876/ntuaflix_api/admin/upload/titlecrew/
-localhost:9876/ntuaflix_api/admin/upload/titleepisode/
-localhost:9876/ntuaflix_api/admin/upload/titleprincipals/
-localhost:9876/ntuaflix_api/admin/upload/titleratings/
-localhost:9876/ntuaflix_api/admin/healthcheck
-localhost:9876/ntuaflix_api/admin/usermod/<str:username>/
-localhost:9876/ntuaflix_api/admin/users/<str:username>/
-localhost:9876/ntuaflix_api/admin/resetall/
-
-
-```
 
 # Αuthentication!!
 
@@ -82,6 +46,8 @@ bygenre/
 name/<str:nameID>/
 searchname/
 ```
+
+- Αυτό γίνεται για λόγους ασφαλείας και σύμφωνα με την εκφώνηση της εργασίας
 
 
 
@@ -102,7 +68,7 @@ searchname/
 
 The Back-end part of our website was implemented using Python and more specifically the Django framework. The structure of this framework allowed us to incorporate the source code of the project as well as the Database (inside the models.py files) and the testing (inside the tests folders).
 
-# Installation
+## Installation
 
 To be able to properly use the back-end part of the website, the following steps are essential:
 
@@ -116,11 +82,20 @@ python -m venv .
 scripts/activate
 ```
 
+```bash
+
+  pip install virtualenv
+  virtualenv ntua_env
+  ntua_env\scripts\activate
+  
+
+  ```
+
+
 4. Install the following libraries:
 
 ```bash
-pip install django, django-cors-headers
-pip install djangorestframework, djangorestframework-csv
+pip install -r requirements.txt
 ```
 
 5. Make all the migtations needed:
@@ -135,36 +110,36 @@ python manage.py migrate
 python manage.py runserver
 ```
 
-# File Structure
+## File Structure
 
 The project has the following structure as far as the back-end is concerned:
 
-ntuaflix--------manage.py   <!-- main file -->
-   |
-   |----> ntuaflix--------settings.py
-   |         |--------urls.py
-   |          
-   |----> ntuaflix_api   <!--app containing everything regarding ntuaflix_api urls-->
-             |--------views.py
-             |--------models.py   <!--models TitleObject, NameObject, NameProfile-->
-             |--------urls.py
-             |--------serializers.py
-             |----> templates
-             |
-             |----> tests <!--tests for the /ntuaflix_api urls-->
-             |
-             |----> administrator   <!--app containing everything regarding ntuaflix_api/admin urls-->
-                          |--------views.py
-                          |--------models.py   <!--models like TitleBasic, TitleCrew, Likes etc-->
-                          |--------urls.py
-                          |--------serializers.py
-                          |----> templates
-                          |
-                          |----> tests <!-- folder containing the tests for the /ntuaflix_api/admin urls-->
+- ntuaflix--------manage.py   <!-- main file -->
+-    |
+-    |----> ntuaflix--------settings.py
+-    |         |--------urls.py
+-    |          
+-    |----> ntuaflix_api   <!--app containing everything regarding ntuaflix_api urls-->
+-              |--------views.py
+-              |--------models.py   <!--models TitleObject, NameObject, NameProfile-->
+-              |--------urls.py
+-              |--------serializers.py
+-              |----> templates
+-              |
+-              |----> tests <!--tests for the /ntuaflix_api urls-->
+-              |
+-              |----> administrator   <!--app containing everything regarding ntuaflix_api/admin urls-->
+-                           |--------views.py
+-                           |--------models.py   <!--models like TitleBasic, TitleCrew, Likes etc-->
+-                           |--------urls.py
+-                           |--------serializers.py
+-                           |----> templates
+-                           |
+-                           |----> tests <!-- folder containing the tests for the /ntuaflix_api/admin urls-->
 
 The app ntuaflix_api contains and implements all the apis with urls starting with /ntuaflix_api (eg ntuaflix_api/login), whereas the app administrator inside the ntuaflix_api app implements all the apis with urls starting with /ntuaflix_api/admin (eg ntuaflix_api/admin/healthcheck)
 
-# APIs
+## APIs
 
 We have defined a variety of apis, both POST and GET:
 - `login/`,  (POST): the user is transferred to the user's or the admin's page
@@ -185,7 +160,107 @@ We have defined a variety of apis, both POST and GET:
 - `title_likes/press_like/<str:titleID>/`, (POST): 
 - `title_likes/press_dislike/<str:titleID>/`, (POST): 
 
+## Endpoints:
+```bash
+localhost:9876/ntuaflix_api/login/ 
+localhost:9876/ntuaflix_api/logout/
+localhost:9876/ntuaflix_api/signup/
 
+localhost:9876/ntuaflix_api/title/
+localhost:9876/ntuaflix_api/title/<str:titleID>/
+localhost:9876/ntuaflix_api/searchtitle/
+localhost:9876/ntuaflix_api/bygenre/
+localhost:9876/ntuaflix_api/name/
+localhost:9876/ntuaflix_api/name/<str:nameID>/
+localhost:9876/ntuaflix_api/searchname/
+
+localhost:9876/ntuaflix_api/SearchByGenre/
+localhost:9876/ntuaflix_api/SearchByYear/
+localhost:9876/ntuaflix_api/SearchByName/
+localhost:9876/ntuaflix_api/NameProfile/
+
+localhost:9876/ntuaflix_api/title_likes/<str:titleID>/
+localhost:9876/ntuaflix_api/title_likes/press_like/<str:titleID>/
+localhost:9876/ntuaflix_api/title_likes/press_dislike/<str:titleID>/
+
+localhost:9876/ntuaflix_api/admin/upload/titlebasics/
+localhost:9876/ntuaflix_api/admin/upload/titleakas/
+localhost:9876/ntuaflix_api/admin/upload/namebasics/
+localhost:9876/ntuaflix_api/admin/upload/titlecrew/
+localhost:9876/ntuaflix_api/admin/upload/titleepisode/
+localhost:9876/ntuaflix_api/admin/upload/titleprincipals/
+localhost:9876/ntuaflix_api/admin/upload/titleratings/
+localhost:9876/ntuaflix_api/admin/healthcheck
+localhost:9876/ntuaflix_api/admin/usermod/<str:username>/
+localhost:9876/ntuaflix_api/admin/users/<str:username>/
+localhost:9876/ntuaflix_api/admin/resetall/
+
+```
+# Αuthentication!!
+
+  -Μερικά απο τα παραπάνω endpoints έχουν authentication protocols τα οποία δεν επιτρέπουν στον χρήστη να ανοίξει τα endpoints του back-end
+
+  ```bash
+  title/<str:titleID>
+  searchtitle/
+  bygenre/
+  name/<str:nameID>/
+  searchname/
+  ```
+
+
+## Tests
+
+### To run the tests we use the following command.
+### We have to be in the directory ../softeng23_01/back-end/Django/ntuaflix
+
+```bash
+python manage.py test
+```
+#### The tests basically create a fake (test) environment with dummy data and then call the respective apis.
+#### We also define the expected outcome and then compare it with the return of the api.
+#### The structure is:
+#### Creating dummy data (dummy database)
+####   Calling the api for these datas
+####   Querying the dummy database to create the expected results
+####   Comparing the expected and the apis returned data.
+
+```bash
+
+self.title_object =TitleObject.objects.create(
+            tconst='tt1234567',
+            titleType='movie',
+            originalTitle='Test Movie',
+            img_url_asset='url/to/image.jpg',
+            startYear=2020,
+            endYear=2021,
+            titles='Title1,Title2',
+            regions='US,UK',
+            genres='Comedy,Drama',
+            averageRating=7.5,
+            numVotes=100,
+            nconsts='nm0000001,nm0000002',
+            categories='Director,Actor',
+            primaryName='Name1,Name2'
+        )
+
+```
+#### Next we showcase an example of testing  
+
+```bash
+    def test_get_title_basic_list(self):
+        response = self.client.get(self.url_title_objects)
+
+        # Get the data from the database to compare with the response
+        titles = TitleObject.objects.all()
+        serializer = TitleObjectSerializer(titles, many=True)
+
+        # Check that the response status code is 200 (OK)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        # Check that the response data matches the serialized data
+        self.assertEqual(response.data, serializer.data)
+```
 
 
 <!-- Ενδεικτικά περιεχόμενα:
