@@ -2,7 +2,7 @@
 
 The Back-end part of our website was implemented using Python and more specifically the Django framework. The structure of this framework allowed us to incorporate the source code of the project as well as the Database (inside the models.py files) and the testing (inside the tests folders). The database is then automatically created and saved in the db.sqlite3 file in SQLite.
 
-# Installation
+## Installation
 
 To be able to properly use the back-end part of the website, the following steps are essential:
 
@@ -48,7 +48,7 @@ python manage.py migrate
 python manage.py runserver
 ```
 
-# File Structure
+## File Structure
 
 The project has the following structure as far as the back-end is concerned:
 
@@ -73,7 +73,6 @@ ntuaflix/
     ├── templates/
     └── tests/          # Tests for the /ntuaflix_api/admin URLs
 ```
-
 
 The app `ntuaflix_api` contains and implements all the apis with urls starting with /ntuaflix_api (eg ntuaflix_api/login), whereas the app `administrator` inside the ntuaflix_api app implements all the apis with urls starting with /ntuaflix_api/admin (eg ntuaflix_api/admin/healthcheck)
 
@@ -235,6 +234,8 @@ python manage.py test ntuaflix_api/administrator/tests
 ```bash
 python manage.py test
 ```
+
+The previous testing proccess creates an empty database and uses it to call the respective apis. More specifically, we create dummy data and call the apis for this data. Then we insert the outcome to the database and compare the expected values with the returned ones.
 
 # Troubleshooting
 
