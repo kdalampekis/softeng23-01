@@ -155,7 +155,7 @@ class TitleBasicListViewTest(APITestCase):
         response = self.client.get(self.url_search_title, {'title': '9999'})
         
         # Assuming the view redirects or renders a search form
-        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+        self.assertEqual(response.data, {"error": "No Movies Found"})
         # Check for the presence of 'search_title.html' if rendering a template
 
     # /////////////////////////////////////////////////////test_search_inactive_user///////////////////////////////////////////////////////////////

@@ -35,7 +35,7 @@ function StartPage() {
         console.log(formData);
         try {
             // Sending data to the backend using axios
-            const response = await axios.post('http://127.0.0.1:9876/ntuaflix_api/signup/', formData);
+            const response = await axios.post('https://127.0.0.1:9876/ntuaflix_api/signup/', formData);
 
             // Handle response data
             console.log(response.data);
@@ -80,7 +80,7 @@ function StartPage() {
         };
 
         try {
-            const response = await axios.post('http://127.0.0.1:9876/ntuaflix_api/login/', formData);
+            const response = await axios.post('https://127.0.0.1:9876/ntuaflix_api/login/', formData);
 
             if (response.status === 200) {
                 const token = response.data.token;

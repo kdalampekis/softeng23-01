@@ -121,8 +121,8 @@ class SearchTitleView(APIView):
                 # , status=status.HTTP_404_NOT_FOUND)
             else:
                 return render(request, 'search_title.html')
-        # else:
-        #     return Response({"error": "Permission denied. You don't have an active user account."}, status=status.HTTP_403_FORBIDDEN)
+        else:
+            return Response({"error": "Permission denied. You don't have an active user account."}, status=status.HTTP_403_FORBIDDEN)
 
 class FilteredTitleObjectsView(APIView):
 
@@ -149,7 +149,7 @@ class FilteredTitleObjectsView(APIView):
                     if year_from:
                         query &= Q(startYear__gte=year_from)
                     if year_to:
-                        query &= Q(endYear__lte=year_to)
+                        query &= (Q(endYear__lte=year_to) | Q(endYear__isnull=True))
 
                     # Execute the query
                     title_objects = TitleObject.objects.filter(query)

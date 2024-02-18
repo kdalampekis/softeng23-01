@@ -45,8 +45,10 @@ python manage.py migrate
 7. Start the server. The server will run in the link http://localhost:9876/ as told:
 
 ```bash
-python manage.py runserver
+python manage.py runserver_plus --cert-file localhost+1.pem --key-file localhost+1-key.pem localhost:9876
 ```
+
+When the link is pressed your browser will give a warning of security. THis is because the certification used for https is self-assigned. Please by-pass the security warning. This can be done by 
 
 ## File Structure
 
@@ -204,7 +206,7 @@ name/<str:nameID>/
 searchname/
 ```
 
-As a result, the only way to test these urls is either by using the front-end and loging in properly or by sending a proper request with a proper header.
+As a result, the only way to test these urls is either by using the front-end and loging in properly or by sending a proper request with a proper header using tools like Postman
 
 ## Database Dump
 Despite the fact that there is an existing database in sqlite, it is crucial to be able to transfer the database easily as an sql or json file. In order to extract an sql file containing the website's database, the following steps should be followed:

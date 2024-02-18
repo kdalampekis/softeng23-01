@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 
-const BASE_URL = 'http://127.0.0.1:9876/ntuaflix_api';
+const BASE_URL = 'https://127.0.0.1:9876/ntuaflix_api';
 
 export const searchNBestRatedGenre = async (genre, number, format) => {
     format = format || 'json'; // If format is not provided, default to 'json'
@@ -216,5 +216,19 @@ export const searchUserByUsername = async (username) => {
     } catch (error) {
         console.error('Error:', error);
         throw error;
+    }
+};
+
+export const getActorPercentages = async (actorName) => {
+    try {
+        const response = await axios.get(`${BASE_URL}/NameProfile/`, {
+            params: {
+                name: actorName,
+            }
+        });
+        return response.data;
+    } catch (error) {
+        console.error('Error:', error);
+        throw error; // Re-throwing the error to handle it where the function is called
     }
 };
