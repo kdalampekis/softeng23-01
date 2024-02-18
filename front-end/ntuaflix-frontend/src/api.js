@@ -1,12 +1,12 @@
 import axios from 'axios';
 
 
-const BASE_URL = 'https://127.0.0.1:9876/ntuaflix_api';
+const BASE_URL = 'https://localhost:9876/ntuaflix_api';
 
 export const searchNBestRatedGenre = async (genre, number, format) => {
     format = format || 'json'; // If format is not provided, default to 'json'
     try {
-        const response = await axios.get(`${BASE_URL}/SearchByGenre?format=${format}`, {
+        const response = await axios.get(`${BASE_URL}/SearchByGenre/?format=${format}`, {
             params: {
                 genre: genre,
                 number: number,
@@ -15,9 +15,21 @@ export const searchNBestRatedGenre = async (genre, number, format) => {
         });
         return response.data;
     } catch (error) {
-        console.error('Error:', error);
-        throw error; // Re-throwing the error to handle it where the function is called
-    }
+        // if (error.response) {
+        //     // Check for unauthorized or forbidden response
+        //     if (error.response.status === 401 || error.response.status === 403) {
+        //         alert('Login is needed to access this feature.');
+        //     }
+            // }  else if (error.request) {
+            //     // It's a network error (including CORS issues)
+            //     console.error('Network Error:', error);
+            //     alert('Login is needed to access this feature.');
+        // } else {
+            // Something happened in setting up the request that triggered an Error
+            console.error('Error:', error.message);
+            throw error; // Re-throw the error for further handling if needed
+        }
+
 };
 
 
@@ -89,25 +101,25 @@ export const searchMoviesByActor = async (actorName, format) => {
 };
 
 export const searchMoviesByGenre = async (genre, number, toprated, format) => {
-    format = format || 'json'; // If format is not provided, default to 'json'
+    // format = format || 'json'; // If format is not provided, default to 'json'
     try {
-        let url = `${BASE_URL}/SearchByGenre`;
+        let url = `${BASE_URL}/SearchByGenre/`;
         const token = localStorage.getItem('softeng20bAPI.token');
         // Set up the headers with the auth token
         const headers = {
             'Authorization': `${token}`,
         };
-        if (format === 'json') {
-            headers['Content-Type'] = 'application/json';
-            headers['Accept'] = 'application/json';
-        } else if (format === 'csv') {
-            headers['Content-Type'] = 'text/csv';
-            headers['Accept'] = 'text/csv';
-        } else {
-            console.error('Invalid format specified:', format);
-            return;
-        }
-        url += `&?format=${format}`;
+        // if (format === 'json') {
+        //     headers['Content-Type'] = 'application/json';
+        //     headers['Accept'] = 'application/json';
+        // } else if (format === 'csv') {
+        //     headers['Content-Type'] = 'text/csv';
+        //     headers['Accept'] = 'text/csv';
+        // } else {
+        //     console.error('Invalid format specified:', format);
+        //     return;
+        // }
+        // url += `&?format=${format}`;
         const response = await axios.get(`${url}`, {
             params: {
                 genre: genre,

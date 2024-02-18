@@ -2,11 +2,13 @@ import React, {useState} from "react";
 import Header from "./Header";
 import "../styles.css"
 import Button from "./Button";
-import {useNavigate} from "react-router-dom";
+import {Link, useNavigate} from "react-router-dom";
 import axios from "axios";
 
 
 function StartPage() {
+    const [isLoggedIn, setIsLoggedIn] = useState(false);
+
     const [showLogin, setShowLogin] = useState(false);
     const [showSignUp, setShowSignUp] = useState(false);
     const [message, setMessage] = useState("Welcome to Ntuaflix");
@@ -18,7 +20,6 @@ function StartPage() {
 
     const [firstname, setFirstName] = useState('');
     const [lastname,setLastName ] = useState('');
-
 
     const navigate = useNavigate();
 
@@ -72,6 +73,11 @@ function StartPage() {
         setMessage("Welcome to Ntuaflix");
     };
 
+
+
+
+    console.log("Login status: ", isLoggedIn);
+
     const handleLogin = async () => {
         console.log("Logging in...");
         const formData = {
@@ -90,12 +96,14 @@ function StartPage() {
 
                 console.log('Login successful');
 
+                setIsLoggedIn(true);
+
                 if (isSuperuser) {
                     // Redirect to admin page if the user is a superuser
                     navigate('/admin');
                 } else {
                     // Redirect to user page if the user is not a superuser
-                    navigate('/user');
+                    navigate('/user', {state: {isLoggedIn} });
                 }
             } else {
                 console.log('Login failed');
@@ -170,9 +178,12 @@ function StartPage() {
 
 
             {!showLogin && !showSignUp && (
-                <div className="buttonContainer">
-                    <Button text="Login" onClick={handleLoginClick}/>
-                    <Button text="Signup" onClick={handleSignUpClick}/>
+                <div>
+                    <div className="buttonContainer">
+                        <Button text="Login" onClick={handleLoginClick}/>
+                        <Button text="Signup" onClick={handleSignUpClick}/>
+                        <p>Continue as <Link to="/user">guest</Link></p>
+                    </div>
                 </div>
             )}
         </div>

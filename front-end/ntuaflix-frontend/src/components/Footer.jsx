@@ -1,10 +1,11 @@
 import React from "react";
-import {Link} from "react-router-dom";
+import {Link, useLocation} from "react-router-dom";
 import "../styles.css";
 import {useNavigate} from "react-router-dom";
 import axios from "axios";
 
 function Footer({role}) {
+
     const navigate = useNavigate();
     const handleLogout = async () => {
         try {
@@ -13,7 +14,7 @@ function Footer({role}) {
             const headers = {
                 'Authorization': `${token}`,
             };
-            const response = await axios.post('http://127.0.0.1:9876/ntuaflix_api/logout/', {}, {headers : headers});
+            const response = await axios.post('https://localhost:9876/ntuaflix_api/logout/', {}, {headers : headers});
 
             if (response.status === 200) {
                 localStorage.removeItem('softeng20bAPI.token');

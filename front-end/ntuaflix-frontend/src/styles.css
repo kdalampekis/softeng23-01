@@ -56,6 +56,14 @@ h2 {
     color: white;
 }
 
+.buttonContainer p, Link {
+    color: white;
+}
+
+.buttonContainer Link {
+    text-decoration: none;
+}
+
 button , .button {
     padding: 10px 20px;
     width: 150px;

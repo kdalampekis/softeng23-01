@@ -10,10 +10,16 @@ import useSearch from "../Functions/useSearch";
 import MovieAnalytics from "./Items/MovieAnalytics";
 import ActorsDisplay from "../Functions/ActorsDisplay";
 import ActorAnalytics from "./Items/ActorAnalytics";
-import {useNavigate, useParams} from "react-router-dom"; // Import ActorAnalytics if you've created it
+import {useLocation, useNavigate, useParams} from "react-router-dom"; // Import ActorAnalytics if you've created it
+import isLoggedIn from '../components/StartPage';
 
 
 export default function UserPage() {
+    const location = useLocation();
+    const isLoggedIn = location.state;
+
+
+
     const [selectedFunctionality, setSelectedFunctionality] = useState(null);
     const [inputValues, setInputValues] = useState({
         genre: '',
@@ -162,6 +168,8 @@ export default function UserPage() {
 
 
 
+
+
     return (
         <div className="body">
             <Header/>
@@ -217,7 +225,8 @@ export default function UserPage() {
                                     </button>
                                 ))}
                             </div>
-                            <Footer role="user"/>
+                            {}
+                            {isLoggedIn && <Footer role="user"/>}
                         </>
                     )}
                     {selectedFunctionality && (

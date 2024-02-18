@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import "../../styles.css";
 import axios from "axios";
 
-const BASE_URL = 'http://127.0.0.1:9876/ntuaflix_api';
+const BASE_URL = 'https://localhost:9876/ntuaflix_api';
 
 
 const MovieAnalytics = ({ movie, onSearchAgain, onExit }) => {

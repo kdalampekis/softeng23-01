@@ -26,7 +26,7 @@ const ActorAnalytics = ({ actor, onSearchAgain, onExit }) => {
                         console.log("movieDetails: ", movieDetails);
                         return {
                             ...title,
-                            movieTitle: movieDetails?.originalTitle || 'Title not found',
+                            movieTitle: response?.originalTitle || 'Title not found',
                         };
                     })
                 );
