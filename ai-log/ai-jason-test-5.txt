@@ -1,0 +1,67 @@
+tconst = models.CharField(max_length=10, primary_key=True)
+    titleType = models.CharField(max_length=255, blank=True, null=True)
+    primaryTitle = models.CharField(max_length=255, blank=True, null=True)
+    originalTitle = models.CharField(max_length=255, blank=True, null=True)
+    isAdult = models.IntegerField(blank=True, null=True)
+    startYear = models.IntegerField(blank=True, null=True)
+    endYear = models.IntegerField(blank=True, null=True)
+    runtimeMinutes = models.IntegerField(blank=True, null=True)
+    genres = models.CharField(max_length=255, blank=True, null=True)
+    img_url_asset = models.CharField(max_length=255, blank=True, null=True). Test this model
+ChatGPT
+To test the TitleBasic model in your Django application, you'll need to create a test case in your tests.py file. This test case will verify that instances of the TitleBasic model are created correctly and that their fields contain the expected values.
+
+Here's an example of how you might write such a test:
+
+Step 1: Set Up the Test Environment
+Make sure you have a tests.py file in the Django app directory where the TitleBasic model is located.
+
+Step 2: Writing the Test Case
+In tests.py, you can write a test case using Django's TestCase class.
+
+python
+Copy code
+from django.test import TestCase
+from .models import TitleBasic
+
+class TitleBasicModelTest(TestCase):
+    def setUp(self):
+        # Setup a test instance of TitleBasic
+        self.title_basic = TitleBasic.objects.create(
+            tconst="tt1234567",
+            titleType="movie",
+            primaryTitle="Test Primary Title",
+            originalTitle="Test Original Title",
+            isAdult=0,
+            startYear=2020,
+            endYear=2021,
+            runtimeMinutes=120,
+            genres="Comedy,Drama",
+            img_url_asset="https://example.com/image.jpg"
+        )
+
+    def test_title_basic_creation(self):
+        # Test that the TitleBasic object is created correctly
+        self.assertEqual(self.title_basic.tconst, "tt1234567")
+        self.assertEqual(self.title_basic.titleType, "movie")
+        self.assertEqual(self.title_basic.primaryTitle, "Test Primary Title")
+        # Add more assertions for other fields
+
+    # You can add more tests to cover different aspects of your model
+Step 3: Running the Test
+Execute your tests using the Django manage.py test command:
+
+bash
+Copy code
+python manage.py test
+Key Points to Consider:
+setUp Method: This method sets up the objects (in this case, TitleBasic instances) that are used in each test method.
+
+Test Methods: Each test method (named with test_) contains the logic to test different aspects of your model. These methods use assertions to check if the model’s fields have the expected values.
+
+Additional Testing: Consider adding more tests to cover various scenarios, like checking for default values, testing model methods (if any), or testing for expected failures/exceptions.
+
+Remember to replace placeholder values and field names with those that correspond to your actual TitleBasic model. Testing your model in this way helps ensure its reliability and correctness within your Django application.
+
+
+

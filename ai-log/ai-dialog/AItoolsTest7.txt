@@ -1,0 +1,446 @@
+# Django Testing Framework #
+
+User
+Stelios Katsis
+ChatGPT 3.5
+
+User
+from django.test import TestCase
+from ntuaflix_api.administrator.models import *
+
+class BasicModelsTest(TestCase):
+    def setUp(self):
+        # Setup a test instance of TitleObject
+        self.title_basic = TitleBasic.objects.create(
+            tconst="tt1234567",
+            titleType="movie",
+            primaryTitle="Test Primary Title",
+            originalTitle="Test Original Title",
+            isAdult=0,
+            startYear=2020,
+            endYear=2021,
+            runtimeMinutes=120,
+            genres="Comedy,Drama",
+            img_url_asset="https://example.com/image.jpg"
+        )
+
+        self.title_aka = TitleAka.objects.create(
+            tconst=self.title_basic,
+            ordering=1,
+            title="Alternate Title",
+            region="US",
+            language="en",
+            types="Main",
+            attributes="",
+            isOriginalTitle=0
+        )
+
+        self.names = Names.objects.create(
+            nconst="nm1234567",
+            primaryName="John Doe",
+            birthYear=1980,
+            deathYear=2020,
+            primaryProfession="Actor",
+            knownForTitles="tt1234567,tt1234568",
+            imgUrl="https://example.com/image.jpg"
+        )
+
+        self.crew = Crew.objects.create(
+            tconst=self.title_basic,
+            directors="John Doe",
+            writers="Jane Smith"
+        )
+
+        self.episode = Episode.objects.create(
+            tconst=self.title_basic,
+            parentTconst="tt1234568",
+            seasonNumber=1,
+            episodeNumber=2
+        )
+
+        self.principals = Principals.objects.create(
+            tconst=self.title_basic,
+            nconst=self.names,
+            ordering=1,
+            category="Director",
+            job="Directing",
+            characters="Main Character",
+            img_url_asset="https://example.com/image.jpg"
+        )
+
+        self.rating = Rating.objects.create(
+            tconst=self.title_basic,
+            averageRating=8.5,
+            numVotes=100
+        )
+
+    def test_title_object_creation(self):
+        # Test that the title object is created correctly
+        self.assertEqual(self.title_basic.tconst, "tt1234567")
+        self.assertEqual(self.title_basic.titleType, "movie")
+        
+        self.assertEqual(self.title_basic.primaryTitle,"Test Primary Title")
+        self.assertEqual(self.title_basic.originalTitle, "Test Original Title")
+
+
+        self.assertEqual(self.title_basic.isAdult,0)
+        self.assertEqual(self.title_basic.startYear,2020)
+        self.assertEqual(self.title_basic.endYear,2021)
+        self.assertEqual(self.title_basic.runtimeMinutes,120) 
+        self.assertEqual(self.title_basic.genres,"Comedy,Drama")
+        self.assertEqual(self.title_basic.img_url_asset,"https://example.com/image.jpg")
+        
+        
+        # Add more assertions for other fields
+
+    def test_title_aka_creation(self):
+        # Test that the TitleAka object is created correctly
+        self.assertEqual(self.title_aka.ordering, 1)
+        self.assertEqual(self.title_aka.title, "Alternate Title")
+        self.assertEqual(self.title_aka.region, "US")
+        self.assertEqual(self.title_aka.language,"en")
+        self.assertEqual(self.title_aka.types,"Main")
+        self.assertEqual(self.title_aka.attributes,"")
+        self.assertEqual(self.title_aka.isOriginalTitle,0) 
+
+    def test_names_creation(self):
+        # Test that the Names object is created correctly
+        
+        self.assertEqual(self.names.nconst, "nm1234567")
+        self.assertEqual(self.names.primaryName, "John Doe")
+        self.assertEqual(self.names.birthYear, 1980)
+        self.assertEqual(self.names.deathYear, 2020)
+        self.assertEqual(self.names.primaryProfession,"Actor")
+        self.assertEqual(self.names.knownForTitles,"tt1234567,tt1234568")
+        self.assertEqual(self.names.imgUrl,"https://example.com/image.jpg")
+
+    def test_crew_creation(self):
+        # Test that the Crew object is created correctly
+        self.assertEqual(self.crew.tconst.tconst, "tt1234567")
+        self.assertEqual(self.crew.directors, "John Doe")
+        self.assertEqual(self.crew.writers, "Jane Smith")    
+
+    def test_episode_creation(self):
+        # Test that the Episode object is created correctly
+        self.assertEqual(self.episode.tconst.tconst, "tt1234567")
+        self.assertEqual(self.episode.parentTconst, "tt1234568")
+        self.assertEqual(self.episode.seasonNumber, 1)
+        self.assertEqual(self.episode.episodeNumber, 2)
+
+    def test_principals_creation(self):
+        self.assertEqual(self.principals.tconst.tconst, "tt1234567")
+        self.assertEqual(self.principals.nconst.nconst, "nm1234567")
+        self.assertEqual(self.principals.ordering, 1)
+        self.assertEqual(self.principals.category, "Director")
+        self.assertEqual(self.principals.job, "Directing")
+        self.assertEqual(self.principals.characters, "Main Character")
+        self.assertEqual(self.principals.img_url_asset,"https://example.com/image.jpg")
+
+
+    def test_rating_creation(self):
+        # Test that the Rating object is created correctly
+        self.assertEqual(self.rating.tconst.tconst, "tt1234567")
+        self.assertEqual(self.rating.averageRating, 8.5)
+        self.assertEqual(self.rating.numVotes, 100)
+    # You can add more tests to cover different aspects of your model, such as custom methods, model validation, etc.
+
+Regarding these tests i want to create another test about the model Like:
+
+class Likes(models.Model):
+    tconst = models.ForeignKey(TitleBasic, on_delete=models.CASCADE)
+    userId = models.ForeignKey(User, on_delete=models.CASCADE)
+    liked = models.BooleanField()
+
+    class Meta:
+        db_table = 'User_Like'
+        unique_together = (('tconst', 'userId'),)
+
+    def __str__(self):
+        return f"Like status for {self.tconst} by User {self.userId}"
+ChatGPT
+Certainly! To test the Likes model, you can follow a similar pattern as you did with the other models. Below is an example test for the Likes model:
+
+python
+Copy code
+# administrator/tests/test_models.py
+
+from django.test import TestCase
+from ntuaflix_api.administrator.models import Likes, TitleBasic
+from django.contrib.auth.models import User
+
+class LikesModelTest(TestCase):
+    def setUp(self):
+        # Setup a test instance of TitleObject
+        self.title_basic = TitleBasic.objects.create(
+            tconst="tt1234567",
+            titleType="movie",
+            primaryTitle="Test Primary Title",
+            # ... other fields ...
+        )
+
+        # Setup a test instance of User
+        self.user = User.objects.create_user(username='testuser', password='testpassword')
+
+        # Setup a test instance of Likes
+        self.like_instance = Likes.objects.create(
+            tconst=self.title_basic,
+            userId=self.user,
+            liked=True
+        )
+
+    def test_like_creation(self):
+        # Test that the Likes object is created correctly
+        self.assertEqual(self.like_instance.tconst.tconst, "tt1234567")
+        self.assertEqual(self.like_instance.userId.username, 'testuser')
+        self.assertTrue(self.like_instance.liked)
+
+    def test_like_str_method(self):
+        # Test the __str__ method of Likes model
+        expected_str = f"Like status for {self.like_instance.tconst} by User {self.like_instance.userId}"
+        self.assertEqual(str(self.like_instance), expected_str)
+
+    def test_unique_together_constraint(self):
+        # Test the unique_together constraint
+        # Attempt to create another Likes instance with the same tconst and userId
+        duplicate_like_instance = Likes(
+            tconst=self.title_basic,
+            userId=self.user,
+            liked=False
+        )
+
+        # Ensure that trying to save the duplicate instance raises IntegrityError
+        with self.assertRaises(Exception):
+            duplicate_like_instance.save()
+
+    # Add more tests as needed
+In this example:
+
+test_like_creation: Checks that the Likes object is created correctly with the specified fields.
+test_like_str_method: Tests the __str__ method to ensure it returns the expected string representation.
+test_unique_together_constraint: Verifies that the unique_together constraint is working by attempting to create a duplicate entry and ensuring it raises an IntegrityError.
+Make sure to adjust the fields and data according to your actual implementation. This way, you can cover various aspects of your Likes model in your test suite.
+
+User
+Now how can i test a specific test file in django?
+ChatGPT
+In Django, you can run a specific test file by providing the path to that file when using the python manage.py test command. Here's how you can do it:
+
+Assuming your test file is located at administrator/tests/test_models.py, you can run the tests in this specific file with the following command:
+
+bash
+Copy code
+python manage.py test administrator.tests.test_models
+Make sure to replace administrator.tests.test_models with the correct path to your test file.
+
+If your test file is located in a different directory, adjust the path accordingly. You can use the relative path from the Django app's root directory.
+
+This command will execute all the tests defined in the specified file and provide you with the test results.
+
+User
+from django.db import models
+from ..models import *
+from django.contrib.auth.models import User
+
+
+class TitleBasic(models.Model):
+    tconst = models.CharField(max_length=10, primary_key=True)
+    titleType = models.CharField(max_length=255, blank=True, null=True)
+    primaryTitle = models.CharField(max_length=255, blank=True, null=True)
+    originalTitle = models.CharField(max_length=255, blank=True, null=True)
+    isAdult = models.IntegerField(blank=True, null=True)
+    startYear = models.IntegerField(blank=True, null=True)
+    endYear = models.IntegerField(blank=True, null=True)
+    runtimeMinutes = models.IntegerField(blank=True, null=True)
+    genres = models.CharField(max_length=255, blank=True, null=True)
+    img_url_asset = models.CharField(max_length=255, blank=True, null=True)
+
+    class Meta:
+        db_table = 'TitleBasic'  
+
+    def get_tconst(self):
+        # Return the tconst value of the instance
+        return self.tconst
+
+    def __str__(self):
+        return self.tconst
+
+
+class TitleAka(models.Model):
+    aka_Id = models.AutoField(primary_key=True)
+    tconst = models.ForeignKey(TitleBasic, on_delete=models.CASCADE)  # ForeignKey
+    ordering = models.IntegerField(default=0)
+    title = models.CharField(max_length=255, null=True)
+    region = models.CharField(max_length=255, blank=True, null=True)
+    language = models.CharField(max_length=255, blank=True, null=True)
+    types = models.CharField(max_length=255, blank=True, null=True)
+    attributes = models.CharField(max_length=255, blank=True, null=True)
+    isOriginalTitle = models.IntegerField()
+    
+    class Meta:
+        db_table = 'TitleAka'  
+
+    def __str__(self):
+        return self.title
+    
+    
+class Names(models.Model):
+    nconst = models.CharField(max_length=10, primary_key=True)
+    primaryName = models.CharField(max_length=255, blank=True, null=True)
+    birthYear = models.IntegerField(blank=True, null=True)
+    deathYear = models.IntegerField(blank=True, null=True)
+    primaryProfession = models.CharField(max_length=255, blank=True, null=True)
+    knownForTitles = models.CharField(max_length=255, blank=True, null=True)
+    imgUrl = models.CharField(max_length=255, blank=True, null=True)
+
+    class Meta:
+        db_table = 'Names'  
+
+    def __str__(self):
+        return self.nconst
+
+
+class Crew(models.Model):
+    tconst = models.OneToOneField(TitleBasic, primary_key=True, on_delete=models.CASCADE)  # ForeignKey
+    directors = models.CharField(max_length=255, blank=True, null=True)
+    writers = models.CharField(max_length=255, blank=True, null=True)
+
+    class Meta:
+        db_table = 'Crew'  
+
+    def __str__(self):
+        return f"Crew for {self.tconst}"
+
+
+class Episode(models.Model):
+    tconst = models.OneToOneField(TitleBasic, primary_key=True, on_delete=models.CASCADE)  # ForeignKey
+    parentTconst = models.CharField(max_length=10)
+    seasonNumber = models.IntegerField(blank=True, null=True)
+    episodeNumber = models.IntegerField(blank=True, null=True)
+
+    class Meta:
+        db_table = 'Episode'
+
+    def __str__(self):
+        return f"Episode {self.episodeNumber} of Season {self.seasonNumber} ({self.tconst})"
+
+
+class Principals(models.Model):
+    workas_Id = models.AutoField(primary_key=True)
+    tconst = models.ForeignKey(TitleBasic, on_delete=models.CASCADE)  # ForeignKey
+    ordering = models.IntegerField(blank=True, null=True)
+    nconst = models.ForeignKey(Names, on_delete=models.CASCADE)  # ForeignKey
+    category = models.CharField(max_length=25, blank=True, null=True)
+    job = models.CharField(max_length=255, blank=True, null=True)
+    characters = models.CharField(max_length=255, blank=True, null=True)
+    img_url_asset = models.CharField(max_length=255, blank=True, null=True)
+
+    class Meta:
+        db_table = 'Principals'  
+
+    def __str__(self):
+        return f"{self.category} - {self.nconst}"
+
+
+class Rating(models.Model):
+    tconst = models.OneToOneField(TitleBasic, primary_key=True, on_delete=models.CASCADE)  # ForeignKey
+    averageRating = models.FloatField(blank=True, null=True)
+    numVotes = models.IntegerField(blank=True, null=True)
+
+    class Meta:
+        db_table = 'Rating'  
+
+    def __str__(self):
+        return f"Rating {self.averageRating} for {self.tconst}"
+
+
+class Likes(models.Model):
+    tconst = models.ForeignKey(TitleBasic, on_delete=models.CASCADE)
+    userId = models.ForeignKey(User, on_delete=models.CASCADE)
+    liked = models.BooleanField()
+
+    class Meta:
+        db_table = 'User_Like'
+        unique_together = (('tconst', 'userId'),)
+
+    def __str__(self):
+        return f"Like status for {self.tconst} by User {self.userId}"
+
+Regarding the models in my workspace are the previous, what tests should i make for the models?
+ChatGPT
+Certainly! To create meaningful tests for your Django models, you'll want to cover various aspects, including model creation, validation, relationships, and any custom methods you may have added. Below are example tests for each of your models:
+
+TitleBasic Model Tests:
+python
+Copy code
+class TitleBasicModelTest(TestCase):
+    def setUp(self):
+        self.title_basic = TitleBasic.objects.create(
+            tconst="tt1234567",
+            titleType="movie",
+            primaryTitle="Test Primary Title",
+            originalTitle="Test Original Title",
+            isAdult=0,
+            startYear=2020,
+            endYear=2021,
+            runtimeMinutes=120,
+            genres="Comedy,Drama",
+            img_url_asset="https://example.com/image.jpg"
+        )
+
+    def test_title_basic_creation(self):
+        self.assertEqual(self.title_basic.tconst, "tt1234567")
+        # Add assertions for other fields
+
+    def test_get_tconst_method(self):
+        self.assertEqual(self.title_basic.get_tconst(), "tt1234567")
+
+    def test_str_method(self):
+        self.assertEqual(str(self.title_basic), "tt1234567")
+TitleAka Model Tests:
+python
+Copy code
+class TitleAkaModelTest(TestCase):
+    def setUp(self):
+        self.title_basic = TitleBasic.objects.create(tconst="tt1234567", titleType="movie", primaryTitle="Test Movie")
+        self.title_aka = TitleAka.objects.create(
+            tconst=self.title_basic,
+            ordering=1,
+            title="Alternate Title",
+            region="US",
+            language="en",
+            types="Main",
+            attributes="",
+            isOriginalTitle=0
+        )
+
+    def test_title_aka_creation(self):
+        self.assertEqual(self.title_aka.ordering, 1)
+        # Add assertions for other fields
+
+    def test_str_method(self):
+        self.assertEqual(str(self.title_aka), "Alternate Title")
+Names Model Tests:
+python
+Copy code
+class NamesModelTest(TestCase):
+    def setUp(self):
+        self.names = Names.objects.create(
+            nconst="nm1234567",
+            primaryName="John Doe",
+            birthYear=1980,
+            deathYear=2020,
+            primaryProfession="Actor",
+            knownForTitles="tt1234567,tt1234568",
+            imgUrl="https://example.com/image.jpg"
+        )
+
+    def test_names_creation(self):
+        self.assertEqual(self.names.nconst, "nm1234567")
+        # Add assertions for other fields
+
+    def test_str_method(self):
+        self.assertEqual(str(self.names), "nm1234567")
+Other Models:
+Similarly, you can follow a similar pattern to create tests for the remaining models (Crew, Episode, Principals, Rating, and Likes). Test the creation of instances, relationships, and any custom methods you have defined.
+
+These tests are just a starting point, and you may want to add more tests to cover edge cases, validation, and any specific functionality implemented in your models. Additionally, consider testing your models with various scenarios to ensure the correctness and reliability of your application.

@@ -1,0 +1,117 @@
+Do the same here:
+
+                # Use create to insert a new element
+                # We dont have to check for a primay key
+                TitleAka.objects.create(
+                    tconst=tconst,
+                    ordering=ordering,
+                    title=title,
+                    region=region,
+                    language=language,
+                    types=types,
+                    attributes=attributes,
+                    isOriginalTitle=isOriginalTitle,
+                )          
+                print(f"Processed row number: {row_number}")
+ChatGPT
+In your code snippet, you want to use the create method to insert a new element into the TitleAka model without checking for a primary key. If you want to skip the creation of a record when it already exists, you can use a try-except block to handle potential exceptions. Here's the modified code:
+
+python
+Copy code
+for row_number, row in enumerate(reader, start=1):
+    if ignore_first_line:
+        ignore_first_line = False
+        continue
+
+    tconst, ordering, title, region, language, types, attributes, isOriginalTitle = row
+
+    # Use try-except to handle the case when the record already exists
+    try:
+        TitleAka.objects.create(
+            tconst=tconst,
+            ordering=ordering,
+            title=title,
+            region=region,
+            language=language,
+            types=types,
+            attributes=attributes,
+            isOriginalTitle=isOriginalTitle,
+        )
+        print(f"Created new record for tconst: {tconst}")
+
+    except Exception as e:
+        print(f"Error creating record for tconst: {tconst}, {e}")
+
+    print(f"Processed row number: {row_number}")
+In this code:
+
+We use a try-except block to handle any exceptions that might occur during the creation of the record.
+If a record with the same tconst already exists, an exception will be raised, and we catch it in the except block. You can customize the exception type to be more specific if needed.
+This modified code will create a new record for each row and print a message indicating whether a new record was created or if there was an error.
+
+User
+for row_number, row in enumerate(reader, start=1):
+                if ignore_first_line:
+                    ignore_first_line = False
+                    continue
+
+                tconst, ordering, title, region, language, types, attributes, isOriginalTitle = row
+
+                # Use try-except to handle the case when the record already exists
+                try:
+                    TitleAka.objects.get_or_create(
+                        tconst=tconst,
+                        ordering=ordering,
+                        title=title,
+                        region=region,
+                        language=language,
+                        types=types,
+                        attributes=attributes,
+                        isOriginalTitle=isOriginalTitle,
+                    )
+                    print(f"Created new record for tconst: {tconst}")
+By pass is the tconst and ordering already exist
+ChatGPT
+If you want to use get_or_create with the TitleAka model but skip the creation if the tconst and ordering already exist, you can modify the code as follows:
+
+python
+Copy code
+for row_number, row in enumerate(reader, start=1):
+    if ignore_first_line:
+        ignore_first_line = False
+        continue
+
+    tconst, ordering, title, region, language, types, attributes, isOriginalTitle = row
+
+    # Use try-except to handle the case when the record already exists
+    try:
+        title_aka, created = TitleAka.objects.get_or_create(
+            tconst=tconst,
+            ordering=ordering,
+            defaults={
+                'title': title,
+                'region': region,
+                'language': language,
+                'types': types,
+                'attributes': attributes,
+                'isOriginalTitle': isOriginalTitle,
+            }
+        )
+
+        if created:
+            print(f"Created new record for tconst: {tconst}")
+        else:
+            print(f"Record for tconst {tconst} and ordering {ordering} already exists, skipping.")
+
+    except Exception as e:
+        print(f"Error creating record for tconst: {tconst} and ordering {ordering}, {e}")
+
+    print(f"Processed row number: {row_number}")
+In this code:
+
+We use get_or_create to try to fetch a record with the given tconst and ordering. If it doesn't exist, it creates a new one with the provided data in the defaults dictionary.
+We use the created variable to check if a new record was created or if the record already existed in the database.
+If created is True, it means a new record was created; otherwise, it already existed, and we print a message indicating that it is being skipped.
+The code also includes error handling to catch any exceptions that might occur during the process.
+
+

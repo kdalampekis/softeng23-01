@@ -1,0 +1,1507 @@
+# Tests for Upload Functions #
+
+User
+Stelios Katsis
+ChatGPT 3.5
+
+User
+from MySQLdb import IntegrityError
+from django.shortcuts import render
+from django.http import JsonResponse
+import csv
+from .forms import *
+from .models import *
+from django.core.exceptions import ValidationError
+from django.views.decorators.csrf import csrf_exempt
+from django.db import DatabaseError
+from django.contrib.auth.models import User
+from .serializers import UserSerializer
+from rest_framework.views import APIView
+from rest_framework import status
+from rest_framework.response import Response
+from django.db import IntegrityError
+
+
+# /////////////////////////////// TITLE BASICS ///////////////////////////////////////
+
+def ProcessTitleBasicsTSV(request, file, reset = False):
+    reader = csv.reader(file, delimiter='\t')
+
+    ignore_first_line = True
+    for row_number, row in enumerate(reader, start=1):
+        if ignore_first_line:
+            ignore_first_line = False
+            continue
+        
+        tconst, titleType, primaryTitle, originalTitle, isAdult, startYear, endYear, runtimeMinutes, genres, img_url_asset = row
+        
+        startYear = None if startYear == '\\N' else startYear
+        endYear = None if endYear == '\\N' else endYear
+        runtimeMinutes = None if runtimeMinutes == '\\N' else runtimeMinutes
+        isAdult = None if isAdult == '\\N' else isAdult
+        genres = None if genres == '\\N' else genres
+        img_url_asset = None if img_url_asset == '\\N' else img_url_asset
+        
+        # Use get_or_create to insert a new element
+        # into the table if not already existed
+        try:
+            title_obj, created = TitleBasic.objects.get_or_create(
+                tconst=tconst,
+                defaults={
+                    'titleType': titleType,
+                    'primaryTitle': primaryTitle,
+                    'originalTitle': originalTitle,
+                    'isAdult': isAdult,
+                    'startYear': startYear,
+                    'endYear': endYear,
+                    'runtimeMinutes': runtimeMinutes,
+                    'genres': genres,
+                    'img_url_asset': img_url_asset,
+                }
+            )
+
+            if created:
+                print(f"Created new record for tconst: {tconst}")
+                if reset == False:
+                    UploadTitleObject(request, TitleBasic.objects.filter(tconst=tconst))
+            else:
+                print(f"Record for tconst {tconst} already exists, skipping.")
+
+        except TitleBasic.MultipleObjectsReturned:
+            print(f"Multiple records found for tconst: {tconst}, skipping.")
+
+        print(f"Processed row number: {row_number-1}")
+    return row_number-1
+
+
+def UploadTitleBasics(request):
+    if request.method == 'POST':
+        superuser_token = User.objects.filter(is_superuser=True).values_list('auth_token', flat=True).first()
+        token = request.META.get('HTTP_AUTHORIZATION')
+        print(superuser_token)
+        print(token)
+
+        # Check if the authenticated user is a superuser
+        if token == superuser_token:
+            form = BasicForm(request.POST, request.FILES)
+            if form.is_valid():
+                file = form.cleaned_data['tsv_file']
+                decoded_file = file.read().decode('utf-8').splitlines()
+                rows = ProcessTitleBasicsTSV(request, decoded_file)
+                return JsonResponse({'status': 'success', 'processed_rows': rows})
+            else:
+                return JsonResponse({'status': 'error', 'message': 'Form is not valid'}, status=400)
+        else:
+            return JsonResponse({'detail': 'Permission denied. You don\'t have administrator privileges.'}, status=403)
+    else:
+        form = BasicForm()
+        return render(request, 'upload.html', {'form': form})
+
+
+def ResetTitleBasics(request):
+    TitleBasic.objects.all().delete()
+    specific_file_path = '..\\..\\Database\\Data\\truncated_title.basics.tsv'
+    with open(specific_file_path, 'r', encoding='utf-8') as file:
+        rows = ProcessTitleBasicsTSV(request, file, True)
+    return JsonResponse({'status': 'success', 'processed_rows': rows})
+
+
+# /////////////////////////////// TITLE AKAS ///////////////////////////////////////
+
+def ProcessTitleAkasTSV(request, file, reset = False):
+    reader = csv.reader(file, delimiter='\t')
+
+    ignore_first_line = True
+    for row_number, row in enumerate(reader, start=1):
+        if ignore_first_line:
+            ignore_first_line = False
+            continue
+
+        tconst, ordering, title, region, language, types, attributes, isOriginalTitle = row
+
+        title = None if title == '\\N' else title
+        region = None if region == '\\N' else region
+        language = None if language == '\\N' else language
+        types = None if types == '\\N' else types
+        attributes = None if attributes == '\\N' else attributes
+
+        TitleAka.objects.create(
+            tconst=TitleBasic.objects.get(tconst=tconst),
+            ordering=ordering,
+            title=title,
+            region=region,
+            language=language,
+            types=types,
+            attributes=attributes,
+            isOriginalTitle=isOriginalTitle,
+        )
+
+        print(f"Processed row number: {row_number-1}")
+        if reset == False:
+            UploadTitleObject(request, TitleBasic.objects.filter(tconst=tconst))
+    return row_number-1
+
+
+def UploadTitleAkas(request):
+    if request.method == 'POST':
+        superuser_token = User.objects.filter(is_superuser=True).values_list('auth_token', flat=True).first()
+        token = request.META.get('HTTP_AUTHORIZATION')
+
+        # Check if the authenticated user is a superuser
+        if token == superuser_token:
+            form = BasicForm(request.POST, request.FILES)
+            if form.is_valid():
+                file = form.cleaned_data['tsv_file']
+                decoded_file = file.read().decode('utf-8').splitlines()
+                rows = ProcessTitleAkasTSV(request, decoded_file)
+                return JsonResponse({'status': 'success', 'processed_rows': rows})
+            else:
+                return JsonResponse({'status': 'error', 'message': 'Form is not valid'}, status=400)
+        else:
+            return JsonResponse({"detail": "Permission denied. You don't have administrator privileges."}, status=403)
+    else:
+        form = BasicForm()
+        return render(request, 'upload.html', {'form': form})
+
+
+def ResetTitleAkas(request):
+    TitleAka.objects.all().delete()
+    specific_file_path = '..\\..\\Database\\Data\\truncated_title.akas.tsv'
+    with open(specific_file_path, 'r', encoding='utf-8') as file:
+        rows = ProcessTitleAkasTSV(request, file, True)
+    return JsonResponse({'status': 'success', 'processed_rows': rows})
+
+
+# /////////////////////////////// NAME BASICS ///////////////////////////////////////
+
+def ProcessNameBasicsTSV(request, file, reset = False):
+    reader = csv.reader(file, delimiter='\t')
+
+    ignore_first_line = True
+    for row_number, row in enumerate(reader, start=1):
+        if ignore_first_line:
+            ignore_first_line = False
+            continue
+
+        nconst, primaryName, birthYear, deathYear, primaryProfession, knownForTitles, imgUrl = row
+
+        primaryName = None if primaryName == '\\N' else primaryName
+        birthYear = None if birthYear == '\\N' else birthYear
+        deathYear = None if deathYear == '\\N' else deathYear
+        primaryProfession = None if primaryProfession == '\\N' else primaryProfession
+        knownForTitles = None if knownForTitles == '\\N' else knownForTitles
+        imgUrl = None if imgUrl == '\\N' else imgUrl
+
+        try:
+            name_obj, created = Names.objects.get_or_create(
+                nconst=nconst,
+                defaults={
+                    'primaryName': primaryName,
+                    'birthYear': birthYear,
+                    'deathYear': deathYear,
+                    'primaryProfession': primaryProfession,
+                    'knownForTitles': knownForTitles,
+                    'imgUrl': imgUrl,
+                }
+            )
+
+            if created:
+                print(f"Created new record for nconst: {nconst}")
+                if reset == False:
+                    UploadNameObject(request, Names.objects.filter(nconst=nconst))
+                    UploadNameProfile(request, Names.objects.filter(nconst=nconst))
+            else:
+                print(f"Record for nconst {nconst} already exists, skipping.")
+
+        except Names.MultipleObjectsReturned:
+            print(f"Multiple records found for nconst: {nconst}, skipping.")
+
+        print(f"Processed row number: {row_number-1}")
+    return row_number-1
+
+
+def UploadNameBasics(request):
+    if request.method == 'POST':
+        superuser_token = User.objects.filter(is_superuser=True).values_list('auth_token', flat=True).first()
+        token = request.META.get('HTTP_AUTHORIZATION')
+        print(token)
+
+        # Check if the authenticated user is a superuser
+        if token == superuser_token:
+            form = BasicForm(request.POST, request.FILES)
+            if form.is_valid():
+                file = form.cleaned_data['tsv_file']
+                decoded_file = file.read().decode('utf-8').splitlines()
+                rows = ProcessNameBasicsTSV(request, decoded_file)
+                return JsonResponse({'status': 'success', 'processed_rows': rows})
+            else:
+                return JsonResponse({'status': 'error', 'message': 'Form is not valid'}, status=400)
+        else:
+            return JsonResponse({"detail": "Permission denied. You don't have administrator privileges."}, status=403)
+    else:
+        form = BasicForm()
+        return render(request, 'upload.html', {'form': form})
+
+
+def ResetNameBasics(request):
+    Names.objects.all().delete()
+    specific_file_path = '..\\..\\Database\\Data\\truncated_name.basics.tsv'
+    with open(specific_file_path, 'r', encoding='utf-8') as file:
+        rows = ProcessNameBasicsTSV(request, file, True)
+    return JsonResponse({'status': 'success', 'processed_rows': rows})
+
+
+# /////////////////////////////// TITLE CREW ///////////////////////////////////////
+
+def ProcessTitleCrewTSV(request, file, reset = False):
+    reader = csv.reader(file, delimiter='\t')
+
+    ignore_first_line = True
+    for row_number, row in enumerate(reader, start=1):
+        if ignore_first_line:
+            ignore_first_line = False
+            continue
+
+        tconst, directors, writers = row
+
+        directors = None if directors == '\\N' else directors
+        writers = None if writers == '\\N' else writers
+
+        try:
+            crew_obj, created = Crew.objects.get_or_create(
+                tconst=TitleBasic.objects.get(tconst=tconst),
+                defaults={
+                    'directors': directors,
+                    'writers': writers,
+                }
+            )
+
+            if created:
+                print(f"Created new record for tconst: {tconst}")
+            else:
+                print(f"Record for tconst {tconst} already exists, skipping.")
+
+        except Crew.MultipleObjectsReturned:
+            print(f"Multiple records found for tconst: {tconst}, skipping.")
+
+        print(f"Processed row number: {row_number-1}")
+    return row_number-1
+
+
+def UploadTitleCrew(request):
+    if request.method == 'POST':
+        superuser_token = User.objects.filter(is_superuser=True).values_list('auth_token', flat=True).first()
+        token = request.META.get('HTTP_AUTHORIZATION')
+
+        # Check if the authenticated user is a superuser
+        if token == superuser_token:
+            form = BasicForm(request.POST, request.FILES)
+            if form.is_valid():
+                file = form.cleaned_data['tsv_file']
+                decoded_file = file.read().decode('utf-8').splitlines()
+                rows = ProcessTitleCrewTSV(request, decoded_file)
+                return JsonResponse({'status': 'success', 'processed_rows': rows})
+            else:
+                return JsonResponse({'status': 'error', 'message': 'Form is not valid'}, status=400)
+        else:
+            return JsonResponse({"detail": "Permission denied. You don't have administrator privileges."}, status=403)
+    else:
+        form = BasicForm()
+        return render(request, 'upload.html', {'form': form})
+
+
+def ResetTitleCrew(request):
+    Crew.objects.all().delete()
+    specific_file_path = '..\\..\\Database\\Data\\truncated_title.crew.tsv'
+    with open(specific_file_path, 'r', encoding='utf-8') as file:
+        rows = ProcessTitleCrewTSV(request, file, True)
+    return JsonResponse({'status': 'success', 'processed_rows': rows})
+
+
+# /////////////////////////////// TITLE EPISODES ///////////////////////////////////////
+
+def ProcessTitleEpisodeTSV(request, file, reset = False):
+    reader = csv.reader(file, delimiter='\t')
+
+    ignore_first_line = True
+    for row_number, row in enumerate(reader, start=1):
+        if ignore_first_line:
+            ignore_first_line = False
+            continue
+
+        tconst, parentTconst, seasonNumber, episodeNumber = row
+
+        seasonNumber = None if seasonNumber == '\\N' else seasonNumber
+        episodeNumber = None if episodeNumber == '\\N' else episodeNumber
+
+        try:
+            episode_obj, created = Episode.objects.get_or_create(
+                tconst=TitleBasic.objects.get(tconst=tconst),
+                defaults={
+                    'parentTconst': parentTconst,
+                    'seasonNumber': seasonNumber,
+                    'episodeNumber': episodeNumber,
+                }
+            )
+
+            if created:
+                print(f"Created new record for tconst: {tconst}")
+            else:
+                print(f"Record for tconst {tconst} already exists, skipping.")
+
+        except Episode.MultipleObjectsReturned:
+            print(f"Multiple records found for tconst: {tconst}, skipping.")
+
+        print(f"Processed row number: {row_number-1}")
+    return row_number-1
+
+
+def UploadTitleEpisode(request):
+    if request.method == 'POST':
+        superuser_token = User.objects.filter(is_superuser=True).values_list('auth_token', flat=True).first()
+        token = request.META.get('HTTP_AUTHORIZATION')
+
+        # Check if the authenticated user is a superuser
+        if token == superuser_token:
+            form = BasicForm(request.POST, request.FILES)
+            if form.is_valid():
+                file = form.cleaned_data['tsv_file']
+                decoded_file = file.read().decode('utf-8').splitlines()
+                rows = ProcessTitleEpisodeTSV(request, decoded_file)
+                return JsonResponse({'status': 'success', 'processed_rows': rows})
+            else:
+                return JsonResponse({'status': 'error', 'message': 'Form is not valid'}, status=400)
+        else:
+            return JsonResponse({"detail": "Permission denied. You don't have administrator privileges."}, status=403)
+    else:
+        form = BasicForm()
+        return render(request, 'upload.html', {'form': form})
+
+
+def ResetTitleEpisode(request):
+    Episode.objects.all().delete()
+    specific_file_path = '..\\..\\Database\\Data\\truncated_title.episode.tsv'
+    with open(specific_file_path, 'r', encoding='utf-8') as file:
+        rows = ProcessTitleEpisodeTSV(request, file, True)
+    return JsonResponse({'status': 'success', 'processed_rows': rows})
+
+
+# /////////////////////////////// TITLE PRINCIPALS ///////////////////////////////////////
+
+def ProcessTitlePrincipalsTSV(request, file, reset = False):
+    reader = csv.reader(file, delimiter='\t')
+
+    ignore_first_line = True
+    for row_number, row in enumerate(reader, start=1):
+        if ignore_first_line:
+            ignore_first_line = False
+            continue
+
+        tconst, ordering, nconst, category, job, characters, img_url_asset = row
+
+        ordering = None if ordering == '\\N' else ordering
+        category = None if category == '\\N' else category
+        job = None if job == '\\N' else job
+        characters = None if characters == '\\N' else characters
+        img_url_asset = None if img_url_asset == '\\N' else img_url_asset
+
+        try:
+            principals_obj, created = Principals.objects.get_or_create(
+                tconst=TitleBasic.objects.get(tconst=tconst),
+                nconst=Names.objects.get(nconst=nconst),
+                defaults={
+                    'ordering': ordering,
+                    'category': category,
+                    'job': job,
+                    'characters': characters,
+                    'img_url_asset': img_url_asset,
+                }
+            )
+
+            if created:
+                print(f"Created new record for tconst: {tconst}")
+                if reset == False:
+                    UploadTitleObject(request, TitleBasic.objects.filter(tconst=tconst))
+                    UploadNameObject(request, Names.objects.filter(nconst=nconst))
+                    UploadNameProfile(request, Names.objects.filter(nconst=nconst))
+            else:
+                print(f"Record for tconst {tconst} already exists, skipping.")
+
+        except Principals.MultipleObjectsReturned:
+            print(f"Multiple records found for tconst: {tconst}, skipping.")
+
+        print(f"Processed row number: {row_number-1}")
+    return row_number-1
+
+
+def UploadTitlePrincipals(request):
+    if request.method == 'POST':
+        superuser_token = User.objects.filter(is_superuser=True).values_list('auth_token', flat=True).first()
+        token = request.META.get('HTTP_AUTHORIZATION')
+
+        # Check if the authenticated user is a superuser
+        if token == superuser_token:
+            form = BasicForm(request.POST, request.FILES)
+            if form.is_valid():
+                file = form.cleaned_data['tsv_file']
+                decoded_file = file.read().decode('utf-8').splitlines()
+                rows = ProcessTitlePrincipalsTSV(request, decoded_file)
+                return JsonResponse({'status': 'success', 'processed_rows': rows})
+            else:
+                return JsonResponse({'status': 'error', 'message': 'Form is not valid'}, status=400)
+        else:
+            return JsonResponse({"detail": "Permission denied. You don't have administrator privileges."}, status=403)
+    else:
+        form = BasicForm()
+        return render(request, 'upload.html', {'form': form})
+
+
+def ResetTitlePrincipals(request):
+    Principals.objects.all().delete()
+    specific_file_path = '..\\..\\Database\\Data\\truncated_title.principals.tsv'
+    with open(specific_file_path, 'r', encoding='utf-8') as file:
+        rows = ProcessTitlePrincipalsTSV(request, file, True)
+    return JsonResponse({'status': 'success', 'processed_rows': rows})
+
+
+# /////////////////////////////// TITLE RATINGS ///////////////////////////////////////
+
+def ProcessTitleRatingsTSV(request, file, reset = False):
+    reader = csv.reader(file, delimiter='\t')
+
+    ignore_first_line = True
+    for row_number, row in enumerate(reader, start=1):
+        if ignore_first_line:
+            ignore_first_line = False
+            continue
+
+        tconst, averageRating, numVotes = row
+
+        averageRating = None if averageRating == '\\N' else averageRating
+        numVotes = None if numVotes == '\\N' else numVotes
+
+        try:
+            ratings_obj, created = Rating.objects.get_or_create(
+                tconst=TitleBasic.objects.get(tconst=tconst),
+                defaults={
+                    'averageRating': averageRating,
+                    'numVotes': numVotes,
+                }
+            )
+
+            if created:
+                print(f"Created new record for tconst: {tconst}")
+                if reset == False:
+                    UploadTitleObject(request, TitleBasic.objects.filter(tconst=tconst))
+            else:
+                print(f"Record for tconst {tconst} already exists, skipping.")
+
+        except Rating.MultipleObjectsReturned:
+            print(f"Multiple records found for tconst: {tconst}, skipping.")
+
+        print(f"Processed row number: {row_number-1}")
+    return row_number-1
+
+
+def UploadTitleRatings(request):
+    if request.method == 'POST':
+        superuser_token = User.objects.filter(is_superuser=True).values_list('auth_token', flat=True).first()
+        token = request.META.get('HTTP_AUTHORIZATION')
+
+        # Check if the authenticated user is a superuser
+        if token == superuser_token:
+            form = BasicForm(request.POST, request.FILES)
+            if form.is_valid():
+                file = form.cleaned_data['tsv_file']
+                decoded_file = file.read().decode('utf-8').splitlines()
+                rows = ProcessTitleRatingsTSV(request, decoded_file)
+                return JsonResponse({'status': 'success', 'processed_rows': rows})
+            else:
+                return JsonResponse({'status': 'error', 'message': 'Form is not valid'}, status=400)
+        else:
+            return JsonResponse({"detail": "Permission denied. You don't have administrator privileges."}, status=403)
+    else:
+        form = BasicForm()
+        return render(request, 'upload.html', {'form': form})
+
+
+def ResetTitleRatings(request):
+    Rating.objects.all().delete()
+    specific_file_path = '..\\..\\Database\\Data\\truncated_title.ratings.tsv'
+    with open(specific_file_path, 'r', encoding='utf-8') as file:
+        rows = ProcessTitleRatingsTSV(request, file, True)
+    return JsonResponse({'status': 'success', 'processed_rows': rows})
+
+I want to create tests for all of these viewsin a test_views.py file
+ChatGPT
+To create tests for the views in a separate test_views.py file, you can use Django's testing framework. Here's an example of how you can structure your tests:
+
+python
+Copy code
+from django.test import TestCase
+from django.urls import reverse
+from django.core.files.uploadedfile import SimpleUploadedFile
+from django.contrib.auth.models import User
+
+class TitleBasicsViewTests(TestCase):
+    def setUp(self):
+        # Create a superuser for authentication
+        self.superuser = User.objects.create_superuser(
+            username='admin',
+            password='admin123',
+            email='admin@example.com'
+        )
+
+    def test_upload_title_basics_view(self):
+        # Login as a superuser
+        self.client.login(username='admin', password='admin123')
+
+        # Create a test TSV file
+        tsv_content = "tconst\ttitleType\tprimaryTitle\n1\tmovie\tTest Movie"
+        tsv_file = SimpleUploadedFile("test_title_basics.tsv", tsv_content.encode('utf-8'))
+
+        # POST request to upload title basics
+        response = self.client.post(reverse('upload_title_basics'), {'tsv_file': tsv_file})
+
+        # Check if the response is successful
+        self.assertEqual(response.status_code, 200)
+
+        # Check if the expected data is present in the response
+        self.assertEqual(response.json()['status'], 'success')
+        self.assertEqual(response.json()['processed_rows'], 1)
+
+    def test_reset_title_basics_view(self):
+        # Login as a superuser
+        self.client.login(username='admin', password='admin123')
+
+        # POST request to reset title basics
+        response = self.client.post(reverse('reset_title_basics'))
+
+        # Check if the response is successful
+        self.assertEqual(response.status_code, 200)
+
+        # Check if the expected data is present in the response
+        self.assertEqual(response.json()['status'], 'success')
+
+# Similar tests for other views can be added
+Make sure to replace 'upload_title_basics' and 'reset_title_basics' with the actual URLs or names of your views. Repeat a similar structure for other views (TitleAkasViewTests, NameBasicsViewTests, etc.).
+
+Also, ensure that you have the necessary URLs defined in your urls.py and that the views are properly mapped to these URLs.
+
+User
+tsv_file = SimpleUploadedFile("test_title_basics.tsv", tsv_content.encode('utf-8'))
+How does this line work?
+
+2 / 2
+
+ChatGPT
+The line tsv_file = SimpleUploadedFile("test_title_basics.tsv", tsv_content.encode('utf-8')) is used to create a simulated uploaded file object that can be used in testing Django views that handle file uploads.
+
+Here's how it works:
+
+SimpleUploadedFile is a Django utility class that creates a file-like object that behaves similarly to an uploaded file. It's mainly used for testing file upload functionality without actually uploading files to the server.
+
+"test_title_basics.tsv" is the name of the file being created. This is the name that will be used to access the file in the test.
+
+tsv_content.encode('utf-8') converts the content of the TSV file (tsv_content) into bytes using the UTF-8 encoding. The encode('utf-8') method converts the string into a bytes object, which is what SimpleUploadedFile expects for the file content.
+
+The resulting tsv_file object is an instance of SimpleUploadedFile containing the specified file name and content. This object can then be passed to Django views that handle file uploads during testing.
+
+In the context of testing, it's a convenient way to simulate file uploads without needing to have actual files on the filesystem. This allows for more controlled and predictable testing scenarios.
+
+User
+complete the test_upload functions for the remaining models
+ChatGPT
+Certainly! Below, I'll provide completed test_upload functions for the remaining models:
+
+python
+Copy code
+class TitleAkasViewTests(TestCase):
+    def setUp(self):
+        # Create a superuser for authentication
+        self.superuser = User.objects.create_superuser(
+            username='admin',
+            password='admin123',
+            email='admin@example.com'
+        )
+
+    def test_upload_title_akas_view(self):
+        # Login as a superuser
+        self.client.login(username='admin', password='admin123')
+
+        # Create a test TSV file
+        tsv_content = "tconst\tordering\ttitle\n1\t1\tTest Title"
+        tsv_file = SimpleUploadedFile("test_title_akas.tsv", tsv_content.encode('utf-8'))
+
+        # POST request to upload title akas
+        response = self.client.post(reverse('upload_title_akas'), {'tsv_file': tsv_file})
+
+        # Check if the response is successful
+        self.assertEqual(response.status_code, 200)
+
+        # Check if the expected data is present in the response
+        self.assertEqual(response.json()['status'], 'success')
+        self.assertEqual(response.json()['processed_rows'], 1)
+
+
+class NameBasicsViewTests(TestCase):
+    def setUp(self):
+        # Create a superuser for authentication
+        self.superuser = User.objects.create_superuser(
+            username='admin',
+            password='admin123',
+            email='admin@example.com'
+        )
+
+    def test_upload_name_basics_view(self):
+        # Login as a superuser
+        self.client.login(username='admin', password='admin123')
+
+        # Create a test TSV file
+        tsv_content = "nconst\tprimaryName\n1\tTest Name"
+        tsv_file = SimpleUploadedFile("test_name_basics.tsv", tsv_content.encode('utf-8'))
+
+        # POST request to upload name basics
+        response = self.client.post(reverse('upload_name_basics'), {'tsv_file': tsv_file})
+
+        # Check if the response is successful
+        self.assertEqual(response.status_code, 200)
+
+        # Check if the expected data is present in the response
+        self.assertEqual(response.json()['status'], 'success')
+        self.assertEqual(response.json()['processed_rows'], 1)
+
+
+# Similar tests for other models (TitleCrew, TitleEpisode, TitlePrincipals, TitleRatings) can be added
+Make sure to replace 'upload_title_akas', 'upload_name_basics', etc., with the actual URLs or names of your views. Repeat a similar structure for other views/tests as needed.
+
+User
+Write one class for all the upload functions, with one setUp and seven functions for the seven upload files
+ChatGPT
+Certainly! You can consolidate the upload tests into a single class as follows:
+
+python
+Copy code
+from django.test import TestCase
+from django.urls import reverse
+from django.core.files.uploadedfile import SimpleUploadedFile
+from django.contrib.auth.models import User
+
+class UploadViewTests(TestCase):
+    def setUp(self):
+        # Create a superuser for authentication
+        self.superuser = User.objects.create_superuser(
+            username='admin',
+            password='admin123',
+            email='admin@example.com'
+        )
+
+    def test_upload_title_basics_view(self):
+        # Login as a superuser
+        self.client.login(username='admin', password='admin123')
+
+        # Create a test TSV file
+        tsv_content = "tconst\ttitleType\tprimaryTitle\n1\tmovie\tTest Movie"
+        tsv_file = SimpleUploadedFile("test_title_basics.tsv", tsv_content.encode('utf-8'))
+
+        # POST request to upload title basics
+        response = self.client.post(reverse('upload_title_basics'), {'tsv_file': tsv_file})
+
+        # Check if the response is successful
+        self.assertEqual(response.status_code, 200)
+        # Check if the expected data is present in the response
+        self.assertEqual(response.json()['status'], 'success')
+        self.assertEqual(response.json()['processed_rows'], 1)
+
+    def test_upload_title_akas_view(self):
+        # Similar to the above function, create a test TSV file and send a POST request to upload title akas
+        pass
+
+    def test_upload_name_basics_view(self):
+        # Similar to the above function, create a test TSV file and send a POST request to upload name basics
+        pass
+
+    def test_upload_title_crew_view(self):
+        # Similar to the above function, create a test TSV file and send a POST request to upload title crew
+        pass
+
+    def test_upload_title_episode_view(self):
+        # Similar to the above function, create a test TSV file and send a POST request to upload title episode
+        pass
+
+    def test_upload_title_principals_view(self):
+        # Similar to the above function, create a test TSV file and send a POST request to upload title principals
+        pass
+
+    def test_upload_title_ratings_view(self):
+        # Similar to the above function, create a test TSV file and send a POST request to upload title ratings
+        pass
+
+# Repeat the above pattern for each upload view
+In this class, each test function corresponds to one of the upload views. Inside each function, you create a test TSV file, make a POST request to the respective upload view, and then assert the response to ensure it's successful and contains the expected data. You can replace 'upload_title_basics', 'upload_title_akas', etc., with the actual URLs or names of your views.
+
+User
+Write the exact code for all seven upload functions
+
+2 / 2
+
+ChatGPT
+Sure, here are the complete test functions for all seven upload views:
+
+python
+Copy code
+from django.test import TestCase
+from django.urls import reverse
+from django.core.files.uploadedfile import SimpleUploadedFile
+from django.contrib.auth.models import User
+
+class UploadViewTests(TestCase):
+    def setUp(self):
+        # Create a superuser for authentication
+        self.superuser = User.objects.create_superuser(
+            username='admin',
+            password='admin123',
+            email='admin@example.com'
+        )
+
+    def test_upload_title_basics_view(self):
+        # Login as a superuser
+        self.client.login(username='admin', password='admin123')
+
+        # Create a test TSV file
+        tsv_content = "tconst\ttitleType\tprimaryTitle\n1\tmovie\tTest Movie"
+        tsv_file = SimpleUploadedFile("test_title_basics.tsv", tsv_content.encode('utf-8'))
+
+        # POST request to upload title basics
+        response = self.client.post(reverse('upload_title_basics'), {'tsv_file': tsv_file})
+
+        # Check if the response is successful
+        self.assertEqual(response.status_code, 200)
+        # Check if the expected data is present in the response
+        self.assertEqual(response.json()['status'], 'success')
+        self.assertEqual(response.json()['processed_rows'], 1)
+
+    def test_upload_title_akas_view(self):
+        # Login as a superuser
+        self.client.login(username='admin', password='admin123')
+
+        # Create a test TSV file
+        tsv_content = "tconst\tordering\ttitle\n1\t1\tTest Title"
+        tsv_file = SimpleUploadedFile("test_title_akas.tsv", tsv_content.encode('utf-8'))
+
+        # POST request to upload title akas
+        response = self.client.post(reverse('upload_title_akas'), {'tsv_file': tsv_file})
+
+        # Check if the response is successful
+        self.assertEqual(response.status_code, 200)
+        # Check if the expected data is present in the response
+        self.assertEqual(response.json()['status'], 'success')
+        self.assertEqual(response.json()['processed_rows'], 1)
+
+    def test_upload_name_basics_view(self):
+        # Login as a superuser
+        self.client.login(username='admin', password='admin123')
+
+        # Create a test TSV file
+        tsv_content = "nconst\tprimaryName\n1\tTest Name"
+        tsv_file = SimpleUploadedFile("test_name_basics.tsv", tsv_content.encode('utf-8'))
+
+        # POST request to upload name basics
+        response = self.client.post(reverse('upload_name_basics'), {'tsv_file': tsv_file})
+
+        # Check if the response is successful
+        self.assertEqual(response.status_code, 200)
+        # Check if the expected data is present in the response
+        self.assertEqual(response.json()['status'], 'success')
+        self.assertEqual(response.json()['processed_rows'], 1)
+
+    def test_upload_title_crew_view(self):
+        # Login as a superuser
+        self.client.login(username='admin', password='admin123')
+
+        # Create a test TSV file
+        tsv_content = "tconst\tdirectors\twriters\n1\tDirector1\tWriter1"
+        tsv_file = SimpleUploadedFile("test_title_crew.tsv", tsv_content.encode('utf-8'))
+
+        # POST request to upload title crew
+        response = self.client.post(reverse('upload_title_crew'), {'tsv_file': tsv_file})
+
+        # Check if the response is successful
+        self.assertEqual(response.status_code, 200)
+        # Check if the expected data is present in the response
+        self.assertEqual(response.json()['status'], 'success')
+        self.assertEqual(response.json()['processed_rows'], 1)
+
+    def test_upload_title_episode_view(self):
+        # Login as a superuser
+        self.client.login(username='admin', password='admin123')
+
+        # Create a test TSV file
+        tsv_content = "tconst\tparentTconst\tseasonNumber\tepisodeNumber\n1\tParent1\t1\t1"
+        tsv_file = SimpleUploadedFile("test_title_episode.tsv", tsv_content.encode('utf-8'))
+
+        # POST request to upload title episode
+        response = self.client.post(reverse('upload_title_episode'), {'tsv_file': tsv_file})
+
+        # Check if the response is successful
+        self.assertEqual(response.status_code, 200)
+        # Check if the expected data is present in the response
+        self.assertEqual(response.json()['status'], 'success')
+        self.assertEqual(response.json()['processed_rows'], 1)
+
+    def test_upload_title_principals_view(self):
+        # Login as a superuser
+        self.client.login(username='admin', password='admin123')
+
+        # Create a test TSV file
+        tsv_content = "tconst\tordering\tnconst\tcategory\n1\t1\tName1\tActor"
+        tsv_file = SimpleUploadedFile("test_title_principals.tsv", tsv_content.encode('utf-8'))
+
+        # POST request to upload title principals
+        response = self.client.post(reverse('upload_title_principals'), {'tsv_file': tsv_file})
+
+        # Check if the response is successful
+        self.assertEqual(response.status_code, 200)
+        # Check if the expected data is present in the response
+        self.assertEqual(response.json()['status'], 'success')
+        self.assertEqual(response.json()['processed_rows'], 1)
+
+    def test_upload_title_ratings_view(self):
+        # Login as a superuser
+        self.client.login(username='admin', password='admin123')
+
+        # Create a test TSV file
+        tsv_content = "tconst\taverageRating\tnumVotes\n1\t8.0\t100"
+        tsv_file = SimpleUploadedFile("test_title_ratings.tsv", tsv_content.encode('utf-8'))
+
+        # POST request to upload title ratings
+        response = self.client.post(reverse('upload_title_ratings'), {'tsv_file': tsv_file})
+
+        # Check if the response is successful
+        self.assertEqual(response.status_code, 200)
+        # Check if the expected data is present in the response
+        self.assertEqual(response.json()['status'], 'success')
+        self.assertEqual(response.json()['processed_rows'], 1)
+Ensure to replace 'upload_title_basics', 'upload_title_akas', etc., with the actual URLs or names of your views. These test functions are self-contained and will perform the file upload tests for each of the respective views.
+
+User
+from django.test import TestCase
+from django.urls import reverse
+from django.core.files.uploadedfile import SimpleUploadedFile
+from django.contrib.auth.models import User
+
+
+class ViewTests(TestCase):
+    def setUp(self):
+        # Create a superuser for authentication
+        self.superuser = User.objects.create_superuser(
+            username='admin',
+            password='admin123',
+            email='admin@example.com'
+        )
+        self.title_basics_tsv_content = """tconst	titleType	primaryTitle	originalTitle	isAdult	startYear	endYear	runtimeMinutes	genres	img_url_asset
+tt0000929	short	Klebolin klebt alles	Klebolin klebt alles	0	1990	\\N	\\N	Comedy,Short	\\N"""
+        self.title_akas_tsv_content = """titleId	ordering	title	region	language	types	attributes	isOriginalTitle
+tt0000929	1	Willys Streiche: Klebolin klebt alles	DE	\\N	alternative	\\N	0"""
+        self.name_basics_tsv_content = """nconst	primaryName	birthYear	deathYear	primaryProfession	knownForTitles	img_url_asset
+nm0000019	Federico Fellini	1920	1993	writer,director,actor	tt0071129,tt0047528,tt0050783,tt0056801	https://image.tmdb.org/t/p/{width_variable}/jH2VnHAuI0UbTWsnrjMPro0fC9j.jpg"""
+        self.title_crew_tsv_content = """tconst	directors	writers
+tt0000929	nm0093361	\\N"""
+        self.title_episode_tsv_content = """tconst	parentTconst	seasonNumber	episodeNumber
+tt0000929	tt0298685	1	4"""
+        self.title_principals_tsv_content = """tconst	ordering	nconst	category	job	characters	img_url_asset
+tt0000929	1	nm0000019	actor	\\N	\\N	\\N"""
+        self.title_ratings_tsv_content = """tconst	averageRating	numVotes
+tt0000929	5.3 46"""
+
+
+    def test_upload_title_basics_view(self):
+        # Login as a superuser
+        self.client.login(username='admin', password='admin123')
+
+        tsv_content = self.title_basics_tsv_content
+        tsv_file = SimpleUploadedFile("test_title_basics.tsv", tsv_content.encode('utf-8'))
+        response = self.client.post(reverse('upload_title_basics'), {'tsv_file': tsv_file})
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json()['status'], 'success')
+        self.assertEqual(response.json()['processed_rows'], 1)
+        print(111111111)
+
+
+    def test_upload_title_akas_view(self):
+        # Login as a superuser
+        self.client.login(username='admin', password='admin123')
+
+        tsv_content = self.title_akas_tsv_content
+        tsv_file = SimpleUploadedFile("test_title_akas.tsv", tsv_content.encode('utf-8'))
+        response = self.client.post(reverse('upload_title_akas'), {'tsv_file': tsv_file})
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json()['status'], 'success')
+        self.assertEqual(response.json()['processed_rows'], 1)
+        print(2222222222)
+
+
+    def test_upload_name_basics_view(self):
+        # Login as a superuser
+        self.client.login(username='admin', password='admin123')
+
+        tsv_content = self.name_basics_tsv_content
+        tsv_file = SimpleUploadedFile("test_name_basics.tsv", tsv_content.encode('utf-8'))
+        response = self.client.post(reverse('upload_name_basics'), {'tsv_file': tsv_file})
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json()['status'], 'success')
+        self.assertEqual(response.json()['processed_rows'], 1)
+        print(333333333333)
+
+
+    def test_upload_title_crew_view(self):
+        # Login as a superuser
+        self.client.login(username='admin', password='admin123')
+
+        tsv_content = self.test_upload_title_crew_view
+        tsv_file = SimpleUploadedFile("test_title_crew.tsv", tsv_content.encode('utf-8'))
+        response = self.client.post(reverse('upload_title_crew'), {'tsv_file': tsv_file})
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json()['status'], 'success')
+        self.assertEqual(response.json()['processed_rows'], 1)
+        print(444444444444)
+
+
+    def test_upload_title_episode_view(self):
+        # Login as a superuser
+        self.client.login(username='admin', password='admin123')
+
+        tsv_content = self.title_episode_tsv_content
+        tsv_file = SimpleUploadedFile("test_title_episode.tsv", tsv_content.encode('utf-8'))
+        response = self.client.post(reverse('upload_title_episode'), {'tsv_file': tsv_file})
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json()['status'], 'success')
+        self.assertEqual(response.json()['processed_rows'], 1)
+
+
+    def test_upload_title_principals_view(self):
+        # Login as a superuser
+        self.client.login(username='admin', password='admin123')
+
+        tsv_content = self.title_principals_tsv_content
+        tsv_file = SimpleUploadedFile("test_title_principals.tsv", tsv_content.encode('utf-8'))
+        response = self.client.post(reverse('upload_title_principals'), {'tsv_file': tsv_file})
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json()['status'], 'success')
+        self.assertEqual(response.json()['processed_rows'], 1)
+
+
+    def test_upload_title_ratings_view(self):
+        # Login as a superuser
+        self.client.login(username='admin', password='admin123')
+
+        tsv_content = self.title_ratings_tsv_content
+        tsv_file = SimpleUploadedFile("test_title_ratings.tsv", tsv_content.encode('utf-8'))
+        response = self.client.post(reverse('upload_title_ratings'), {'tsv_file': tsv_file})
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json()['status'], 'success')
+        self.assertEqual(response.json()['processed_rows'], 1)
+
+
+I think that there is a problem with the order in which the functions are executed. More specifically the title_basics and the name_basics functions are contain primary keys and the other functions contain foreign keys corresponding to these functions. I want them to be executed in the order i have placed them iside the code
+
+2 / 2
+
+ChatGPT
+To ensure that the test functions are executed in the desired order, you can prefix the test function names with numbers indicating the order in which they should be run. Here's how you can modify the test function names:
+
+python
+Copy code
+from django.test import TestCase
+from django.urls import reverse
+from django.core.files.uploadedfile import SimpleUploadedFile
+from django.contrib.auth.models import User
+
+class ViewTests(TestCase):
+    def setUp(self):
+        # Create a superuser for authentication
+        self.superuser = User.objects.create_superuser(
+            username='admin',
+            password='admin123',
+            email='admin@example.com'
+        )
+        self.title_basics_tsv_content = """tconst	titleType	primaryTitle	originalTitle	isAdult	startYear	endYear	runtimeMinutes	genres	img_url_asset
+tt0000929	short	Klebolin klebt alles	Klebolin klebt alles	0	1990	\\N	\\N	Comedy,Short	\\N"""
+        self.title_akas_tsv_content = """titleId	ordering	title	region	language	types	attributes	isOriginalTitle
+tt0000929	1	Willys Streiche: Klebolin klebt alles	DE	\\N	alternative	\\N	0"""
+        self.name_basics_tsv_content = """nconst	primaryName	birthYear	deathYear	primaryProfession	knownForTitles	img_url_asset
+nm0000019	Federico Fellini	1920	1993	writer,director,actor	tt0071129,tt0047528,tt0050783,tt0056801	https://image.tmdb.org/t/p/{width_variable}/jH2VnHAuI0UbTWsnrjMPro0fC9j.jpg"""
+        self.title_crew_tsv_content = """tconst	directors	writers
+tt0000929	nm0093361	\\N"""
+        self.title_episode_tsv_content = """tconst	parentTconst	seasonNumber	episodeNumber
+tt0000929	tt0298685	1	4"""
+        self.title_principals_tsv_content = """tconst	ordering	nconst	category	job	characters	img_url_asset
+tt0000929	1	nm0000019	actor	\\N	\\N	\\N"""
+        self.title_ratings_tsv_content = """tconst	averageRating	numVotes
+tt0000929	5.3 46"""
+
+
+    def test_01_upload_title_basics_view(self):
+        # Login as a superuser
+        self.client.login(username='admin', password='admin123')
+
+        tsv_content = self.title_basics_tsv_content
+        tsv_file = SimpleUploadedFile("test_title_basics.tsv", tsv_content.encode('utf-8'))
+        response = self.client.post(reverse('upload_title_basics'), {'tsv_file': tsv_file})
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json()['status'], 'success')
+        self.assertEqual(response.json()['processed_rows'], 1)
+
+
+    def test_02_upload_name_basics_view(self):
+        # Login as a superuser
+        self.client.login(username='admin', password='admin123')
+
+        tsv_content = self.name_basics_tsv_content
+        tsv_file = SimpleUploadedFile("test_name_basics.tsv", tsv_content.encode('utf-8'))
+        response = self.client.post(reverse('upload_name_basics'), {'tsv_file': tsv_file})
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json()['status'], 'success')
+        self.assertEqual(response.json()['processed_rows'], 1)
+
+
+    def test_03_upload_title_akas_view(self):
+        # Login as a superuser
+        self.client.login(username='admin', password='admin123')
+
+        tsv_content = self.title_akas_tsv_content
+        tsv_file = SimpleUploadedFile("test_title_akas.tsv", tsv_content.encode('utf-8'))
+        response = self.client.post(reverse('upload_title_akas'), {'tsv_file': tsv_file})
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json()['status'], 'success')
+        self.assertEqual(response.json()['processed_rows'], 1)
+
+
+    def test_04_upload_title_crew_view(self):
+        # Login as a superuser
+        self.client.login(username='admin', password='admin123')
+
+        tsv_content = self.title_crew_tsv_content
+        tsv_file = SimpleUploadedFile("test_title_crew.tsv", tsv_content.encode('utf-8'))
+        response = self.client.post(reverse('upload_title_crew'), {'tsv_file': tsv_file})
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json()['status'], 'success')
+        self.assertEqual(response.json()['processed_rows'], 1)
+
+
+    def test_05_upload_title_episode_view(self):
+        # Login as a superuser
+        self.client.login(username='admin', password='admin123')
+
+        tsv_content = self.title_episode_tsv_content
+        tsv_file = SimpleUploadedFile("test_title_episode.tsv", tsv_content.encode('utf-8'))
+        response = self.client.post(reverse('upload_title_episode'), {'tsv_file': tsv_file})
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json()['status'], 'success')
+        self.assertEqual(response.json()['processed_rows'], 1)
+
+
+    def test_06_upload_title_principals_view(self):
+        # Login as a superuser
+        self.client.login(username='admin', password='admin123')
+
+        tsv_content = self.title_principals_tsv_content
+        tsv_file = SimpleUploadedFile("test_title_principals.tsv", tsv_content.encode('utf-8'))
+        response = self.client.post(reverse('upload_title_principals'), {'tsv_file': tsv_file})
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json()['status'], 'success')
+        self.assertEqual(response.json()['processed_rows'], 1)
+
+
+    def test_07_upload_title_ratings_view(self):
+        # Login as a superuser
+        self.client.login(username='admin', password='admin123')
+
+        tsv_content = self.title_ratings_tsv_content
+        tsv_file = SimpleUploadedFile("test_title_ratings.tsv", tsv_content.encode('utf-8'))
+        response = self.client.post(reverse('upload_title_ratings'), {'tsv_file': tsv_file})
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json()['status'], 'success')
+        self.assertEqual(response.json()['processed_rows'], 1)
+This way, the test functions will execute in the order specified by their names, ensuring that dependencies are handled correctly.
+
+User
+def health_check(request):
+    if request.method == 'POST':
+        superuser_token = User.objects.filter(is_superuser=True).values_list('auth_token', flat=True).first()
+        token = request.META.get('HTTP_AUTHORIZATION')
+        print(token)
+
+        # Check if the authenticated user is a superuser
+        if token == superuser_token:
+            try:
+                # Example: attempting to fetch the first row of some table
+                # Replace 'your_model' with an actual model from your app
+                TitleBasic.objects.first()
+
+                # If you want to test raw database connectivity
+                # connections['default'].cursor()
+
+                connection_string = "Database connection successful"  # Customize as needed
+                return JsonResponse({"status": "OK", "dataconnection": connection_string})
+            except (DatabaseError, ValidationError):
+                connection_string = "Database connection failed"  # Customize as needed
+                return JsonResponse({"status": "failed", "dataconnection": connection_string})
+        else:
+            return JsonResponse({"status": "failed", "dataconnection": "Permission denied. You don't have superuser privileges."})
+
+Create additional tests for this view
+ChatGPT
+To create additional tests for the health_check view, you can test various scenarios including successful database connectivity, failed database connectivity, and permission denial. Here's how you can extend the tests:
+
+python
+Copy code
+from django.test import TestCase
+from django.urls import reverse
+from django.contrib.auth.models import User
+from django.http import JsonResponse
+
+
+class HealthCheckViewTests(TestCase):
+    def setUp(self):
+        # Create a superuser for authentication
+        self.superuser = User.objects.create_superuser(
+            username='admin',
+            password='admin123',
+            email='admin@example.com'
+        )
+
+    def test_health_check_success(self):
+        # Login as a superuser
+        self.client.login(username='admin', password='admin123')
+
+        # Simulate a POST request with superuser authentication token
+        superuser_token = self.superuser.auth_token
+        response = self.client.post(reverse('health_check'), HTTP_AUTHORIZATION=superuser_token)
+
+        # Check if the response is successful and contains the expected data
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json()['status'], 'OK')
+        self.assertEqual(response.json()['dataconnection'], 'Database connection successful')
+
+    def test_health_check_failed_authentication(self):
+        # Simulate a POST request without authentication token
+        response = self.client.post(reverse('health_check'))
+
+        # Check if the response indicates permission denied
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json()['status'], 'failed')
+        self.assertEqual(response.json()['dataconnection'], "Permission denied. You don't have superuser privileges.")
+
+    def test_health_check_failed_database_connection(self):
+        # Login as a superuser
+        self.client.login(username='admin', password='admin123')
+
+        # Simulate a POST request with superuser authentication token
+        superuser_token = self.superuser.auth_token
+
+        # Temporarily set the database name to an incorrect value to force a connection failure
+        from django.conf import settings
+        original_database_name = settings.DATABASES['default']['NAME']
+        settings.DATABASES['default']['NAME'] = 'incorrect_database_name'
+
+        response = self.client.post(reverse('health_check'), HTTP_AUTHORIZATION=superuser_token)
+
+        # Check if the response indicates failed database connection
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json()['status'], 'failed')
+        self.assertEqual(response.json()['dataconnection'], 'Database connection failed')
+
+        # Restore the original database name
+        settings.DATABASES['default']['NAME'] = original_database_name
+These tests cover various scenarios including successful database connectivity, failed database connectivity, and permission denial. They verify that the view behaves as expected under different conditions.
+
+User
+The message:
+User has no auth_token.
+appears
+ChatGPT
+Apologies for the confusion. It seems I made an error in referencing the authentication token. The auth_token attribute is not directly available on the User model. Instead, it should be retrieved using the Token model provided by Django REST Framework's TokenAuthentication.
+
+Here's how you can modify the tests to retrieve the authentication token properly:
+
+python
+Copy code
+from django.test import TestCase
+from django.urls import reverse
+from django.contrib.auth.models import User
+from rest_framework.authtoken.models import Token
+from django.http import JsonResponse
+
+
+class HealthCheckViewTests(TestCase):
+    def setUp(self):
+        # Create a superuser for authentication
+        self.superuser = User.objects.create_superuser(
+            username='admin',
+            password='admin123',
+            email='admin@example.com'
+        )
+
+        # Create an authentication token for the superuser
+        self.token = Token.objects.create(user=self.superuser)
+
+    def test_health_check_success(self):
+        # Simulate a POST request with superuser authentication token
+        response = self.client.post(reverse('health_check'), HTTP_AUTHORIZATION=f'Token {self.token.key}')
+
+        # Check if the response is successful and contains the expected data
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json()['status'], 'OK')
+        self.assertEqual(response.json()['dataconnection'], 'Database connection successful')
+
+    def test_health_check_failed_authentication(self):
+        # Simulate a POST request without authentication token
+        response = self.client.post(reverse('health_check'))
+
+        # Check if the response indicates permission denied
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json()['status'], 'failed')
+        self.assertEqual(response.json()['dataconnection'], "Permission denied. You don't have superuser privileges.")
+
+    def test_health_check_failed_database_connection(self):
+        # Temporarily set the database name to an incorrect value to force a connection failure
+        from django.conf import settings
+        original_database_name = settings.DATABASES['default']['NAME']
+        settings.DATABASES['default']['NAME'] = 'incorrect_database_name'
+
+        # Simulate a POST request with superuser authentication token
+        response = self.client.post(reverse('health_check'), HTTP_AUTHORIZATION=f'Token {self.token.key}')
+
+        # Check if the response indicates failed database connection
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json()['status'], 'failed')
+        self.assertEqual(response.json()['dataconnection'], 'Database connection failed')
+
+        # Restore the original database name
+        settings.DATABASES['default']['NAME'] = original_database_name
+This modification ensures that the authentication token is properly retrieved from the Token model associated with the User.
+
+User
+class UserInfoAPIView(APIView):
+    def get(self, request, username):
+        superuser_token = User.objects.filter(is_superuser=True).values_list('auth_token', flat=True).first()
+        token = request.META.get('HTTP_AUTHORIZATION')
+        print(token)
+
+        # Check if the authenticated user is a superuser
+        if token == superuser_token:
+            try:
+                # Retrieve the user based on the provided username
+                user = User.objects.get(username=username)
+
+                # Serialize user data
+                serializer = UserSerializer(user)
+                user_data = serializer.data
+
+                return Response(user_data, status=status.HTTP_200_OK)
+            except User.DoesNotExist:
+                return Response({"error": "User not found"}, status=status.HTTP_404_NOT_FOUND)
+        else:
+            return Response({"error": "Permission denied. You don't have administrator privileges."}, status=status.HTTP_403_FORBIDDEN)
+
+Write test functions for this view as well
+ChatGPT
+Sure, here's how you can write test functions for the UserInfoAPIView:
+
+python
+Copy code
+from rest_framework.test import APITestCase
+from rest_framework.reverse import reverse
+from rest_framework import status
+from django.contrib.auth.models import User
+from .serializers import UserSerializer
+
+class UserInfoAPIViewTests(APITestCase):
+    def setUp(self):
+        # Create a superuser for authentication
+        self.superuser = User.objects.create_superuser(
+            username='admin',
+            password='admin123',
+            email='admin@example.com'
+        )
+        self.superuser_token = self.get_superuser_token()
+
+        # Create a regular user
+        self.user = User.objects.create_user(
+            username='regularuser',
+            password='password123',
+            email='user@example.com'
+        )
+
+    def get_superuser_token(self):
+        # Retrieve the superuser's authentication token
+        return 'Token ' + self.superuser.auth_token.key
+
+    def test_get_user_info_success(self):
+        # Authenticate as superuser and send a GET request to retrieve user info
+        self.client.credentials(HTTP_AUTHORIZATION=self.superuser_token)
+        url = reverse('user-info', kwargs={'username': self.user.username})
+        response = self.client.get(url)
+
+        # Check if the response is successful and contains the expected user data
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        expected_data = UserSerializer(self.user).data
+        self.assertEqual(response.data, expected_data)
+
+    def test_get_user_info_not_found(self):
+        # Authenticate as superuser and send a GET request with an invalid username
+        self.client.credentials(HTTP_AUTHORIZATION=self.superuser_token)
+        url = reverse('user-info', kwargs={'username': 'invalidusername'})
+        response = self.client.get(url)
+
+        # Check if the response indicates user not found
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+        self.assertEqual(response.data, {"error": "User not found"})
+
+    def test_get_user_info_permission_denied(self):
+        # Authenticate as a regular user and send a GET request
+        self.client.force_login(self.user)
+        url = reverse('user-info', kwargs={'username': self.user.username})
+        response = self.client.get(url)
+
+        # Check if the response indicates permission denied
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+        self.assertEqual(response.data, {"error": "Permission denied. You don't have administrator privileges."})
+These tests cover the scenarios where the user information is successfully retrieved, the user is not found, and when the requester doesn't have superuser privileges. Adjust the test case and assertion messages as needed.
+
+User
+def add_user(request, username, password):
+    if request.method == 'POST':
+        superuser_token = User.objects.filter(is_superuser=True).values_list('auth_token', flat=True).first()
+        token = request.META.get('HTTP_AUTHORIZATION')
+        
+        print(superuser_token)
+        # Check if the authenticated user is a superuser
+        if token == superuser_token:
+            try:
+                # Retrieve the user by username
+                user = User.objects.get(username=username)
+
+                # Check if the user is not active
+                if not user.is_active:
+                    # Set is_active to True
+                    user.is_active = True
+                    user.set_password(password)
+                    user.save()
+
+                    return JsonResponse({"detail": "User activated successfully."}, status=200)
+                else:
+                    return JsonResponse({"detail": "User is already active."}, status=400)
+
+            except User.DoesNotExist:
+                return JsonResponse({"detail": "User not found."}, status=404)
+        else:
+            return JsonResponse({"detail": "Permission denied. You don't have administrator privileges."}, status=403)
+    else:
+        return JsonResponse({"detail": "Only GET requests are allowed."}, status=405)
+
+write a test fumction for this view as well
+ChatGPT
+Here's how you can write a test function for the add_user view:
+
+python
+Copy code
+from django.test import TestCase, Client
+from django.contrib.auth.models import User
+from django.urls import reverse
+import json
+
+class AddUserViewTest(TestCase):
+    def setUp(self):
+        # Create a superuser for authentication
+        self.superuser = User.objects.create_superuser(
+            username='admin',
+            password='admin123',
+            email='admin@example.com'
+        )
+        self.superuser_token = 'Token ' + self.superuser.auth_token.key
+
+        # Create a regular user
+        self.user = User.objects.create_user(
+            username='testuser',
+            password='testpassword',
+            email='test@example.com'
+        )
+
+    def test_add_user_success(self):
+        # Authenticate as superuser and send a POST request to activate a user
+        client = Client()
+        client.credentials(HTTP_AUTHORIZATION=self.superuser_token)
+        url = reverse('add-user', kwargs={'username': self.user.username, 'password': 'newpassword'})
+        response = client.post(url)
+
+        # Check if the response indicates successful activation
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json(), {"detail": "User activated successfully."})
+
+        # Check if the user is active and the password is updated
+        self.user.refresh_from_db()
+        self.assertTrue(self.user.is_active)
+        self.assertTrue(self.user.check_password('newpassword'))
+
+    def test_add_user_already_active(self):
+        # Set the user to active
+        self.user.is_active = True
+        self.user.save()
+
+        # Authenticate as superuser and send a POST request to activate the user again
+        client = Client()
+        client.credentials(HTTP_AUTHORIZATION=self.superuser_token)
+        url = reverse('add-user', kwargs={'username': self.user.username, 'password': 'newpassword'})
+        response = client.post(url)
+
+        # Check if the response indicates user is already active
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.json(), {"detail": "User is already active."})
+
+    def test_add_user_user_not_found(self):
+        # Authenticate as superuser and send a POST request with an invalid username
+        client = Client()
+        client.credentials(HTTP_AUTHORIZATION=self.superuser_token)
+        url = reverse('add-user', kwargs={'username': 'invaliduser', 'password': 'newpassword'})
+        response = client.post(url)
+
+        # Check if the response indicates user not found
+        self.assertEqual(response.status_code, 404)
+        self.assertEqual(response.json(), {"detail": "User not found."})
+
+    def test_add_user_permission_denied(self):
+        # Authenticate as a regular user and send a POST request
+        client = Client()
+        client.force_login(self.user)
+        url = reverse('add-user', kwargs={'username': self.user.username, 'password': 'newpassword'})
+        response = client.post(url)
+
+        # Check if the response indicates permission denied
+        self.assertEqual(response.status_code, 403)
+        self.assertEqual(response.json(), {"detail": "Permission denied. You don't have administrator privileges."})
+
+    def test_add_user_get_request(self):
+        # Send a GET request to the view
+        client = Client()
+        response = client.get(reverse('add-user', kwargs={'username': self.user.username, 'password': 'newpassword'}))
+
+        # Check if the response indicates only POST requests are allowed
+        self.assertEqual(response.status_code, 405)
+        self.assertEqual(response.json(), {"detail": "Only POST requests are allowed."})
+These test functions cover scenarios such as successful user activation, attempting to activate an already active user, activating a non-existent user, permission denied for non-superusers, and ensuring that only POST requests are allowed. Adjust the test case and assertion messages as needed.

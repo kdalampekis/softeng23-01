@@ -1,0 +1,109 @@
+# Relative Path Conversion #
+
+User
+Stelios Katsis
+ChatGPT 3.5
+
+User
+def ResetTitleBasics(request):
+    TitleBasic.objects.all().delete()
+    specific_file_path = 'C:\\SoftEng\\softeng23-01\\softeng23-01\\back-end\\Database\\Data\\truncated_title.basics.tsv'
+    with open(specific_file_path, 'r', encoding='utf-8') as file:
+        rows = ProcessTitleBasicsTSV(request, file, True)
+    return JsonResponse({'status': 'success', 'processed_rows': rows})
+
+I have this function that works. I want to change the path so that it changes from absolut to relative. The back-end file is located 4 directories behind
+
+ChatGPT
+To convert the absolute path to a relative path, you can use the os.path module in Python. Assuming your script is in a file located in one of the parent directories, you can use os.path.join to construct the relative path. Here's an example:
+
+python
+Copy code
+import os
+
+def ResetTitleBasics(request):
+    TitleBasic.objects.all().delete()
+    
+    # Constructing the relative path
+    base_path = os.path.dirname(os.path.abspath(__file__))
+    relative_path = os.path.join(base_path, '..', '..', '..', '..', 'back-end', 'Database', 'Data', 'truncated_title.basics.tsv')
+    
+    with open(relative_path, 'r', encoding='utf-8') as file:
+        rows = ProcessTitleBasicsTSV(request, file, True)
+    
+    return JsonResponse({'status': 'success', 'processed_rows': rows})
+Explanation:
+
+os.path.abspath(__file__): Returns the absolute path of the current script.
+os.path.dirname(): Extracts the directory part of the absolute path.
+os.path.join(): Constructs the new path by joining the base path with the relative path to the data file.
+Adjust the number of .. components based on the actual directory structure of your project. The given example assumes that your script is in one of the parent directories of the project and the data file is located in the specified relative path.
+
+User
+def ResetTitleBasics(request):
+    TitleBasic.objects.all().delete()
+    specific_file_path = '..\\..\\..\\..\\..\\..\\Database\\Data\\truncated_title.basics.tsv'
+    with open(specific_file_path, 'r', encoding='utf-8') as file:
+        rows = ProcessTitleBasicsTSV(request, file, True)
+    return JsonResponse({'status': 'success', 'processed_rows': rows})
+
+Is this code correct?
+ChatGPT
+The code you provided seems to have an extra .. in the specific_file_path variable. If you are going four directories back from your current location, you only need four .. components. Here's the corrected code:
+
+python
+Copy code
+def ResetTitleBasics(request):
+    TitleBasic.objects.all().delete()
+    specific_file_path = '..\\..\\..\\..\\Database\\Data\\truncated_title.basics.tsv'
+    with open(specific_file_path, 'r', encoding='utf-8') as file:
+        rows = ProcessTitleBasicsTSV(request, file, True)
+    return JsonResponse({'status': 'success', 'processed_rows': rows})
+This assumes that your script is in a directory that is 4 levels above the Database directory. If the script is located in a different directory structure, you might need to adjust the number of .. accordingly.
+
+User
+def ResetTitleBasics(request):
+    TitleBasic.objects.all().delete()
+    specific_file_path = '..\\..\\..\\..\\..\\Database\\Data\\truncated_title.basics.tsv'
+    with open(specific_file_path, 'r', encoding='utf-8') as file:
+        rows = ProcessTitleBasicsTSV(request, file, True)
+    return JsonResponse({'status': 'success', 'processed_rows': rows})
+
+The following code is returning the message that the directory isnt recognized
+ChatGPT
+If you're getting a message that the directory isn't recognized, it could be due to issues with the relative path or the script's working directory. Here are a few things to check and adjust:
+
+Ensure the Script's Working Directory:
+
+Make sure the script is executed from the correct working directory. You can print the current working directory at the beginning of your script to debug:
+
+python
+Copy code
+import os
+print(os.getcwd())
+If the working directory is not what you expect, you may need to change it using os.chdir().
+
+Correct Relative Path:
+
+Ensure that the relative path is correct from the working directory. If the script is located in a certain directory, the relative path should be correct based on that location.
+Use Forward Slashes for Cross-Platform Compatibility:
+
+While using backslashes (\\) may work on Windows, it's better to use forward slashes (/) or, even better, use os.path.join() for path construction, which automatically handles path separators.
+Here's an example using forward slashes and os.path.join():
+
+python
+Copy code
+import os
+
+def ResetTitleBasics(request):
+    TitleBasic.objects.all().delete()
+
+    # Constructing the relative path
+    base_path = os.path.dirname(os.path.abspath(__file__))
+    relative_path = os.path.join(base_path, '..', '..', '..', 'Database', 'Data', 'truncated_title.basics.tsv')
+    
+    with open(relative_path, 'r', encoding='utf-8') as file:
+        rows = ProcessTitleBasicsTSV(request, file, True)
+    
+    return JsonResponse({'status': 'success', 'processed_rows': rows})
+Make sure to adjust the number of .. components based on your directory structure. If you're still facing issues, print out the paths and check if they match your expectations.

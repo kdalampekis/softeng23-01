@@ -42,20 +42,35 @@ const ActorAnalytics = ({ actor, onSearchAgain, onExit }) => {
 
         const fetchGenrePercentages = async () => {
             try {
-                percentages = await getActorPercentages(actor.primaryName);
+                const percentages = await getActorPercentages(actor.primaryName);
                 console.log(percentages);
                 console.log(percentages[actor.primaryName]);
-                percentages = percentages[actor.primaryName];
-                setGenrePercentages(percentages);
+                // Assuming getActorPercentages returns an object where the actor's name maps to their genre percentages
+                setGenrePercentages(percentages[actor.primaryName]);
+                return { percentages: percentages[actor.primaryName] };
             } catch (error) {
                 console.error('Error fetching genre percentages:', error);
             }
         };
+        
+        const fetchAndLogGenrePercentages = async () => {
+            try {
+                // fetchMovieTitles(); Assuming this is another function call you might need to await as well if it's async
+                const percentages = await fetchGenrePercentages();
+                console.log("Final: ", percentages);
+                return percentages
+            } catch (error) {
+                console.error('Error:', error);
+            }
+        };
+        
+        percentages=fetchAndLogGenrePercentages();
+        
 
 
         fetchMovieTitles();
-        fetchGenrePercentages();
-
+        // percentages=fetchGenrePercentages();
+        console.log("Finaaseferfl: ", percentages);    
 
         return () => {
             isMounted = false;
@@ -64,7 +79,7 @@ const ActorAnalytics = ({ actor, onSearchAgain, onExit }) => {
     }, [actor.nameTitles, actor.primaryName]); // Add the missing dependency array here
 
 
-    console.log("Final: ", percentages);
+    console.log("Final21342342432: ", percentages);
 
 
 
@@ -93,7 +108,7 @@ const ActorAnalytics = ({ actor, onSearchAgain, onExit }) => {
                 <p className="actor-info">
                     <strong className="dynamic-content">Percentages: </strong>
                         <span>
-                            {/*{genrePercentages.}*/}
+                            {percentages}
                         </span>
                 </p>
 

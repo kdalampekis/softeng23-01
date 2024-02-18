@@ -1,0 +1,19 @@
+{
+    "answers": {
+        "phase": "design",
+        "action": "problem understanding",
+        "scope": "database design",
+        "action experience": "fair",
+        "prog lang": "n/a",
+        "other prog lang": "<fill in>",
+        "tool": "chat gpt 4.x",
+        "other tool": "<fill in>",
+        "tool option": "full",
+        "tool experience": "some",
+        "time allocated (h)": "0.25",
+        "time saved estimate (h)": "1",
+        "quality of ai help": "minor modifications needed",
+        "generic feeling": "great as-is",
+        "notes": "The conversation helped me realize what kind of variables I should allocate to certain atrributes ."
+    }
+}
