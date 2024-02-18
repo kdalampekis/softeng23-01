@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 
-const BASE_URL = 'http://127.0.0.1:9876/ntuaflix_api';
+const BASE_URL = 'https://127.0.0.1:9876/ntuaflix_api';
 
 export const searchNBestRatedGenre = async (genre, number, format) => {
     format = format || 'json'; // If format is not provided, default to 'json'
