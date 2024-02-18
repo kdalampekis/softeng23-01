@@ -1,12 +1,16 @@
 # Documentation
 
-Ενδεικτικά περιεχόμενα:
+In this folder the following files are included:
+1. Softeng.vpp:
+    - Contains the Activity, Class, Component, Deployment, Sequence and ER Diagrams
+    - As written in the SRS file as well, the Softeng,vpp file is not up to date because
+    of the expiration of the Visual Paradigm free trial
 
-- Διαγράμματα UML Activity (in ONE vpp file).
-- Διαγράμματα UML Class (in ONE vpp file).
-- Διαγράμματα UML Component (in ONE vpp file).
-- Διαγράμματα UML Deployment (in ONE vpp file).
-- Διαγράμματα UML Sequence (in ONE vpp file).
-- Διαγράμματα ER.
-- Εγγραφο SRS - Software Requirements Specification.
-- Εγγραφο StRS - Stakeholders Requirements Specification.
+2. SRS.docx:
+    - A Microsoft Word file containing Software Requirements Specifications
+
+3. UML-diagrams-template.txt:
+    - A txt file conatining out initial thoughts about the Diagrams
+
+4. requirements.xsls
+    - A Microsoft Excel file containing the functionalities of the website that we chose to use (different colors indicate different use cases)
