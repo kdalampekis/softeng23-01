@@ -27,7 +27,7 @@ const User = () => {
                 <button onClick={() => navigate(-1)}>Go Back</button>
                 <button onClick={() => navigate(-2)}>Exit</button>
             </div>
-            <Footer/>
+            {/*<Footer/>*/}
         </div>
     );
 };
