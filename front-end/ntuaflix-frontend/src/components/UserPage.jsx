@@ -10,7 +10,7 @@ import useSearch from "../Functions/useSearch";
 import MovieAnalytics from "./Items/MovieAnalytics";
 import ActorsDisplay from "../Functions/ActorsDisplay";
 import ActorAnalytics from "./Items/ActorAnalytics";
-import {useNavigate} from "react-router-dom"; // Import ActorAnalytics if you've created it
+import {useNavigate, useParams} from "react-router-dom"; // Import ActorAnalytics if you've created it
 
 
 export default function UserPage() {
@@ -157,6 +157,7 @@ export default function UserPage() {
     const handleFunctionalityClick = (option) => {
         setSelectedFunctionality(option);
         setSearchButtonText("Search");
+        // navigate(`/user/${selectedFunctionality}`);
     };
 
 

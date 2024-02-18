@@ -1,7 +1,7 @@
 import React, {useState} from "react";
+import {useNavigate} from "react-router-dom";
 
 const renderOptionContent = (option, inputValues, handleInputChange) => {
-
     switch(option) {
         case "The N highest rated movies in a genre":
             return (

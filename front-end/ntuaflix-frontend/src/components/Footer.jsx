@@ -25,21 +25,17 @@ function Footer({role}) {
             }
         } catch (error) {
             console.error('Error:', error.message);
-
         }
     };
 
 
 
-    return <footer>
-        <p>
-            Logged in as {role}.
-            {/* Use a button or span for logout to directly call handleLogout */}
-            <button className="link" onClick={handleLogout}>
-                Log out?
-            </button>
-        </p>
-    </footer>
+    return (
+        <footer>
+            <p>Logged in as {role}. </p>
+            <button className="link" onClick={handleLogout}>Log out?</button>
+        </footer>
+    );
 }
 
 export default Footer;
