@@ -1,0 +1,47 @@
+# Django Functional Testing Basics #
+
+User
+Stelios Katsis
+ChatGPT 3.5
+
+User
+What are functional tests in django?
+ChatGPT
+In Django, functional tests are tests that verify the behavior of your web application from the perspective of an external user. These tests interact with your application through HTTP requests and responses, simulating how a user would interact with your application through a web browser.
+
+Functional tests typically involve:
+
+Sending HTTP requests: Functional tests send requests to specific URLs or endpoints of your Django application.
+
+Receiving HTTP responses: After sending a request, the test expects to receive an HTTP response from the application.
+
+Parsing and verifying responses: Functional tests examine the content of the responses received from the application to ensure they match the expected behavior.
+
+Functional tests are essential for ensuring that your web application behaves correctly from the user's perspective. They help catch regressions or unintended changes in behavior as you make modifications to your codebase.
+
+In Django, you can write functional tests using the built-in testing framework, which provides tools for simulating HTTP requests and verifying responses. Commonly used libraries for writing functional tests in Django include Django's built-in TestCase class, as well as third-party libraries such as django.test.Client for making requests and django.test.TestCase for writing test cases. Additionally, tools like Selenium or Cypress can be used for more complex browser automation tests, which also fall under the category of functional testing.
+
+User
+What does it have to do with model tests, view tests and url tests
+ChatGPT
+In Django, tests are typically categorized into three main types based on what they are testing: model tests, view tests, and URL tests. These tests collectively help ensure the correctness and robustness of your Django application.
+
+Model Tests:
+
+Model tests verify the behavior of Django models, including database interactions, model methods, and model properties.
+These tests ensure that your models behave as expected, including proper validation, data manipulation, and relationships.
+Model tests usually involve creating instances of model classes, saving them to the database, and then asserting that the expected changes have occurred.
+Example tests might include verifying that a model's save() method correctly updates a field, or that a model's clean() method properly validates data before saving.
+View Tests:
+
+View tests check the behavior of Django views, which handle incoming HTTP requests and generate appropriate HTTP responses.
+These tests simulate user interactions with your application by making requests to specific URLs and verifying the responses returned by the views.
+View tests ensure that the views correctly render templates, process form submissions, and handle various edge cases.
+Example tests might include verifying that a view returns the correct HTTP status code, or that it renders the expected template with the appropriate context data.
+URL Tests:
+
+URL tests focus on verifying the routing and configuration of URLs in your Django application.
+These tests ensure that the URLs defined in your urls.py file correctly map to the corresponding views.
+URL tests typically involve making requests to specific URLs and asserting that the correct view is invoked.
+Example tests might include verifying that a given URL pattern resolves to the expected view function or class-based view.
+While functional tests, as mentioned earlier, cover the broader functionality of your application from the user's perspective by integrating elements of models, views, and URLs, each of these specific test types provides a more granular focus on different components of your Django application. By combining these types of tests, you can thoroughly validate the behavior of your application and ensure its correctness under various scenarios.

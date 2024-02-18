@@ -1,0 +1,2049 @@
+# Upload Functions #
+
+User
+Stelios Katsis
+ChatGPT 3.5
+
+User
+LOAD DATA INFILE 'E:\\EPA\\NTUA\\ECE\\FLOWS\\FLOW_L\\Soft_Eng\\Data\\truncated_title.akas.tsv'
+INTO TABLE titleaka
+FIELDS TERMINATED BY '\t'
+LINES TERMINATED BY '\n'
+IGNORE 1 LINES
+(tconst,
+  ordering,
+    title,
+    region,
+    language,
+    types,
+    attributes,
+    isOriginalTitle);
+
+What does this code do?
+ChatGPT
+This code appears to be a MySQL or similar SQL statement for loading data from a tab-separated values (TSV) file into a table named titleaka. Let's break down the statement:
+
+sql
+Copy code
+LOAD DATA INFILE 'E:\\EPA\\NTUA\\ECE\\FLOWS\\FLOW_L\\Soft_Eng\\Data\\truncated_title.akas.tsv'
+INTO TABLE titleaka
+FIELDS TERMINATED BY '\t'
+LINES TERMINATED BY '\n'
+IGNORE 1 LINES
+(tconst, ordering, title, region, language, types, attributes, isOriginalTitle);
+LOAD DATA INFILE: This clause is used to load data from a file into a table in the database.
+
+'E:\\EPA\\NTUA\\ECE\\FLOWS\\FLOW_L\\Soft_Eng\\Data\\truncated_title.akas.tsv': Specifies the path of the TSV file that contains the data to be loaded.
+
+INTO TABLE titleaka: Specifies that the data should be loaded into a table named titleaka.
+
+FIELDS TERMINATED BY '\t': Specifies that the fields in the TSV file are terminated by a tab character ('\t'). This indicates that the TSV file is using tabs as a delimiter between columns.
+
+LINES TERMINATED BY '\n': Specifies that lines in the TSV file are terminated by a newline character ('\n').
+
+IGNORE 1 LINES: Specifies that the first line of the TSV file should be ignored. This is typically used when the first line contains headers or column names.
+
+(tconst, ordering, title, region, language, types, attributes, isOriginalTitle): Specifies the columns in the titleaka table into which the data from the TSV file should be loaded. The order of columns in the TSV file should match the order specified here.
+
+In summary, this SQL statement is loading data from a TSV file into a MySQL table named titleaka. The TSV file has columns named tconst, ordering, title, region, language, types, attributes, and isOriginalTitle, and the file uses tabs as field delimiters and newline characters as line terminators. The first line of the file, likely containing headers, is ignored during the loading process.
+
+User
+I have a django project and i want to create an new app. I have the file ntuaflix in which the settings.py file is located, and the ntuaflix/ntuaflix_api inside the ntuaflix folder, which is an app. I want to create an app called administrator inside the ntuaflix_api file.
+
+4 / 4
+
+ChatGPT
+To create a new Django app called administrator within the ntuaflix_api app in your Django project, you can follow these steps:
+
+Open a terminal or command prompt and navigate to the directory containing your Django project (ntuaflix in this case).
+
+Run the following command to create a new app named administrator within the ntuaflix_api folder:
+
+bash
+Copy code
+python manage.py startapp administrator ntuaflix/ntuaflix_api/administrator
+This command creates a new app named administrator and places it within the ntuaflix_api folder.
+
+After running the command, you should see a new folder named administrator created inside the ntuaflix/ntuaflix_api directory. This folder contains the necessary files and structure for a Django app.
+
+Open the ntuaflix/ntuaflix_api/settings.py file in a text editor.
+
+Locate the INSTALLED_APPS list in the settings.py file.
+
+Add the new app administrator to the INSTALLED_APPS list. It should look something like this:
+
+python
+Copy code
+INSTALLED_APPS = [
+    # other apps
+    'ntuaflix_api.administrator',
+    # other apps
+]
+Make sure to include the correct path to the administrator app within the ntuaflix_api app.
+
+Save the settings.py file.
+
+Now, you have successfully created a new Django app named administrator within the ntuaflix_api app, and you have added it to the INSTALLED_APPS list in the settings.py file. You can proceed to define models, views, and other components within the administrator app as needed for your project.
+
+User
+"""
+URL configuration for ntuaflix project.
+
+The `urlpatterns` list routes URLs to views. For more information please see:
+    https://docs.djangoproject.com/en/5.0/topics/http/urls/
+Examples:
+Function views
+    1. Add an import:  from my_app import views
+    2. Add a URL to urlpatterns:  path('', views.home, name='home')
+Class-based views
+    1. Add an import:  from other_app.views import Home
+    2. Add a URL to urlpatterns:  path('', Home.as_view(), name='home')
+Including another URLconf
+    1. Import the include() function: from django.urls import include, path
+    2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
+"""
+from django.contrib import admin
+from django.urls import path,include
+
+urlpatterns = [
+    path('admin/', admin.site.urls),
+    path('ntuaflix_api/',include('ntuaflix_api.urls'))
+]
+
+I have this urls.py file. This file redirects every ntuaflix_api\ url to the ntuaflix_api\urls.py file. I want to create an app that will handle all ntuaflix_api\admin\ urls. How should i build it?
+
+2 / 2
+
+ChatGPT
+To create an app that will handle all URLs under the ntuaflix_api/admin/ path, you can follow these steps:
+
+Create a new Django app named administrator (as you mentioned in your previous question):
+
+bash
+Copy code
+python manage.py startapp administrator ntuaflix/ntuaflix_api/administrator
+Inside the administrator app, create a new file named urls.py if it doesn't exist already.
+
+Open the administrator/urls.py file and define the URL patterns for the administrator app:
+
+python
+Copy code
+from django.urls import path
+from . import views
+
+urlpatterns = [
+    # Define your administrator app URLs here
+    # For example:
+    path('dashboard/', views.dashboard, name='dashboard'),
+    path('users/', views.user_list, name='user_list'),
+    # Add more URLs as needed
+]
+Replace 'dashboard/', 'users/', and other path patterns with the actual views you want to associate with these URLs.
+
+Now, update the ntuaflix_api/urls.py file to include the URLs from the administrator app:
+
+python
+Copy code
+from django.urls import path, include
+
+urlpatterns = [
+    # Existing patterns
+    path('admin/', include('ntuaflix_api.administrator.urls')),  # Include administrator app URLs
+    # Other patterns
+]
+This includes the URLs from the administrator app under the ntuaflix_api/admin/ path.
+
+Inside your administrator/views.py file, define the views for the URLs you specified in administrator/urls.py.
+
+python
+Copy code
+from django.shortcuts import render
+
+def dashboard(request):
+    # Your view logic for the dashboard
+    return render(request, 'administrator/dashboard.html')
+
+def user_list(request):
+    # Your view logic for the user list
+    return render(request, 'administrator/user_list.html')
+Replace 'administrator/dashboard.html' and 'administrator/user_list.html' with the actual template paths you have for these views.
+
+Now, when you access URLs like ntuaflix_api/admin/dashboard/ or ntuaflix_api/admin/users/, they will be handled by the views defined in the administrator app. Adjust the paths and view logic according to your project's requirements.
+
+User
+[POST] /admin/upload/titlebasics
+Θέλω την κατασκευή του παραπάνω endpoint που θα υποστηρίζει την http μέθοδο POST για το ανέβασμα αρχείου tsv με δεδομένα τίτλων ταινιών. Στην http κλήση το αρχείο πρέπει να είναι κωδικοποιημένο ως text/tab-separatedvalues.
+Η απαιτούμενη δομή του αρχείου tsv είναι αυτή των πρωτογενών δεδομένων που
+έχουν δοθεί(tconst	titleType	primaryTitle	originalTitle	isAdult	startYear	endYear	runtimeMinutes	genres	img_url_asset).
+
+2 / 2
+
+ChatGPT
+Για να υλοποιήσετε ένα endpoint στο Django που να υποστηρίζει HTTP μέθοδο POST για το ανέβασμα αρχείου TSV με δεδομένα τίτλων ταινιών, μπορείτε να ακολουθήσετε τα παρακάτω βήματα:
+
+Στο αρχείο ntuaflix_api/administrator/urls.py, προσθέστε μια νέα διαδρομή για το endpoint που θα υποστηρίζει το ανέβασμα του αρχείου:
+
+python
+Copy code
+from django.urls import path
+from . import views
+
+urlpatterns = [
+    # Άλλα URL patterns του administrator
+    path('upload/titlebasics', views.upload_titlebasics, name='upload_titlebasics'),
+]
+Στο αρχείο ntuaflix_api/administrator/views.py, προσθέστε τις απαραίτητες εισαγωγές και υλοποιήστε την view για το ανέβασμα του αρχείου:
+
+python
+Copy code
+from django.shortcuts import render
+from django.http import JsonResponse
+import csv
+
+def upload_titlebasics(request):
+    if request.method == 'POST':
+        # Ανάγνωση του αρχείου TSV από το request
+        file = request.FILES.get('tsv_file')
+
+        if file:
+            # Επεξεργασία του αρχείου TSV
+            decoded_file = file.read().decode('utf-8').splitlines()
+
+            # Ανάγνωση των γραμμών του αρχείου χρησιμοποιώντας το CSV module
+            reader = csv.reader(decoded_file, delimiter='\t')
+            
+            # Επεξεργασία των γραμμών του αρχείου
+            for row in reader:
+                tconst, titleType, primaryTitle, originalTitle, isAdult, startYear, endYear, runtimeMinutes, genres, img_url_asset = row
+                
+                # Εδώ μπορείτε να χρησιμοποιήσετε τα δεδομένα που διαβάσατε για να εκτελέσετε τις επιθυμητές ενέργειες
+                # Π.χ., αποθηκεύστε τα δεδομένα στη βάση δεδομένων ή κάντε άλλη επεξεργασία
+
+            # Επιστροφή απάντησης JSON
+            return JsonResponse({'status': 'success'})
+        else:
+            return JsonResponse({'status': 'error', 'message': 'No file uploaded'}, status=400)
+
+    return JsonResponse({'status': 'error', 'message': 'Invalid request method'}, status=405)
+Σημείωση: Αυτό είναι ένα βασικό παράδειγμα και πρέπει να προσαρμοστεί ανάλογα με τις απαιτήσεις σας, ειδικά όσον αφορά την αποθήκευση των δεδομένων στη βάση δεδομένων. Επίσης, βεβαιωθείτε ότι οι ονομασίες των πεδίων στο αρχείο TSV ταιριάζουν με τις μεταβλητές στον κώδικα της view.
+
+User
+How should someone upload this tsv file
+ChatGPT
+To upload a TSV file using a POST request, you can create a form in your Django project's frontend to allow users to select and upload a file. Here's an example using HTML and Django forms.
+
+Assuming you have a Django model for your title data, let's call it TitleBasic, create a form in the forms.py file within your app:
+
+python
+Copy code
+# ntuaflix_api/administrator/forms.py
+from django import forms
+
+class TitleBasicUploadForm(forms.Form):
+    tsv_file = forms.FileField(label='Upload TSV file')
+Now, create a view in the views.py file to handle the form submission and file processing:
+
+python
+Copy code
+# ntuaflix_api/administrator/views.py
+from django.shortcuts import render
+from .forms import TitleBasicUploadForm
+from django.http import JsonResponse
+import csv
+
+def upload_titlebasics(request):
+    if request.method == 'POST':
+        form = TitleBasicUploadForm(request.POST, request.FILES)
+        if form.is_valid():
+            # Process the uploaded file
+            file = form.cleaned_data['tsv_file']
+
+            decoded_file = file.read().decode('utf-8').splitlines()
+            reader = csv.reader(decoded_file, delimiter='\t')
+
+            for row in reader:
+                tconst, titleType, primaryTitle, originalTitle, isAdult, startYear, endYear, runtimeMinutes, genres, img_url_asset = row
+                
+                # Perform necessary actions with the data (e.g., save to the database)
+
+            return JsonResponse({'status': 'success'})
+        else:
+            return JsonResponse({'status': 'error', 'message': 'Form is not valid'}, status=400)
+    else:
+        form = TitleBasicUploadForm()
+
+    return render(request, 'administrator/upload_titlebasics.html', {'form': form})
+Now, you need to create an HTML template to render the form. Create a file named upload_titlebasics.html in the templates/administrator folder:
+
+html
+Copy code
+<!-- ntuaflix_api/administrator/templates/administrator/upload_titlebasics.html -->
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Upload TSV File</title>
+</head>
+<body>
+    <h2>Upload TSV File</h2>
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ form }}
+        <button type="submit">Upload</button>
+    </form>
+</body>
+</html>
+Make sure to update your urls.py file to include the new view:
+
+python
+Copy code
+# ntuaflix_api/administrator/urls.py
+from django.urls import path
+from . import views
+
+urlpatterns = [
+    path('upload/titlebasics/', views.upload_titlebasics, name='upload_titlebasics'),
+    # Other URL patterns
+]
+Now, when you access the /admin/upload/titlebasics/ URL, it should render a form allowing users to upload a TSV file. Adjust the code as needed based on your specific requirements.
+
+User
+I get this error in my page:
+
+TypeError at /ntuaflix_api/admin/upload/titlebasics/
+Object of type reader is not JSON serializable
+Request Method:	POST
+Request URL:	http://127.0.0.1:9876/ntuaflix_api/admin/upload/titlebasics/
+Django Version:	5.0.1
+Exception Type:	TypeError
+Exception Value:	
+Object of type reader is not JSON serializable
+Exception Location:	C:\Users\Stelios\AppData\Local\Programs\Python\Python311\Lib\json\encoder.py, line 180, in default
+Raised during:	ntuaflix_api.administrator.views.UploadTitleBasics
+Python Executable:	C:\SoftEng\venv\scripts\python.exe
+Python Version:	3.11.2
+Python Path:	
+['C:\\SoftEng\\softeng23-01\\back-end\\Django\\ntuaflix',
+ 'C:\\Users\\Stelios\\AppData\\Local\\Programs\\Python\\Python311\\python311.zip',
+ 'C:\\Users\\Stelios\\AppData\\Local\\Programs\\Python\\Python311\\DLLs',
+ 'C:\\Users\\Stelios\\AppData\\Local\\Programs\\Python\\Python311\\Lib',
+ 'C:\\Users\\Stelios\\AppData\\Local\\Programs\\Python\\Python311',
+ 'C:\\SoftEng\\venv',
+ 'C:\\SoftEng\\venv\\Lib\\site-packages']
+Server time:	Wed, 24 Jan 2024 11:40:42 +0000
+Traceback Switch to copy-and-paste view
+C:\SoftEng\venv\Lib\site-packages\django\core\handlers\exception.py, line 55, in inner
+                response = get_response(request)
+                               ^^^^^^^^^^^^^^^^^^^^^ …
+Local vars
+C:\SoftEng\venv\Lib\site-packages\django\core\handlers\base.py, line 197, in _get_response
+                response = wrapped_callback(request, *callback_args, **callback_kwargs)
+                                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ …
+Local vars
+C:\SoftEng\softeng23-01\back-end\Django\ntuaflix\ntuaflix_api\administrator\views.py, line 22, in UploadTitleBasics
+            return JsonResponse({'status': 'success', 'reader': reader})
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ …
+Local vars
+C:\SoftEng\venv\Lib\site-packages\django\http\response.py, line 733, in __init__
+        data = json.dumps(data, cls=encoder, **json_dumps_params)
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ …
+Local vars
+C:\Users\Stelios\AppData\Local\Programs\Python\Python311\Lib\json\__init__.py, line 238, in dumps
+        **kw).encode(obj)
+                   ^^^^^^^^^^^ …
+Local vars
+C:\Users\Stelios\AppData\Local\Programs\Python\Python311\Lib\json\encoder.py, line 200, in encode
+        chunks = self.iterencode(o, _one_shot=True)
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ …
+Local vars
+C:\Users\Stelios\AppData\Local\Programs\Python\Python311\Lib\json\encoder.py, line 258, in iterencode
+        return _iterencode(o, 0)
+                    ^^^^^^^^^^^^^^^^^ …
+Local vars
+C:\SoftEng\venv\Lib\site-packages\django\core\serializers\json.py, line 106, in default
+            return super().default(o)
+                        ^^^^^^^^^^^^^^^^^^ …
+Local vars
+C:\Users\Stelios\AppData\Local\Programs\Python\Python311\Lib\json\encoder.py, line 180, in default
+        raise TypeError(f'Object of type {o.__class__.__name__} '
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ …
+Local vars
+ChatGPT
+The error indicates that the reader object, which is an instance of the CSV reader, cannot be directly serialized to JSON. Instead, you should extract the relevant data from the reader object and return that data in the JSON response.
+
+Here's an updated version of your view function to handle this:
+
+python
+Copy code
+# ntuaflix_api/administrator/views.py
+from django.shortcuts import render
+from django.http import JsonResponse
+import csv
+
+def upload_titlebasics(request):
+    if request.method == 'POST':
+        form = TitleBasicUploadForm(request.POST, request.FILES)
+        if form.is_valid():
+            # Process the uploaded file
+            file = form.cleaned_data['tsv_file']
+
+            decoded_file = file.read().decode('utf-8').splitlines()
+            reader = csv.reader(decoded_file, delimiter='\t')
+
+            # Process the data from the reader object
+            data_to_process = []
+            for row in reader:
+                tconst, titleType, primaryTitle, originalTitle, isAdult, startYear, endYear, runtimeMinutes, genres, img_url_asset = row
+                
+                # Append relevant data to the list
+                data_to_process.append({
+                    'tconst': tconst,
+                    'titleType': titleType,
+                    'primaryTitle': primaryTitle,
+                    'originalTitle': originalTitle,
+                    'isAdult': isAdult,
+                    'startYear': startYear,
+                    'endYear': endYear,
+                    'runtimeMinutes': runtimeMinutes,
+                    'genres': genres,
+                    'img_url_asset': img_url_asset,
+                })
+
+            # Perform necessary actions with the data (e.g., save to the database)
+
+            # Return a JSON response with a success message
+            return JsonResponse({'status': 'success', 'data': data_to_process})
+        else:
+            return JsonResponse({'status': 'error', 'message': 'Form is not valid'}, status=400)
+    else:
+        form = TitleBasicUploadForm()
+
+    return render(request, 'administrator/upload_titlebasics.html', {'form': form})
+In this version, I've created a list data_to_process to store dictionaries containing the relevant data from the reader object. This list is then included in the JSON response. Adjust the keys and values in the dictionaries based on your specific requirements.
+
+This way, you are returning a JSON response with the processed data, and the CSV reader object is not directly included in the response.
+
+User
+Why did I use the form.py file? What does it do?
+
+2 / 2
+
+ChatGPT
+Using the forms.py file is a common practice in Django for handling form-related functionality. The purpose of the forms.py file is to define and manage forms used in your Django application. Here's why you used it in the context of the file upload functionality:
+
+Separation of Concerns: By placing form-related code in a separate file (forms.py), you follow the principle of separation of concerns. This means that different parts of your application are responsible for different aspects of the functionality. In this case, forms.py is responsible for defining the structure and behavior of the form.
+
+Reusability: Defining the form in a separate file allows you to reuse it in multiple views or even in different parts of your application. If you have other views or functionalities that require a similar form, you can easily reuse the TitleBasicUploadForm without duplicating code.
+
+Cleaner Views: Keeping form-related logic out of the views makes your views cleaner and more focused on handling business logic rather than dealing with form details. This enhances the readability and maintainability of your code.
+
+Validation and Security: Django forms provide built-in validation and security features. By using the TitleBasicUploadForm in your view, you automatically get features such as CSRF protection, file type validation, and more. The is_valid() method of the form checks if the submitted data meets the defined form structure and constraints.
+
+In your specific case, the TitleBasicUploadForm was used to create a form with a single file field (tsv_file) to handle the file upload. It's instantiated in your view (upload_titlebasics) to process the form data, including the uploaded file.
+
+In summary, using forms.py promotes a cleaner and more modular structure for handling forms in your Django application, enhancing code organization and maintainability.
+
+User
+from django.shortcuts import render
+from django.http import JsonResponse
+import csv
+from .forms import TitleBasicUploadForm
+
+def UploadTitleBasics(request):
+    if request.method == 'POST':
+        form = TitleBasicUploadForm(request.POST, request.FILES)
+        if form.is_valid():
+            # Process the uploaded file
+            file = form.cleaned_data['tsv_file']
+
+            decoded_file = file.read().decode('utf-8').splitlines()
+            reader = csv.reader(decoded_file, delimiter='\t')
+
+            # Process the data from the reader object
+            data_to_process = []
+            for row in reader:
+                tconst, titleType, primaryTitle, originalTitle, isAdult, startYear, endYear, runtimeMinutes, genres, img_url_asset = row
+                
+                # Append relevant data to the list
+                data_to_process.append({
+                    'tconst': tconst,
+                    'titleType': titleType,
+                    'primaryTitle': primaryTitle,
+                    'originalTitle': originalTitle,
+                    'isAdult': isAdult,
+                    'startYear': startYear,
+                    'endYear': endYear,
+                    'runtimeMinutes': runtimeMinutes,
+                    'genres': genres,
+                    'img_url_asset': img_url_asset,
+                })
+
+            # Perform necessary actions with the data (e.g., save to the database)
+
+            # Return a JSON response with a success message
+            return JsonResponse({'status': 'success', 'data': data_to_process})
+        else:
+            return JsonResponse({'status': 'error', 'message': 'Form is not valid'}, status=400)
+    else:
+        form = TitleBasicUploadForm()
+
+    return render(request, 'administrator/upload_titlebasics.html', {'form': form})
+
+Explain this code. I also want the first line of the data to be ignored
+ChatGPT
+Certainly! Let's break down the provided code step by step:
+
+python
+Copy code
+from django.shortcuts import render
+from django.http import JsonResponse
+import csv
+from .forms import TitleBasicUploadForm
+These lines import necessary modules and the TitleBasicUploadForm from your application's forms.py.
+
+python
+Copy code
+def UploadTitleBasics(request):
+    if request.method == 'POST':
+        form = TitleBasicUploadForm(request.POST, request.FILES)
+        if form.is_valid():
+            # Process the uploaded file
+            file = form.cleaned_data['tsv_file']
+This view function, named UploadTitleBasics, is designed to handle HTTP POST requests. It first checks if the request method is 'POST'. If it is, it initializes an instance of TitleBasicUploadForm with the data from the request. The TitleBasicUploadForm is responsible for handling the file upload.
+
+python
+Copy code
+            decoded_file = file.read().decode('utf-8').splitlines()
+            reader = csv.reader(decoded_file, delimiter='\t')
+This part of the code reads the content of the uploaded file, decodes it as UTF-8, and splits it into lines. It then uses the csv.reader to create a CSV reader object, splitting each line into fields based on the tab delimiter ('\t').
+
+python
+Copy code
+            # Process the data from the reader object
+            data_to_process = []
+            ignore_first_line = True
+            for row in reader:
+                if ignore_first_line:
+                    # Skip the first line
+                    ignore_first_line = False
+                    continue
+
+                # Process the rest of the lines
+                tconst, titleType, primaryTitle, originalTitle, isAdult, startYear, endYear, runtimeMinutes, genres, img_url_asset = row
+                
+                # Append relevant data to the list
+                data_to_process.append({
+                    'tconst': tconst,
+                    'titleType': titleType,
+                    'primaryTitle': primaryTitle,
+                    'originalTitle': originalTitle,
+                    'isAdult': isAdult,
+                    'startYear': startYear,
+                    'endYear': endYear,
+                    'runtimeMinutes': runtimeMinutes,
+                    'genres': genres,
+                    'img_url_asset': img_url_asset,
+                })
+
+            # Perform necessary actions with the data (e.g., save to the database)
+
+            # Return a JSON response with a success message
+            return JsonResponse({'status': 'success', 'data': data_to_process})
+        else:
+            return JsonResponse({'status': 'error', 'message': 'Form is not valid'}, status=400)
+    else:
+        form = TitleBasicUploadForm()
+
+    return render(request, 'administrator/upload_titlebasics.html', {'form': form})
+This part processes the data from the CSV reader object. It initializes an empty list data_to_process to store dictionaries representing each row of data (excluding the first line). The code iterates over each row in the CSV reader, skips the first line using a flag (ignore_first_line), and appends the processed data to the data_to_process list.
+
+Finally, it returns a JSON response containing the status ('success' or 'error') and the processed data. If the form is not valid, it returns an error response with a message. If the request method is not 'POST', it renders the upload form using the specified HTML template.
+
+Please note that the "ignore the first line" logic is added within the loop where the rows are processed. The ignore_first_line flag ensures that the first line is skipped during processing.
+
+User
+from django.shortcuts import render
+from django.http import JsonResponse
+import csv
+from .forms import TitleBasicUploadForm
+
+def UploadTitleBasics(request):
+    if request.method == 'POST':
+        form = TitleBasicUploadForm(request.POST, request.FILES)
+        if form.is_valid():
+            # Process the uploaded file
+            file = form.cleaned_data['tsv_file']
+            decoded_file = file.read().decode('utf-8').splitlines()
+            reader = csv.reader(decoded_file, delimiter='\t')
+            # Process the data from the reader object
+            data_to_process = []
+            ignore_first_line = True
+            for row in reader:
+                if ignore_first_line:
+                    # Skip the first line
+                    ignore_first_line = False
+                    continue
+                # Process the rest of the lines
+                tconst, titleType, primaryTitle, originalTitle, isAdult, startYear, endYear, runtimeMinutes, genres, img_url_asset = row
+                # Append relevant data to the list
+                data_to_process.append({
+                    'tconst': tconst,
+                    'titleType': titleType,
+                    'primaryTitle': primaryTitle,
+                    'originalTitle': originalTitle,
+                    'isAdult': isAdult,
+                    'startYear': startYear,
+                    'endYear': endYear,
+                    'runtimeMinutes': runtimeMinutes,
+                    'genres': genres,
+                    'img_url_asset': img_url_asset,
+                })
+
+            # Perform necessary actions with the data (e.g., save to the database)
+
+            # Return a JSON response with a success message
+            return JsonResponse({'status': 'success', 'data': data_to_process})
+        else:
+            return JsonResponse({'status': 'error', 'message': 'Form is not valid'}, status=400)
+    else:
+        form = TitleBasicUploadForm()
+
+    return render(request, 'administrator/upload_titlebasics.html', {'form': form})
+
+I have this view that just prints the tsv file. I also have the following code inside the models.py file with the models:
+
+from django.db import models
+
+# Create your models here.
+# ///////////////////////////////////////////////////////////////////////////////////////////////////
+    
+#   ΑΠΟ ΕΔΩ ΚΑΙ ΚΑΤΩ ΕΧΕΙ ΟΛΑ ΤΑ TABLES ΤΗΣ SQL ΣΥΜΦΩΝΑ ΜΕ ΤΑ ΔΕΔΟΜΕΝΑ ΠΟΥ ΜΑΣ ΕΧΟΥΝ ΔΩΘΕΙ
+#   ΠΧ TITLEAKA,TITLEBASIC,...
+
+class TitleBasic(models.Model):
+    tconst = models.CharField(max_length=10, primary_key=True)
+    titleType = models.CharField(max_length=255, blank=True, null=True)
+    primaryTitle = models.CharField(max_length=255, blank=True, null=True)
+    originalTitle = models.CharField(max_length=255, blank=True, null=True)
+    isAdult = models.IntegerField()
+    startYear = models.IntegerField()  # 'year' in MySQL typically corresponds to an integer in Django
+    endYear = models.IntegerField(blank=True, null=True)  # Assuming this can be NULL
+    runtimeMinutes = models.IntegerField(blank=True, null=True)
+    genres = models.CharField(max_length=255, blank=True, null=True)
+    img_url_asset = models.CharField(max_length=255, blank=True, null=True)
+
+    class Meta:
+        db_table = 'TitleBasic'  
+
+    def __str__(self):
+        return self.primaryTitle
+
+class TitleAka(models.Model):
+    aka_Id = models.AutoField(primary_key=True)
+    tconst = models.CharField(max_length=10)  # Assuming this might be a foreign key to another table
+    ordering = models.IntegerField()
+    title = models.CharField(max_length=255)
+    region = models.CharField(max_length=255, blank=True, null=True)  # Assuming region can be optional
+    language = models.CharField(max_length=255, blank=True, null=True)  # Assuming language can be optional
+    types = models.CharField(max_length=255, blank=True, null=True)  # Assuming types can be optional
+    attributes = models.CharField(max_length=255, blank=True, null=True)  # Assuming attributes can be optional
+    isOriginalTitle = models.IntegerField()
+
+    class Meta:
+        db_table = 'TitleAka'  
+
+    def __str__(self):
+        return self.title
+    
+class Name(models.Model):
+    nconst = models.CharField(max_length=10, primary_key=True)
+    primaryName = models.CharField(max_length=255, blank=True, null=True)
+    birthYear = models.IntegerField(blank=True, null=True)
+    deathYear = models.IntegerField(blank=True, null=True)
+    primaryProfession = models.CharField(max_length=255, blank=True, null=True)
+    knownForTitles = models.CharField(max_length=255, blank=True, null=True)
+    imgUrl = models.CharField(max_length=255, blank=True, null=True)
+
+    class Meta:
+        db_table = 'Name'  
+
+    def __str__(self):
+        return self.primaryName or 'Unknown Name'
+
+
+
+class Crew(models.Model):
+    tconst = models.CharField(max_length=10, primary_key=True)
+    directors = models.CharField(max_length=255, blank=True, null=True)
+    writers = models.CharField(max_length=255, blank=True, null=True)
+
+    class Meta:
+        db_table = 'Crew'  
+
+    def __str__(self):
+        return f"Crew for {self.tconst}"
+
+
+class Episode(models.Model):
+    tconst = models.CharField(max_length=10, primary_key=True)
+    parentTconst = models.CharField(max_length=11)  # Assuming this might be a foreign key to another table
+    seasonNumber = models.IntegerField(blank=True, null=True)
+    episodeNumber = models.IntegerField(blank=True, null=True)
+
+    class Meta:
+        db_table = 'Episode'  
+
+    def __str__(self):
+        return f"Episode {self.episodeNumber} of Season {self.seasonNumber} ({self.tconst})"
+
+class Principal(models.Model):
+    workas_Id = models.AutoField(primary_key=True)
+    tconst = models.CharField(max_length=10)  # This might be a ForeignKey to another table
+    ordering = models.IntegerField()
+    nconst = models.CharField(max_length=10)  # This might also be a ForeignKey
+    category = models.CharField(max_length=25, blank=True, null=True)
+    job = models.CharField(max_length=255, blank=True, null=True)
+    characters = models.CharField(max_length=255, blank=True, null=True)
+    img_url_asset = models.CharField(max_length=255, blank=True, null=True)
+
+    class Meta:
+        db_table = 'Principal'  
+
+    def __str__(self):
+        return f"{self.category} - {self.nconst}"
+
+class Rating(models.Model):
+    tconst = models.CharField(max_length=10, primary_key=True)
+    averageRating = models.FloatField(blank=True, null=True)
+    numVotes = models.IntegerField(blank=True, null=True)
+
+    class Meta:
+        db_table = 'Rating'  
+
+    def __str__(self):
+        return f"Rating {self.averageRating} for {self.tconst}"
+
+I want my view not to print the database but instead to insert the info into my database.
+ChatGPT
+Certainly! To insert the data into your database instead of just printing it, you can use Django's model to create and save objects for each row of data. Here's an updated version of your view that performs the database insertion:
+
+python
+Copy code
+from django.shortcuts import render
+from django.http import JsonResponse
+import csv
+from .forms import TitleBasicUploadForm
+from .models import TitleBasic
+
+def UploadTitleBasics(request):
+    if request.method == 'POST':
+        form = TitleBasicUploadForm(request.POST, request.FILES)
+        if form.is_valid():
+            # Process the uploaded file
+            file = form.cleaned_data['tsv_file']
+            decoded_file = file.read().decode('utf-8').splitlines()
+            reader = csv.reader(decoded_file, delimiter='\t')
+
+            # Process the data from the reader object
+            ignore_first_line = True
+            for row in reader:
+                if ignore_first_line:
+                    # Skip the first line
+                    ignore_first_line = False
+                    continue
+
+                # Process the rest of the lines
+                tconst, titleType, primaryTitle, originalTitle, isAdult, startYear, endYear, runtimeMinutes, genres, img_url_asset = row
+                
+                # Create a TitleBasic object and save it to the database
+                title_basic = TitleBasic.objects.create(
+                    tconst=tconst,
+                    titleType=titleType,
+                    primaryTitle=primaryTitle,
+                    originalTitle=originalTitle,
+                    isAdult=isAdult,
+                    startYear=startYear,
+                    endYear=endYear,
+                    runtimeMinutes=runtimeMinutes,
+                    genres=genres,
+                    img_url_asset=img_url_asset,
+                )
+
+            # Return a JSON response with a success message
+            return JsonResponse({'status': 'success'})
+        else:
+            return JsonResponse({'status': 'error', 'message': 'Form is not valid'}, status=400)
+    else:
+        form = TitleBasicUploadForm()
+
+    return render(request, 'administrator/upload_titlebasics.html', {'form': form})
+In this updated code:
+
+For each row of data in the TSV file, a TitleBasic object is created using the TitleBasic.objects.create method.
+The object is then saved to the database.
+Make sure to adjust the code according to your data model and the structure of the TSV file. If you have multiple models to populate, you can follow a similar approach for each model in their respective sections of the view.
+
+User
+title_basic = TitleBasic.objects.create(
+                    tconst=tconst,
+                    titleType=titleType,
+                    primaryTitle=primaryTitle,
+                    originalTitle=originalTitle,
+                    isAdult=isAdult,
+                    startYear=startYear,
+                    endYear=endYear,
+                    runtimeMinutes=runtimeMinutes,
+                    genres=genres,
+                    img_url_asset=img_url_asset,
+                )
+
+What does this function do?
+ChatGPT
+The TitleBasic.objects.create function is a convenience method provided by Django's Object-Relational Mapping (ORM) system. It is used to create a new instance of the TitleBasic model and save it to the database in a single step.
+
+Here's a breakdown of the parameters passed to TitleBasic.objects.create in your specific code:
+
+tconst: This corresponds to the tconst field in the TitleBasic model.
+titleType: This corresponds to the titleType field in the TitleBasic model.
+primaryTitle: This corresponds to the primaryTitle field in the TitleBasic model.
+originalTitle: This corresponds to the originalTitle field in the TitleBasic model.
+isAdult: This corresponds to the isAdult field in the TitleBasic model.
+startYear: This corresponds to the startYear field in the TitleBasic model.
+endYear: This corresponds to the endYear field in the TitleBasic model.
+runtimeMinutes: This corresponds to the runtimeMinutes field in the TitleBasic model.
+genres: This corresponds to the genres field in the TitleBasic model.
+img_url_asset: This corresponds to the img_url_asset field in the TitleBasic model.
+So, the TitleBasic.objects.create line creates a new TitleBasic object with the specified field values and immediately saves it to the database. This is a concise way to create and persist a new record in the database without the need for additional calls to save(). The function returns the newly created TitleBasic object.
+
+In summary, the TitleBasic.objects.create function is a shorthand method for creating and saving instances of a Django model in a single operation.
+
+User
+So dont i have towrite any sql scripts?
+ChatGPT
+Correct, you don't have to write raw SQL scripts explicitly when using Django's Object-Relational Mapping (ORM). Django provides an abstraction layer that allows you to interact with your database using Python code and high-level objects, such as models.
+
+When you use TitleBasic.objects.create or any other ORM methods, Django takes care of generating the necessary SQL queries behind the scenes to create, update, or retrieve records in the database. This abstraction simplifies the interaction with the database and helps you focus on working with Python objects rather than dealing directly with SQL.
+
+Django's ORM handles many aspects of database operations, including:
+
+Creating Tables: When you run python manage.py makemigrations and python manage.py migrate, Django automatically creates the corresponding database tables based on your defined models.
+
+Inserting Data: When you use TitleBasic.objects.create or similar methods, Django generates the appropriate SQL INSERT statement to add a new record to the database.
+
+Querying Data: When you use methods like TitleBasic.objects.filter or TitleBasic.objects.get, Django generates SQL queries to retrieve data from the database.
+
+Updating and Deleting Data: Methods like instance.save() or instance.delete() result in SQL UPDATE and DELETE statements, respectively.
+
+By using Django's ORM, you benefit from a higher level of abstraction and avoid the need to write raw SQL queries for common operations. However, if you have complex queries or need to perform operations that go beyond the capabilities of the ORM, Django does provide a way to execute raw SQL queries using the django.db.connection module. Keep in mind that using raw SQL should be done cautiously to prevent SQL injection vulnerabilities and ensure compatibility with different database backends.
+
+User
+And what happens if an instance already exists in the table?
+ChatGPT
+When using objects.create in Django's ORM, it creates a new instance of the model and inserts a new record into the corresponding database table. If an instance with the same primary key (or unique constraint) already exists in the table, attempting to create another instance with the same key will result in an integrity error.
+
+Here are the key points to note:
+
+Primary Key Violation: If the tconst field in your TitleBasic model is defined as the primary key, attempting to create a new instance with the same tconst value as an existing record will raise an integrity error.
+
+Unique Constraints: If you have defined other fields with the unique=True option in your model, attempting to create a new instance with the same unique values as an existing record will also raise an integrity error.
+
+Handling Integrity Errors: You should handle integrity errors appropriately in your code. You might want to check whether an instance with the specified key or unique constraints already exists before attempting to create a new one.
+
+Here's an example of how you might handle this situation:
+
+python
+Copy code
+from django.db import IntegrityError
+
+try:
+    title_basic = TitleBasic.objects.create(
+        tconst=tconst,
+        titleType=titleType,
+        primaryTitle=primaryTitle,
+        originalTitle=originalTitle,
+        isAdult=isAdult,
+        startYear=startYear,
+        endYear=endYear,
+        runtimeMinutes=runtimeMinutes,
+        genres=genres,
+        img_url_asset=img_url_asset,
+    )
+    # Instance created successfully
+except IntegrityError:
+    # Handle integrity error (e.g., log it, display a message, etc.)
+    print(f"Instance with tconst={tconst} already exists.")
+In this example, if an integrity error occurs, you can handle it by taking appropriate actions, such as logging the error or displaying a message to the user. It's important to handle integrity errors to ensure the stability and correctness of your application when dealing with database constraints.
+
+User
+In my view, i want when an item tries to be inserted but already exists, to be ignored
+ChatGPT
+If you want to insert a new item into the database, but if it already exists, you want to ignore the operation (i.e., not raise an error), you can use the get_or_create method provided by Django's ORM. This method attempts to get an object from the database based on specified parameters, and if it doesn't exist, it creates it.
+
+Here's how you can modify your code to use get_or_create:
+
+python
+Copy code
+from django.shortcuts import render
+from django.http import JsonResponse
+import csv
+from .forms import TitleBasicUploadForm
+from .models import TitleBasic
+
+def UploadTitleBasics(request):
+    if request.method == 'POST':
+        form = TitleBasicUploadForm(request.POST, request.FILES)
+        if form.is_valid():
+            # Process the uploaded file
+            file = form.cleaned_data['tsv_file']
+            decoded_file = file.read().decode('utf-8').splitlines()
+            reader = csv.reader(decoded_file, delimiter='\t')
+
+            # Process the data from the reader object
+            ignore_first_line = True
+            for row in reader:
+                if ignore_first_line:
+                    # Skip the first line
+                    ignore_first_line = False
+                    continue
+
+                # Process the rest of the lines
+                tconst, titleType, primaryTitle, originalTitle, isAdult, startYear, endYear, runtimeMinutes, genres, img_url_asset = row
+                
+                # Use get_or_create to avoid integrity errors
+                title_basic, created = TitleBasic.objects.get_or_create(
+                    tconst=tconst,
+                    defaults={
+                        'titleType': titleType,
+                        'primaryTitle': primaryTitle,
+                        'originalTitle': originalTitle,
+                        'isAdult': isAdult,
+                        'startYear': startYear,
+                        'endYear': endYear,
+                        'runtimeMinutes': runtimeMinutes,
+                        'genres': genres,
+                        'img_url_asset': img_url_asset,
+                    }
+                )
+
+                # If the record was created, you can perform additional actions here
+
+            # Return a JSON response with a success message
+            return JsonResponse({'status': 'success'})
+        else:
+            return JsonResponse({'status': 'error', 'message': 'Form is not valid'}, status=400)
+    else:
+        form = TitleBasicUploadForm()
+
+    return render(request, 'administrator/upload_titlebasics.html', {'form': form})
+In this code:
+
+The get_or_create method is used with the tconst field as the lookup parameter.
+If a record with the specified tconst already exists, get_or_create will return the existing record and set created to False.
+If the record doesn't exist, get_or_create will create a new record with the specified values and set created to True.
+This way, you can avoid integrity errors and handle the case where an item already exists in the database by using the get_or_create method.
+
+User
+Internal Server Error: /ntuaflix_api/admin/upload/titlebasics/
+Traceback (most recent call last):
+  File "C:\SoftEng\venv\Lib\site-packages\django\db\models\query.py", line 946, in get_or_create
+    return self.get(**kwargs), False
+           ^^^^^^^^^^^^^^^^^^
+  File "C:\SoftEng\venv\Lib\site-packages\django\db\models\query.py", line 647, in get        
+    raise self.model.DoesNotExist(
+ntuaflix_api.administrator.models.TitleBasic.DoesNotExist: TitleBasic matching query does not exist.
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\SoftEng\venv\Lib\site-packages\django\db\models\fields\__init__.py", line 2112, in get_prep_value
+    return int(value)
+           ^^^^^^^^^^
+ValueError: invalid literal for int() with base 10: '\\N'
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\SoftEng\venv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\SoftEng\venv\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\SoftEng\softeng23-01\back-end\Django\ntuaflix\ntuaflix_api\administrator\views.py", line 28, in UploadTitleBasics
+    title_basic, created = TitleBasic.objects.get_or_create(
+                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\SoftEng\venv\Lib\site-packages\django\db\models\manager.py", line 87, in manager_method
+    return getattr(self.get_queryset(), name)(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\SoftEng\venv\Lib\site-packages\django\db\models\query.py", line 953, in get_or_create
+    return self.create(**params), True
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\SoftEng\venv\Lib\site-packages\django\db\models\query.py", line 677, in create     
+    obj.save(force_insert=True, using=self.db)
+  File "C:\SoftEng\venv\Lib\site-packages\django\db\models\base.py", line 822, in save        
+    self.save_base(
+  File "C:\SoftEng\venv\Lib\site-packages\django\db\models\base.py", line 909, in save_base   
+    updated = self._save_table(
+              ^^^^^^^^^^^^^^^^^
+  File "C:\SoftEng\venv\Lib\site-packages\django\db\models\base.py", line 1067, in _save_table
+    results = self._do_insert(
+              ^^^^^^^^^^^^^^^^
+  File "C:\SoftEng\venv\Lib\site-packages\django\db\models\base.py", line 1108, in _do_insert 
+    return manager._insert(
+           ^^^^^^^^^^^^^^^^
+  File "C:\SoftEng\venv\Lib\site-packages\django\db\models\manager.py", line 87, in manager_method
+    return getattr(self.get_queryset(), name)(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\SoftEng\venv\Lib\site-packages\django\db\models\query.py", line 1845, in _insert   
+    return query.get_compiler(using=using).execute_sql(returning_fields)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\SoftEng\venv\Lib\site-packages\django\db\models\sql\compiler.py", line 1822, in execute_sql
+    for sql, params in self.as_sql():
+                       ^^^^^^^^^^^^^
+  File "C:\SoftEng\venv\Lib\site-packages\django\db\models\sql\compiler.py", line 1745, in as_sql
+    value_rows = [
+                 ^
+  File "C:\SoftEng\venv\Lib\site-packages\django\db\models\sql\compiler.py", line 1746, in <listcomp>
+    [
+  File "C:\SoftEng\venv\Lib\site-packages\django\db\models\sql\compiler.py", line 1747, in <listcomp>
+    self.prepare_value(field, self.pre_save_val(field, obj))
+  File "C:\SoftEng\venv\Lib\site-packages\django\db\models\sql\compiler.py", line 1686, in prepare_value
+    return field.get_db_prep_save(value, connection=self.connection)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\SoftEng\venv\Lib\site-packages\django\db\models\fields\__init__.py", line 1019, in get_db_prep_save
+    return self.get_db_prep_value(value, connection=connection, prepared=False)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\SoftEng\venv\Lib\site-packages\django\db\models\fields\__init__.py", line 2119, in get_db_prep_value
+    value = super().get_db_prep_value(value, connection, prepared)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\SoftEng\venv\Lib\site-packages\django\db\models\fields\__init__.py", line 1012, in get_db_prep_value
+    value = self.get_prep_value(value)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\SoftEng\venv\Lib\site-packages\django\db\models\fields\__init__.py", line 2114, in get_prep_value
+    raise e.__class__(
+ValueError: Field 'endYear' expected a number but got '\\N'.
+[24/Jan/2024 15:22:02] "POST /ntuaflix_api/admin/upload/titlebasics/ HTTP/1.1" 500 181019
+
+I get this error
+ChatGPT
+The error indicates that there is an attempt to save a value in the endYear field that Django expects to be a number, but the actual value is the string '\N'. The '\N' string is often used to represent NULL values in data files.
+
+To handle this situation, you need to check if the value is '\N' before attempting to save it as an integer. If it is '\N', you may want to save None (NULL) instead.
+
+Here's how you can modify the code to handle this situation:
+
+python
+Copy code
+from django.shortcuts import render
+from django.http import JsonResponse
+import csv
+from .forms import TitleBasicUploadForm
+from .models import TitleBasic
+
+def UploadTitleBasics(request):
+    if request.method == 'POST':
+        form = TitleBasicUploadForm(request.POST, request.FILES)
+        if form.is_valid():
+            # Process the uploaded file
+            file = form.cleaned_data['tsv_file']
+            decoded_file = file.read().decode('utf-8').splitlines()
+            reader = csv.reader(decoded_file, delimiter='\t')
+
+            # Process the data from the reader object
+            ignore_first_line = True
+            for row in reader:
+                if ignore_first_line:
+                    # Skip the first line
+                    ignore_first_line = False
+                    continue
+
+                # Process the rest of the lines
+                tconst, titleType, primaryTitle, originalTitle, isAdult, startYear, endYear, runtimeMinutes, genres, img_url_asset = row
+
+                # Convert '\\N' to None for fields that expect integers
+                startYear = None if startYear == '\\N' else int(startYear)
+                endYear = None if endYear == '\\N' else int(endYear)
+                runtimeMinutes = None if runtimeMinutes == '\\N' else int(runtimeMinutes)
+
+                # Use get_or_create to avoid integrity errors
+                title_basic, created = TitleBasic.objects.get_or_create(
+                    tconst=tconst,
+                    defaults={
+                        'titleType': titleType,
+                        'primaryTitle': primaryTitle,
+                        'originalTitle': originalTitle,
+                        'isAdult': int(isAdult),
+                        'startYear': startYear,
+                        'endYear': endYear,
+                        'runtimeMinutes': runtimeMinutes,
+                        'genres': genres,
+                        'img_url_asset': img_url_asset,
+                    }
+                )
+
+                # If the record was created, you can perform additional actions here
+
+            # Return a JSON response with a success message
+            return JsonResponse({'status': 'success'})
+        else:
+            return JsonResponse({'status': 'error', 'message': 'Form is not valid'}, status=400)
+    else:
+        form = TitleBasicUploadForm()
+
+    return render(request, 'administrator/upload_titlebasics.html', {'form': form})
+In this modified code:
+
+The startYear, endYear, and runtimeMinutes values are checked for '\N' and converted to None if the condition is true.
+When saving these values to the database, None will be treated as NULL, allowing the database to handle the NULL value appropriately.
+This should help resolve the ValueError related to the '\N' string in numeric fields.
+
+User
+I want this to happen for all values except the id
+ChatGPT
+Certainly, you can modify the code to handle the conversion to None for all fields except for the ID field. Here's the updated code:
+
+python
+Copy code
+from django.shortcuts import render
+from django.http import JsonResponse
+import csv
+from .forms import TitleBasicUploadForm
+from .models import TitleBasic
+
+def UploadTitleBasics(request):
+    if request.method == 'POST':
+        form = TitleBasicUploadForm(request.POST, request.FILES)
+        if form.is_valid():
+            # Process the uploaded file
+            file = form.cleaned_data['tsv_file']
+            decoded_file = file.read().decode('utf-8').splitlines()
+            reader = csv.reader(decoded_file, delimiter='\t')
+
+            # Process the data from the reader object
+            ignore_first_line = True
+            for row in reader:
+                if ignore_first_line:
+                    # Skip the first line
+                    ignore_first_line = False
+                    continue
+
+                # Process the rest of the lines
+                tconst, titleType, primaryTitle, originalTitle, isAdult, startYear, endYear, runtimeMinutes, genres, img_url_asset = row
+
+                # Convert '\\N' to None for fields that expect integers
+                startYear = None if startYear == '\\N' else int(startYear)
+                endYear = None if endYear == '\\N' else int(endYear)
+                runtimeMinutes = None if runtimeMinutes == '\\N' else int(runtimeMinutes)
+                isAdult = int(isAdult) if isAdult != '\\N' else None  # Convert '\\N' to None
+
+                # Use get_or_create to avoid integrity errors
+                title_basic, created = TitleBasic.objects.get_or_create(
+                    tconst=tconst,
+                    defaults={
+                        'titleType': titleType,
+                        'primaryTitle': primaryTitle,
+                        'originalTitle': originalTitle,
+                        'isAdult': isAdult,
+                        'startYear': startYear,
+                        'endYear': endYear,
+                        'runtimeMinutes': runtimeMinutes,
+                        'genres': genres,
+                        'img_url_asset': img_url_asset,
+                    }
+                )
+
+                # If the record was created, you can perform additional actions here
+
+            # Return a JSON response with a success message
+            return JsonResponse({'status': 'success'})
+        else:
+            return JsonResponse({'status': 'error', 'message': 'Form is not valid'}, status=400)
+    else:
+        form = TitleBasicUploadForm()
+
+    return render(request, 'administrator/upload_titlebasics.html', {'form': form})
+In this modification:
+
+The isAdult field is also checked for '\N' and converted to None if the condition is true.
+The isAdult field is then converted to an integer if it's not '\N', using int(isAdult).
+This way, all fields except the ID will be handled appropriately, converting '\N' to None for integer fields.
+
+User
+CREATE TABLE IF NOT EXISTS TitleAka (
+	aka_Id int NOT NULL AUTO_INCREMENT,
+    tconst varchar(10) NOT NULL,
+    ordering int(10),
+    title varchar(255),
+    region varchar(255),
+    language varchar(255),
+    types varchar(255),
+    attributes varchar(255),
+    isOriginalTitle int(5),
+    PRIMARY KEY (aka_Id)
+);
+
+Now i have this table and i want to modify the following fnction in order to do the same work. The difference is that now the aka_id is the primary key which is auto incemented, so i ant every element to be inserted. I also ant all the values except the preimary key to be checked for null values:
+
+def UploadTitleBasics(request):
+    if request.method == 'POST':
+        form = BasicForm(request.POST, request.FILES)
+        if form.is_valid():
+            # Process the uploaded file
+            file = form.cleaned_data['tsv_file']
+            decoded_file = file.read().decode('utf-8').splitlines()
+            reader = csv.reader(decoded_file, delimiter='\t')
+
+            ignore_first_line = True
+            for row in reader:
+                if ignore_first_line:       # Skip the first line
+                    ignore_first_line = False
+                    continue
+
+                tconst, titleType, primaryTitle, originalTitle, isAdult, startYear, endYear, runtimeMinutes, genres, img_url_asset = row
+                
+                startYear = None if startYear == '\\N' else startYear
+                endYear = None if endYear == '\\N' else endYear
+                runtimeMinutes = None if runtimeMinutes == '\\N' else runtimeMinutes
+                isAdult = None if isAdult == '\\N' else isAdult
+                genres = None if genres == '\\N' else genres
+                img_url_asset = None if img_url_asset == '\\N' else img_url_asset
+                
+                # Use get_or_create to insert a new element
+                # into the table if not already existed
+                title_basic, created = TitleBasic.objects.get_or_create(
+                    tconst=tconst,
+                    defaults={
+                        'titleType': titleType,
+                        'primaryTitle': primaryTitle,
+                        'originalTitle': originalTitle,
+                        'isAdult': isAdult,
+                        'startYear': startYear,
+                        'endYear': endYear,
+                        'runtimeMinutes': runtimeMinutes,
+                        'genres': genres,
+                        'img_url_asset': img_url_asset,
+                    }
+                )
+                print(title_basic, created)
+                print('item inserted')
+            # Return a JSON response with a success message
+            return JsonResponse({'status': 'success'})
+        else:
+            return JsonResponse({'status': 'error', 'message': 'Form is not valid'}, status=400)
+    else:
+        form = BasicForm()
+
+    return render(request, 'upload.html', {'form': form})
+
+3 / 3
+
+ChatGPT
+Since your TitleAka model has an auto-incremented primary key (aka_Id), and you want to insert all rows without checking for existence, you can modify the UploadTitleBasics function accordingly. Also, you need to create a model form (TitleAkaForm) for the TitleAka model to validate the form data.
+
+Here's the modified function:
+
+python
+Copy code
+from django.shortcuts import render
+from django.http import JsonResponse
+import csv
+from .forms import TitleAkaForm  # Import your model form
+from .models import TitleAka
+
+def UploadTitleAka(request):
+    if request.method == 'POST':
+        form = TitleAkaForm(request.POST, request.FILES)
+        if form.is_valid():
+            # Process the uploaded file
+            file = form.cleaned_data['tsv_file']
+            decoded_file = file.read().decode('utf-8').splitlines()
+            reader = csv.reader(decoded_file, delimiter='\t')
+
+            ignore_first_line = True
+            for row in reader:
+                if ignore_first_line:  # Skip the first line
+                    ignore_first_line = False
+                    continue
+
+                tconst, ordering, title, region, language, types, attributes, isOriginalTitle = row
+                
+                # Convert '\\N' to None for fields that expect integers
+                ordering = None if ordering == '\\N' else int(ordering)
+                isOriginalTitle = None if isOriginalTitle == '\\N' else int(isOriginalTitle)
+
+                # Use create to insert a new element into the table
+                TitleAka.objects.create(
+                    tconst=tconst,
+                    ordering=ordering,
+                    title=title,
+                    region=region,
+                    language=language,
+                    types=types,
+                    attributes=attributes,
+                    isOriginalTitle=isOriginalTitle,
+                )
+
+            # Return a JSON response with a success message
+            return JsonResponse({'status': 'success'})
+        else:
+            return JsonResponse({'status': 'error', 'message': 'Form is not valid'}, status=400)
+    else:
+        form = TitleAkaForm()
+
+    return render(request, 'upload.html', {'form': form})
+Ensure that you have a TitleAkaForm defined in your forms.py file. It would look similar to the BasicForm but with the appropriate fields for the TitleAka model.
+
+User
+CREATE TABLE IF NOT EXISTS Names (
+    nconst varchar(10) NOT NULL,
+    primaryName varchar(255),
+    birthYear int(10),
+    deathYear int(10),
+    primaryProfession varchar(255),
+    knownForTitles varchar(255),
+    imgUrl varchar(255),
+    PRIMARY KEY (nconst)
+);
+
+I want to do th same with the titlebasics
+ChatGPT
+Certainly, you can follow a similar approach for the Names table as you did for the TitleAka table. First, create a model form (NameForm) for the Name model to validate the form data.
+
+Assuming your Name model is defined like this:
+
+python
+Copy code
+# models.py
+from django.db import models
+
+class Name(models.Model):
+    nconst = models.CharField(max_length=10, primary_key=True)
+    primaryName = models.CharField(max_length=255, blank=True, null=True)
+    birthYear = models.IntegerField(blank=True, null=True)
+    deathYear = models.IntegerField(blank=True, null=True)
+    primaryProfession = models.CharField(max_length=255, blank=True, null=True)
+    knownForTitles = models.CharField(max_length=255, blank=True, null=True)
+    imgUrl = models.CharField(max_length=255, blank=True, null=True)
+
+    class Meta:
+        db_table = 'Names'
+
+    def __str__(self):
+        return self.primaryName or 'Unknown Name'
+Now, create a model form for the Name model:
+
+python
+Copy code
+# forms.py
+from django import forms
+from .models import Name
+
+class NameForm(forms.ModelForm):
+    class Meta:
+        model = Name
+        fields = '__all__'
+Then, modify your UploadTitleBasics function to handle the Names table:
+
+python
+Copy code
+# views.py
+from django.shortcuts import render
+from django.http import JsonResponse
+import csv
+from .forms import NameForm  # Import your model form
+from .models import Name
+
+def UploadNames(request):
+    if request.method == 'POST':
+        form = NameForm(request.POST, request.FILES)
+        if form.is_valid():
+            # Process the uploaded file
+            file = form.cleaned_data['tsv_file']
+            decoded_file = file.read().decode('utf-8').splitlines()
+            reader = csv.reader(decoded_file, delimiter='\t')
+
+            ignore_first_line = True
+            for row in reader:
+                if ignore_first_line:  # Skip the first line
+                    ignore_first_line = False
+                    continue
+
+                nconst, primaryName, birthYear, deathYear, primaryProfession, knownForTitles, imgUrl = row
+                
+                # Convert '\\N' to None for fields that expect integers
+                birthYear = None if birthYear == '\\N' else int(birthYear)
+                deathYear = None if deathYear == '\\N' else int(deathYear)
+
+                # Use create to insert a new element into the table
+                Name.objects.create(
+                    nconst=nconst,
+                    primaryName=primaryName,
+                    birthYear=birthYear,
+                    deathYear=deathYear,
+                    primaryProfession=primaryProfession,
+                    knownForTitles=knownForTitles,
+                    imgUrl=imgUrl,
+                )
+
+            # Return a JSON response with a success message
+            return JsonResponse({'status': 'success'})
+        else:
+            return JsonResponse({'status': 'error', 'message': 'Form is not valid'}, status=400)
+    else:
+        form = NameForm()
+
+    return render(request, 'upload.html', {'form': form})
+Make sure to adjust the UploadNames function according to your specific requirements and the structure of your TSV file for the Names table.
+
+User
+from django.shortcuts import render
+from django.http import JsonResponse
+import csv
+from .forms import BasicForm
+from .models import *
+
+def UploadTitleBasics(request):
+    if request.method == 'POST':
+        form = BasicForm(request.POST, request.FILES)
+        if form.is_valid():
+            # Process the uploaded file
+            file = form.cleaned_data['tsv_file']
+            decoded_file = file.read().decode('utf-8').splitlines()
+            reader = csv.reader(decoded_file, delimiter='\t')
+
+            ignore_first_line = True
+            for row in reader:
+                if ignore_first_line:       # Skip the first line
+                    ignore_first_line = False
+                    continue
+
+                tconst, titleType, primaryTitle, originalTitle, isAdult, startYear, endYear, runtimeMinutes, genres, img_url_asset = row
+                
+                startYear = None if startYear == '\\N' else startYear
+                endYear = None if endYear == '\\N' else endYear
+                runtimeMinutes = None if runtimeMinutes == '\\N' else runtimeMinutes
+                isAdult = None if isAdult == '\\N' else isAdult
+                genres = None if genres == '\\N' else genres
+                img_url_asset = None if img_url_asset == '\\N' else img_url_asset
+                
+                # Use get_or_create to insert a new element
+                # into the table if not already existed
+                title_basic, created = TitleBasic.objects.get_or_create(
+                    tconst=tconst,
+                    defaults={
+                        'titleType': titleType,
+                        'primaryTitle': primaryTitle,
+                        'originalTitle': originalTitle,
+                        'isAdult': isAdult,
+                        'startYear': startYear,
+                        'endYear': endYear,
+                        'runtimeMinutes': runtimeMinutes,
+                        'genres': genres,
+                        'img_url_asset': img_url_asset,
+                    }
+                )
+                print(title_basic, created)
+                print('item inserted')
+            # Return a JSON response with a success message
+            return JsonResponse({'status': 'success'})
+        else:
+            return JsonResponse({'status': 'error', 'message': 'Form is not valid'}, status=400)
+    else:
+        form = BasicForm()
+
+    return render(request, 'upload.html', {'form': form})
+
+
+def UploadTitleAkas(request):
+    if request.method == 'POST':
+        form = BasicForm(request.POST, request.FILES)
+        if form.is_valid():
+            # Process the uploaded file
+            file = form.cleaned_data['tsv_file']
+            decoded_file = file.read().decode('utf-8').splitlines()
+            reader = csv.reader(decoded_file, delimiter='\t')
+
+            ignore_first_line = True
+            for row in reader:
+                if ignore_first_line:       # Skip the first line
+                    ignore_first_line = False
+                    continue
+
+                tconst, ordering, title, region, language, types, attributes, isOriginalTitle = row
+                
+                ordering = None if ordering == '\\N' else ordering
+                title = None if title == '\\N' else title
+                region = None if region == '\\N' else region
+                language = None if language == '\\N' else language
+                types = None if types == '\\N' else types
+                attributes = None if attributes == '\\N' else attributes
+                isOriginalTitle = None if isOriginalTitle == '\\N' else isOriginalTitle
+
+                # Use create to insert a new element
+                # We dont have to check for a primay key
+                TitleAka.objects.create(
+                    tconst=tconst,
+                    ordering=ordering,
+                    title=title,
+                    region=region,
+                    language=language,
+                    types=types,
+                    attributes=attributes,
+                    isOriginalTitle=isOriginalTitle,
+                )                
+            # Return a JSON response with a success message
+            return JsonResponse({'status': 'success'})
+        else:
+            return JsonResponse({'status': 'error', 'message': 'Form is not valid'}, status=400)
+    else:
+        form = BasicForm()
+    return render(request, 'upload.html', {'form': form})
+
+
+def UploadNameBasics(request):
+    if request.method == 'POST':
+        form = BasicForm(request.POST, request.FILES)
+        if form.is_valid():
+            # Process the uploaded file
+            file = form.cleaned_data['tsv_file']
+            decoded_file = file.read().decode('utf-8').splitlines()
+            reader = csv.reader(decoded_file, delimiter='\t')
+
+            ignore_first_line = True
+            for row in reader:
+                if ignore_first_line:  # Skip the first line
+                    ignore_first_line = False
+                    continue
+
+                nconst, primaryName, birthYear, deathYear, primaryProfession, knownForTitles, imgUrl = row
+                
+                primaryName = None if primaryName == '\\N' else primaryName
+                birthYear = None if birthYear == '\\N' else birthYear
+                deathYear = None if deathYear == '\\N' else deathYear
+                primaryProfession = None if primaryProfession == '\\N' else primaryProfession
+                knownForTitles = None if knownForTitles == '\\N' else knownForTitles
+                imgUrl = None if imgUrl == '\\N' else imgUrl
+                
+                name_basic, created = Names.objects.get_or_create(
+                    nconst=nconst,
+                    defaults={
+                        'primaryName': primaryName,
+                        'birthYear': birthYear,
+                        'deathYear': deathYear,
+                        'primaryProfession': primaryProfession,
+                        'knownForTitles': knownForTitles,
+                        'imgUrl': imgUrl,
+                    }
+                )
+                print(name_basic, created)
+                print('item inserted')
+
+            # Return a JSON response with a success message
+            return JsonResponse({'status': 'success'})
+        else:
+            return JsonResponse({'status': 'error', 'message': 'Form is not valid'}, status=400)
+    else:
+        form = BasicForm()
+
+    return render(request, 'upload.html', {'form': form})
+
+
+def UploadTitleCrew(request):
+
+
+def UploadTitleEpisode(request):
+
+
+def UploadTitlePrincipals(request):
+
+
+def UploadTitleRatings(request):
+
+Regarding this file i want to complete the remaining functions according to the following models:
+
+from django.db import models
+    
+#   ΑΠΟ ΕΔΩ ΚΑΙ ΚΑΤΩ ΕΧΕΙ ΟΛΑ ΤΑ TABLES ΤΗΣ SQL ΣΥΜΦΩΝΑ ΜΕ ΤΑ ΔΕΔΟΜΕΝΑ ΠΟΥ ΜΑΣ ΕΧΟΥΝ ΔΩΘΕΙ
+#   ΠΧ TITLEAKA,TITLEBASIC,...
+
+class TitleBasic(models.Model):
+    tconst = models.CharField(max_length=10, primary_key=True)
+    titleType = models.CharField(max_length=255, blank=True, null=True)
+    primaryTitle = models.CharField(max_length=255, blank=True, null=True)
+    originalTitle = models.CharField(max_length=255, blank=True, null=True)
+    isAdult = models.IntegerField()
+    startYear = models.IntegerField()  # 'year' in MySQL typically corresponds to an integer in Django
+    endYear = models.IntegerField(blank=True, null=True)  # Assuming this can be NULL
+    runtimeMinutes = models.IntegerField(blank=True, null=True)
+    genres = models.CharField(max_length=255, blank=True, null=True)
+    img_url_asset = models.CharField(max_length=255, blank=True, null=True)
+
+    class Meta:
+        db_table = 'TitleBasic'  
+
+    def __str__(self):
+        return self.primaryTitle
+
+
+class TitleAka(models.Model):
+    aka_Id = models.AutoField(primary_key=True)
+    tconst = models.CharField(max_length=10)  # Assuming this might be a foreign key to another table
+    ordering = models.IntegerField()
+    title = models.CharField(max_length=255)
+    region = models.CharField(max_length=255, blank=True, null=True)  # Assuming region can be optional
+    language = models.CharField(max_length=255, blank=True, null=True)  # Assuming language can be optional
+    types = models.CharField(max_length=255, blank=True, null=True)  # Assuming types can be optional
+    attributes = models.CharField(max_length=255, blank=True, null=True)  # Assuming attributes can be optional
+    isOriginalTitle = models.IntegerField()
+
+    class Meta:
+        db_table = 'TitleAka'  
+
+    def __str__(self):
+        return self.title
+    
+    
+class Names(models.Model):
+    nconst = models.CharField(max_length=10, primary_key=True)
+    primaryName = models.CharField(max_length=255, blank=True, null=True)
+    birthYear = models.IntegerField(blank=True, null=True)
+    deathYear = models.IntegerField(blank=True, null=True)
+    primaryProfession = models.CharField(max_length=255, blank=True, null=True)
+    knownForTitles = models.CharField(max_length=255, blank=True, null=True)
+    imgUrl = models.CharField(max_length=255, blank=True, null=True)
+
+    class Meta:
+        db_table = 'Names'  
+
+    def __str__(self):
+        return self.primaryName or 'Unknown Name'
+
+
+class Crew(models.Model):
+    tconst = models.CharField(max_length=10, primary_key=True)
+    directors = models.CharField(max_length=255, blank=True, null=True)
+    writers = models.CharField(max_length=255, blank=True, null=True)
+
+    class Meta:
+        db_table = 'Crew'  
+
+    def __str__(self):
+        return f"Crew for {self.tconst}"
+
+
+class Episode(models.Model):
+    tconst = models.CharField(max_length=10, primary_key=True)
+    parentTconst = models.CharField(max_length=11)  # Assuming this might be a foreign key to another table
+    seasonNumber = models.IntegerField(blank=True, null=True)
+    episodeNumber = models.IntegerField(blank=True, null=True)
+
+    class Meta:
+        db_table = 'Episode'  
+
+    def __str__(self):
+        return f"Episode {self.episodeNumber} of Season {self.seasonNumber} ({self.tconst})"
+
+
+class WorkAs(models.Model):
+    workas_Id = models.AutoField(primary_key=True)
+    tconst = models.CharField(max_length=10)
+    ordering = models.IntegerField()
+    nconst = models.CharField(max_length=10)
+    category = models.CharField(max_length=25, blank=True, null=True)
+    job = models.CharField(max_length=255, blank=True, null=True)
+    characters = models.CharField(max_length=255, blank=True, null=True)
+    img_url_asset = models.CharField(max_length=255, blank=True, null=True)
+
+    class Meta:
+        db_table = 'WorkAs'
+
+    def __str__(self):
+        return f"{self.category} - {self.nconst}"
+
+
+class Principal(models.Model):
+    workas_Id = models.AutoField(primary_key=True)
+    tconst = models.CharField(max_length=10)  # This might be a ForeignKey to another table
+    ordering = models.IntegerField()
+    nconst = models.CharField(max_length=10)  # This might also be a ForeignKey
+    category = models.CharField(max_length=25, blank=True, null=True)
+    job = models.CharField(max_length=255, blank=True, null=True)
+    characters = models.CharField(max_length=255, blank=True, null=True)
+    img_url_asset = models.CharField(max_length=255, blank=True, null=True)
+
+    class Meta:
+        db_table = 'Principal'  
+
+    def __str__(self):
+        return f"{self.category} - {self.nconst}"
+
+
+class Rating(models.Model):
+    tconst = models.CharField(max_length=10, primary_key=True)
+    averageRating = models.FloatField(blank=True, null=True)
+    numVotes = models.IntegerField(blank=True, null=True)
+
+    class Meta:
+        db_table = 'Rating'  
+
+    def __str__(self):
+        return f"Rating {self.averageRating} for {self.tconst}"
+ChatGPT
+Certainly! I'll provide you with the remaining functions for the other models based on the structure you've provided. Please note that you need to adapt these functions according to the actual structure of your TSV file.
+
+python
+Copy code
+# views.py
+
+def UploadTitleCrew(request):
+    if request.method == 'POST':
+        form = BasicForm(request.POST, request.FILES)
+        if form.is_valid():
+            # Process the uploaded file
+            file = form.cleaned_data['tsv_file']
+            decoded_file = file.read().decode('utf-8').splitlines()
+            reader = csv.reader(decoded_file, delimiter='\t')
+
+            ignore_first_line = True
+            for row in reader:
+                if ignore_first_line:       # Skip the first line
+                    ignore_first_line = False
+                    continue
+
+                tconst, directors, writers = row
+                
+                # Use get_or_create to insert a new element
+                # into the table if not already existed
+                crew, created = Crew.objects.get_or_create(
+                    tconst=tconst,
+                    defaults={
+                        'directors': directors,
+                        'writers': writers,
+                    }
+                )
+                print(crew, created)
+                print('item inserted')
+
+            # Return a JSON response with a success message
+            return JsonResponse({'status': 'success'})
+        else:
+            return JsonResponse({'status': 'error', 'message': 'Form is not valid'}, status=400)
+    else:
+        form = BasicForm()
+
+    return render(request, 'upload.html', {'form': form})
+
+
+def UploadTitleEpisode(request):
+    if request.method == 'POST':
+        form = BasicForm(request.POST, request.FILES)
+        if form.is_valid():
+            # Process the uploaded file
+            file = form.cleaned_data['tsv_file']
+            decoded_file = file.read().decode('utf-8').splitlines()
+            reader = csv.reader(decoded_file, delimiter='\t')
+
+            ignore_first_line = True
+            for row in reader:
+                if ignore_first_line:       # Skip the first line
+                    ignore_first_line = False
+                    continue
+
+                tconst, parentTconst, seasonNumber, episodeNumber = row
+                
+                # Use get_or_create to insert a new element
+                # into the table if not already existed
+                episode, created = Episode.objects.get_or_create(
+                    tconst=tconst,
+                    defaults={
+                        'parentTconst': parentTconst,
+                        'seasonNumber': seasonNumber,
+                        'episodeNumber': episodeNumber,
+                    }
+                )
+                print(episode, created)
+                print('item inserted')
+
+            # Return a JSON response with a success message
+            return JsonResponse({'status': 'success'})
+        else:
+            return JsonResponse({'status': 'error', 'message': 'Form is not valid'}, status=400)
+    else:
+        form = BasicForm()
+
+    return render(request, 'upload.html', {'form': form})
+
+
+def UploadTitlePrincipals(request):
+    if request.method == 'POST':
+        form = BasicForm(request.POST, request.FILES)
+        if form.is_valid():
+            # Process the uploaded file
+            file = form.cleaned_data['tsv_file']
+            decoded_file = file.read().decode('utf-8').splitlines()
+            reader = csv.reader(decoded_file, delimiter='\t')
+
+            ignore_first_line = True
+            for row in reader:
+                if ignore_first_line:       # Skip the first line
+                    ignore_first_line = False
+                    continue
+
+                workas_Id, tconst, ordering, nconst, category, job, characters, img_url_asset = row
+                
+                # Use create to insert a new element
+                # We dont have to check for a primay key
+                principal, created = Principal.objects.get_or_create(
+                    workas_Id=workas_Id,
+                    defaults={
+                        'tconst': tconst,
+                        'ordering': ordering,
+                        'nconst': nconst,
+                        'category': category,
+                        'job': job,
+                        'characters': characters,
+                        'img_url_asset': img_url_asset,
+                    }
+                )
+                print(principal, created)
+                print('item inserted')
+
+            # Return a JSON response with a success message
+            return JsonResponse({'status': 'success'})
+        else:
+            return JsonResponse({'status': 'error', 'message': 'Form is not valid'}, status=400)
+    else:
+        form = BasicForm()
+
+    return render(request, 'upload.html', {'form': form})
+
+
+def UploadTitleRatings(request):
+    if request.method == 'POST':
+        form = BasicForm(request.POST, request.FILES)
+        if form.is_valid():
+            # Process the uploaded file
+            file = form.cleaned_data['tsv_file']
+            decoded_file = file.read().decode('utf-8').splitlines()
+            reader = csv.reader(decoded_file, delimiter='\t')
+
+            ignore_first_line = True
+            for row in reader:
+                if ignore_first_line:       # Skip the first line
+                    ignore_first_line = False
+                    continue
+
+                tconst, averageRating, numVotes = row
+                
+                # Use create to insert a new element
+                # We dont have to check for a primay key
+                rating, created = Rating.objects.get_or_create(
+                    tconst=tconst,
+                    defaults={
+                        'averageRating': averageRating,
+                        'numVotes': numVotes,
+                    }
+                )
+                print(rating, created)
+                print('item inserted')
+
+            # Return a JSON response with a success message
+            return JsonResponse({'status': 'success'})
+        else:
+            return JsonResponse({'status': 'error', 'message': 'Form is not valid'}, status=400)
+    else:
+        form = BasicForm()
+
+    return render(request, 'upload.html', {'form': form})
+This should provide you with a basic structure for uploading data for the other models. Adjust it according to your specific needs and the actual structure of your TSV files.
+
+User
+Regarding the following forms class:
+
+class BasicForm(forms.Form):
+    tsv_file = forms.FileField(label='Upload TSV file')
+
+and the html file:
+
+<!-- ntuaflix_api/administrator/templates/upload_titlebasics.html -->
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Upload TSV File</title>
+</head>
+<body>
+    <h2>Upload TSV File</h2>
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ form }}
+        <button type="submit">Upload</button>
+    </form>
+</body>
+</html>
+
+I want to understand the sequence of actions when using these functions in the site
+
+3 / 3
+
+ChatGPT
+Certainly! Let's break down the sequence of actions when using these functions:
+
+Accessing the Upload Page:
+
+The user navigates to a page in the Django web application that renders the form for uploading a TSV file. This page contains an HTML form element with a file input, a CSRF token, and a submit button.
+html
+Copy code
+<!-- upload_titlebasics.html -->
+<form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    {{ form }}
+    <button type="submit">Upload</button>
+</form>
+Uploading the TSV File:
+
+The user selects a TSV file using the file input in the form.
+When the user clicks the "Upload" button, a POST request is sent to the Django server with the selected TSV file and the CSRF token.
+The server receives the POST request.
+Handling the POST Request in Django View:
+
+The Django view function (UploadTitleBasics in your case) is triggered when the server receives the POST request.
+The view function checks if the form is valid (form.is_valid()). If the form is valid, it processes the uploaded file.
+Processing the TSV File:
+
+The uploaded TSV file is processed within the view function.
+The file is read and decoded, and its content is split into lines.
+A CSV reader is used to parse each row of the TSV file.
+For each row, data is extracted, and appropriate actions are taken (e.g., inserting data into the database).
+Inserting Data into the Database:
+
+The data extracted from the TSV file is used to create or update records in the database.
+In your case, you are using the get_or_create method for TitleBasic to either retrieve an existing record based on the tconst or create a new one.
+python
+Copy code
+title_basic, created = TitleBasic.objects.get_or_create(
+    tconst=tconst,
+    defaults={
+        # ... other fields ...
+    }
+)
+Returning a Response:
+
+After processing the file and updating the database, the view function returns a JSON response to the client indicating the status of the operation (success or error).
+python
+Copy code
+return JsonResponse({'status': 'success'})
+or
+
+python
+Copy code
+return JsonResponse({'status': 'error', 'message': 'Form is not valid'}, status=400)
+Client-Side Feedback:
+
+Based on the response received, the client-side JavaScript can provide feedback to the user (e.g., displaying a success message or an error message).
+This sequence of actions outlines the flow of uploading a TSV file through the web interface, processing it on the server, and updating the database accordingly.
+
+User
+I want to create a general function that will add the tsv file into the database and then adjust it so i can create two distinct function: one for doing exactly the same as the functions mentioned earlier and one for reseting the database and inserting one specific file each time.
+ChatGPT
+Certainly! To create a general function for adding TSV files to the database and then adjust it for two specific cases (normal insertion and resetting the database with one specific file each time), you can follow these steps:
+
+Create a General Function:
+
+Write a general function that takes a TSV file, reads and processes its content, and inserts or updates the database accordingly. This function should be reusable for different scenarios.
+python
+Copy code
+import csv
+
+def process_tsv_file(file, model, defaults=None):
+    decoded_file = file.read().decode('utf-8').splitlines()
+    reader = csv.reader(decoded_file, delimiter='\t')
+
+    ignore_first_line = True
+    for row in reader:
+        if ignore_first_line:
+            ignore_first_line = False
+            continue
+
+        # Extract data from the row and handle null values
+
+        # Use get_or_create or create based on the scenario
+        # For general use, you can pass defaults to handle default values
+        instance, created = model.objects.get_or_create(
+            # ... fields and values ...
+        )
+        print(instance, created)
+        print('item inserted')
+Adjust for Normal Insertion Function:
+
+Create a function for normal insertion that uses the general function created earlier. This function can be similar to your original UploadTitleBasics function.
+python
+Copy code
+def upload_title_basics(request):
+    if request.method == 'POST':
+        form = BasicForm(request.POST, request.FILES)
+        if form.is_valid():
+            file = form.cleaned_data['tsv_file']
+            process_tsv_file(file, TitleBasic, defaults={
+                # ... default values ...
+            })
+            return JsonResponse({'status': 'success'})
+        else:
+            return JsonResponse({'status': 'error', 'message': 'Form is not valid'}, status=400)
+    else:
+        form = BasicForm()
+
+    return render(request, 'upload.html', {'form': form})
+Adjust for Resetting Database Function:
+
+Create a function for resetting the database with one specific file each time. This function should call the general function with the specific file and handle resetting the database.
+python
+Copy code
+def reset_database(request):
+    # Reset the database (delete existing records)
+
+    # Assuming TitleBasic.objects.all().delete() for simplicity
+    TitleBasic.objects.all().delete()
+
+    # Insert one specific file into the database
+    specific_file_path = 'path/to/specific/file.tsv'
+    with open(specific_file_path, 'r', encoding='utf-8') as file:
+        process_tsv_file(file, TitleBasic, defaults={
+            # ... default values ...
+        })
+
+    return JsonResponse({'status': 'success'})
+These adjustments allow you to have a general-purpose function for processing TSV files (process_tsv_file) and then create specific functions (upload_title_basics and reset_database) that use this general function for different scenarios.
+
+User
+Could i use the form in the reset function a well?
+ChatGPT
+Yes, you can use the form in the reset function as well if you want to handle file uploads through a form. However, in the case of a reset function, you might not need a form if you're hardcoding the path to the specific file that resets the database.
+
+If you still want to use a form for the reset function, you can modify the reset_database function accordingly. Here's an example:
+
+python
+Copy code
+def reset_database(request):
+    if request.method == 'POST':
+        form = BasicForm(request.POST, request.FILES)
+        if form.is_valid():
+            # Assuming the form contains the file to reset the database
+            file = form.cleaned_data['tsv_file']
+
+            # Reset the database (delete existing records)
+            TitleBasic.objects.all().delete()
+
+            # Insert one specific file into the database
+            process_tsv_file(file, TitleBasic, defaults={
+                # ... default values ...
+            })
+
+            return JsonResponse({'status': 'success'})
+        else:
+            return JsonResponse({'status': 'error', 'message': 'Form is not valid'}, status=400)
+    else:
+        form = BasicForm()
+
+    return render(request, 'reset_database.html', {'form': form})
+In this example, the reset_database function checks if the request method is POST, and if so, it processes the form and resets the database. If it's a GET request, it renders the form.
+
+Remember to create a corresponding HTML file (reset_database.html) to display the form in case you choose to use it.
