@@ -117,7 +117,7 @@ class SearchTitleView(APIView):
                     serializer = TitleObjectSerializer(title_objects, many=True)
                     return Response(serializer.data)
                 else:
-                    return Response({"error": "No Movies Found"})
+                    return Response([])
                 # , status=status.HTTP_404_NOT_FOUND)
             else:
                 return render(request, 'search_title.html')

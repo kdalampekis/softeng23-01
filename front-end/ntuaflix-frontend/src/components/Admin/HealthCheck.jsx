@@ -5,7 +5,7 @@ import Footer from "../Footer";
 import axios from 'axios';
 import {useEffect, useState} from "react";
 
-const BASE_URL = 'http://127.0.0.1:9876/ntuaflix_api/admin';
+const BASE_URL = 'https://localhost:9876/ntuaflix_api/admin';
 
 export default function HealthCheck() {
     const [healthCheckData, setHealthCheckData] = useState({ status: '', dataconnection: '' });

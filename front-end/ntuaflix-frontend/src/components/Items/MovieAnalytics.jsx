@@ -11,8 +11,8 @@ const MovieAnalytics = ({ movie, onSearchAgain, onExit }) => {
     const hasImage = movie.img_url_asset && movie.img_url_asset !== "\\N";
 
     const [likesDislikes, setLikesDislikes] = useState({
-        likes: -1,
-        dislikes: -1,
+        likes: null,
+        dislikes: null,
         hasLiked: null,
         hasDisliked: null,
     });
