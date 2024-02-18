@@ -10,7 +10,11 @@ To install Ntuaflix CLI, follow these steps:
 2. Ensure you are in the correct directory where ntuaflix-cli is located.
 3. Install Ntuaflix CLI locally using npm:
 
+
 ```bash
+
+npm install 
+
 npm run build 
 npm link
 ```

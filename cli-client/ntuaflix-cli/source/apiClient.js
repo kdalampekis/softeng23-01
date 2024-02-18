@@ -2,15 +2,40 @@ import axios from 'axios';
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import https from 'https';
 
-const BASE_URL = 'http://127.0.0.1:9876/ntuaflix_api';  // Replace with your actual Django server's URL
+const __filename = fileURLToPath(import.meta.url);
+const currentDir = path.dirname(__filename);
+const keyPath =  path.join(currentDir, '..', '..', '..', 'back-end', 'Django', 'ntuaflix', 'localhost+1-key.pem');
+const certPath = path.join(currentDir, '..', '..', '..', 'back-end', 'Django', 'ntuaflix', 'localhost+1.pem');
+
+
+const options = {
+	key: fs.readFileSync(keyPath),
+	cert: fs.readFileSync(certPath)
+  };
+
+
+const axiosInstance = axios.create({
+	httpsAgent: new https.Agent({
+	  // This setup is for client-side certificates, which are less commonly required
+	  key: fs.readFileSync(keyPath),
+	  cert: fs.readFileSync(certPath),
+	  // If connecting to a server with a self-signed certificate
+
+	  rejectUnauthorized: false // Set to false only if you want to bypass certificate validation (not recommended)
+	}),
+	timeout: 900000,
+  });
+
+const BASE_URL = 'https://127.0.0.1:9876/ntuaflix_api';  // Replace with your actual Django server's URL
 
 
 async function login(username, password, format) {
 	format = format || 'json'; // If format is not provided, default to 'json'
 
 	try {
-		const response = await axios.post(`http://127.0.0.1:9876/ntuaflix_api/login/`,new URLSearchParams({
+		const response = await axiosInstance.post(`https://127.0.0.1:9876/ntuaflix_api/login/`,new URLSearchParams({
 			username,
 			password
 		})
@@ -25,7 +50,7 @@ async function login(username, password, format) {
 			console.log('Login failed');
 		}
 	} catch (error) {
-		console.error('Error: Authentication failed');
+		console.error('Error:', error.message);
 	}
 }
 
@@ -43,8 +68,8 @@ async function logout(format) {
 		}
 		const token = fs.readFileSync(tokenFilePath, 'utf-8').trim();
 
-		const response = await axios.post(
-			`http://127.0.0.1:9876/ntuaflix_api/logout/?format=${format}`,
+		const response = await axiosInstance.post(
+			`https://127.0.0.1:9876/ntuaflix_api/logout/?format=${format}`,
 			{},
 			{
 				headers: {
@@ -78,7 +103,7 @@ async function adduser(username, password, format ) {
 		}
 		const token = fs.readFileSync(`${homeDirectory}/softeng20bAPI.token`, 'utf8').trim();
 		// Set the API endpoint URL
-		const apiUrl = `http://127.0.0.1:9876/ntuaflix_api/admin/usermod/${username}/${password}/?format=${format}`;
+		const apiUrl = `https://127.0.0.1:9876/ntuaflix_api/admin/usermod/${username}/${password}/?format=${format}`;
 
 		// Create the request headers with the token
 		const headers = {
@@ -96,7 +121,7 @@ async function adduser(username, password, format ) {
 		}
 
 		// Make the POST request with the headers
-		const response = await axios.post(apiUrl, null, { headers: headers });
+		const response = await axiosInstance.post(apiUrl, null, { headers: headers });
 		if (response.status === 200) {
 			console.log('User added successfully');
 		} else {
@@ -131,7 +156,7 @@ async function user(username, format) {
 			console.error('Invalid format specified:', format);
 			return;
 		}
-		const response = await axios.get(`http://127.0.0.1:9876/ntuaflix_api/admin/users/${username}?format=${format}`,{headers : headers});
+		const response = await axiosInstance.get(`https://127.0.0.1:9876/ntuaflix_api/admin/users/${username}?format=${format}`,{headers : headers});
 		if (response.status === 200) {
 			console.log(response.data); // Assuming the server sends user details
 		} else {
@@ -167,7 +192,7 @@ async function healthcheck(format ) {
 				console.error('Invalid format specified:', format);
 				return;
 			}
-			const response = await axios.post(`http://127.0.0.1:9876/ntuaflix_api/admin/healthcheck?format=${format}`,{}, {headers:headers});
+			const response = await axiosInstance.post(`https://127.0.0.1:9876/ntuaflix_api/admin/healthcheck?format=${format}`,{}, {headers:headers});
 
 			if (response.status === 200) {
 				console.log('Health check passed');
@@ -197,7 +222,7 @@ async function healthcheck(format ) {
 			console.error('Invalid format specified:', format);
 			return;
 		}
-		const response = await axios.post(`http://127.0.0.1:9876/ntuaflix_api/admin/healthcheck?format=${format}`,{}, {headers:headers});
+		const response = await axiosInstance.post(`https://127.0.0.1:9876/ntuaflix_api/admin/healthcheck?format=${format}`,{}, {headers:headers});
 
 		if (response.status === 200) {
 			console.log('Health check passed');
@@ -232,7 +257,7 @@ async function resetall(format ) {
 			console.error('Invalid format specified:', format);
 			return;
 		}
-		const response = await axios.post(`http://127.0.0.1:9876/ntuaflix_api/admin/resetall/?format=${format}`, {},  {headers:headers});
+		const response = await axiosInstance.post(`https://127.0.0.1:9876/ntuaflix_api/admin/resetall/?format=${format}`, {},  {headers:headers});
 
 		if (response.status === 200) {
 			console.log('Reset all successful');
@@ -272,7 +297,7 @@ async function newtitles(filename, format ) {
 			return; // Stop execution if directory doesn't exist
 		}
 		const token = fs.readFileSync(`${homeDirectory}/softeng20bAPI.token`, 'utf8').trim();
-		const response = await axios.post(`http://127.0.0.1:9876/ntuaflix_api/admin/upload/titlebasics/`, formData, {
+		const response = await axiosInstance.post(`https://127.0.0.1:9876/ntuaflix_api/admin/upload/titlebasics/`, formData, {
 			headers: {
 				'Authorization': `${token}`,
 				'Content-Type': 'multipart/form-data',
@@ -306,7 +331,7 @@ async function newakas(filename, format ) {
 			return; // Stop execution if directory doesn't exist
 		}
 		const token = fs.readFileSync(`${homeDirectory}/softeng20bAPI.token`, 'utf8').trim();
-		const response = await axios.post(`http://127.0.0.1:9876/ntuaflix_api/admin/upload/titleakas/?format=${format}`, formData, {
+		const response = await axiosInstance.post(`https://127.0.0.1:9876/ntuaflix_api/admin/upload/titleakas/?format=${format}`, formData, {
 			headers: {
 				'Authorization': `${token}`,
 				'Content-Type': 'multipart/form-data',
@@ -339,7 +364,7 @@ async function newnames(filename, format ) {
 			return; // Stop execution if directory doesn't exist
 		}
 		const token = fs.readFileSync(`${homeDirectory}/softeng20bAPI.token`, 'utf8').trim();
-		const response = await axios.post(`http://127.0.0.1:9876/ntuaflix_api/admin/upload/namebasics/?format=${format}`, formData, {
+		const response = await axiosInstance.post(`https://127.0.0.1:9876/ntuaflix_api/admin/upload/namebasics/?format=${format}`, formData, {
 			headers: {
 				'Authorization': `${token}`,
 				'Content-Type': 'multipart/form-data',
@@ -373,7 +398,7 @@ async function newcrew(filename, format ) {
 			return; // Stop execution if directory doesn't exist
 		}
 		const token = fs.readFileSync(`${homeDirectory}/softeng20bAPI.token`, 'utf8').trim();
-		const response = await axios.post(`http://127.0.0.1:9876/ntuaflix_api/admin/upload/titlecrew/?format=${format}`, formData, {
+		const response = await axiosInstance.post(`https://127.0.0.1:9876/ntuaflix_api/admin/upload/titlecrew/?format=${format}`, formData, {
 			headers: {
 				'Authorization': `${token}`,
 				'Content-Type': 'multipart/form-data',
@@ -407,7 +432,7 @@ async function newepisode(filename, format ) {
 			return; // Stop execution if directory doesn't exist
 		}
 		const token = fs.readFileSync(`${homeDirectory}/softeng20bAPI.token`, 'utf8').trim();
-		const response = await axios.post(`http://127.0.0.1:9876/ntuaflix_api/admin/upload/titleepisode/?format=${format}`, formData, {
+		const response = await axiosInstance.post(`https://127.0.0.1:9876/ntuaflix_api/admin/upload/titleepisode/?format=${format}`, formData, {
 			headers: {
 				'Authorization': `${token}`,
 				'Content-Type': 'multipart/form-data',
@@ -441,7 +466,7 @@ async function newprincipals(filename, format ) {
 			return; // Stop execution if directory doesn't exist
 		}
 		const token = fs.readFileSync(`${homeDirectory}/softeng20bAPI.token`, 'utf8').trim();
-		const response = await axios.post(`http://127.0.0.1:9876/ntuaflix_api/admin/upload/titleprincipals/?format=${format}`, formData, {
+		const response = await axiosInstance.post(`https://127.0.0.1:9876/ntuaflix_api/admin/upload/titleprincipals/?format=${format}`, formData, {
 			headers: {
 				'Authorization': `${token}`,
 				'Content-Type': 'multipart/form-data',
@@ -477,7 +502,7 @@ async function newratings(filename, format ) {
 		}
 		const token = fs.readFileSync(`${homeDirectory}/softeng20bAPI.token`, 'utf8').trim();
 
-		const response = await axios.post(`http://127.0.0.1:9876/ntuaflix_api/admin/upload/titleratings/?format=${format}`, formData, {
+		const response = await axiosInstance.post(`https://127.0.0.1:9876/ntuaflix_api/admin/upload/titleratings/?format=${format}`, formData, {
 			headers: {
 				'Authorization': `${token}`,
 				'Content-Type': 'multipart/form-data'
@@ -520,7 +545,7 @@ async function title(titleID, format) {
 	const url = `${BASE_URL}/title/${titleID}?format=${format}`;
 
 	try {
-		const response = await axios.get(url,{headers:headers});
+		const response = await axiosInstance.get(url,{headers:headers});
 
 		if (response.status === 200) {
 			console.log('Title details:', response.data);
@@ -555,7 +580,7 @@ async function searchtitle(titlepart, format ) {
 		return;
 	}
 	try {
-		const response = await axios.get(url,{headers:headers});
+		const response = await axiosInstance.get(url,{headers:headers});
 
 		if (response.status === 200) {
 			console.log('Search results:', response.data);
@@ -601,7 +626,7 @@ async function bygenre(genre, minimumRating, yearFrom = null, yearTo = null, for
 	}
 	url += `&?format=${format}`;
 	try {
-		const response = await axios.get(url,{headers:headers});
+		const response = await axiosInstance.get(url,{headers:headers});
 
 		if (response.status === 200) {
 			console.log('By Genre results:', response.data);
@@ -638,7 +663,7 @@ async function name(nameID, format) {
 		return;
 	}
 	try {
-		const response = await axios.get(url,{headers:headers});
+		const response = await axiosInstance.get(url,{headers:headers});
 
 		if (response.status === 200) {
 			console.log('Name Biography:', response.data);
@@ -673,7 +698,7 @@ async function searchname(name, format) {
 		return;
 	}
 	try {
-		const response = await axios.get(url,{headers:headers});
+		const response = await axiosInstance.get(url,{headers:headers});
 
 		if (response.status === 200) {
 			console.log('Search Name results:', response.data);

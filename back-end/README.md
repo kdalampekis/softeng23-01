@@ -42,7 +42,7 @@ cd softeng23_01/back-end/Django/ntuaflix
 python manage.py makemigrations
 python manage.py migrate
 ```
-7. Start the server. The server will run in the link http://localhost:9876/ as told:
+7. Start the server. The server will run in the link https://localhost:9876/ as told:
 
 ```bash
 python manage.py runserver_plus --cert-file localhost+1.pem --key-file localhost+1-key.pem localhost:9876
