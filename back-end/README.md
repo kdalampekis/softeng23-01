@@ -194,7 +194,7 @@ We have defined a variety of apis, both POST and GET:
   - Description: Reset all data in the database. This endpoint is accessible to administrators only.
 
 
-# Αuthentication
+## Αuthentication
 
 In addition to the login/sign-up services, we have added authentication to some of the previous endpoints to add additional security to the website. As a result the following urls won't open just by inserting them into the browsing bar:
 
@@ -208,7 +208,19 @@ searchname/
 
 As a result, the only way to test these urls is either by using the front-end and loging in properly or by sending a proper request with a proper header using tools like Postman
 
-# Testing
+## Database Dump
+Despite the fact that there is an existing database in sqlite, it is crucial to be able to transfer the database easily as an sql or json file. In order to extract an sql file containing the website's database, the following steps should be followed:
+1. Ensure you are in the correct directory inside the repository, else move to the directory:
+softeng23_01/back-end/Django/ntuaflix
+
+ 2. To create an sql file run the following command:
+ ```bash
+ sqlite3 db.sqlite3 .dump > <file_name>
+ ```
+
+ 3. In the folder ntuaflix a new file will appear called <file_name>
+
+## Testing
 
 For testing we used the integrated Django testing tools and implemented them in the files named `tests`. There are two such files:
 One in the directory `softeng23_01\back-end\Django\ntuaflix\ntuaflix_api\tests` regarding the urls `ntuaflix_api\`, their models and views.
@@ -239,22 +251,22 @@ python manage.py test
 
 The previous testing proccess creates an empty database and uses it to call the respective apis. More specifically, we create dummy data and call the apis for this data. Then we insert the outcome to the database and compare the expected values with the returned ones.
 
-# Troubleshooting
+## Troubleshooting
 
 If you encounter any issues or errors while using Ntuaflix Back-end, refer to the documentation or reach out to the project maintainers for assistance.
 
-# Contributing
+## Contributing
 
 Contributions to Ntuaflix Back-end are welcome! Please follow the guidelines outlined in the project repository to submit bug reports, feature requests, or pull requests.
 
-# License
+## License
 
 Ntuaflix Back-end is licensed under the MIT License. See the LICENSE file for more details.
 
-# Acknowledgements
+## Acknowledgements
 
 Ntuaflix Back-end makes use of the django.test library for building the command-line interface.
 
-# Contact
+## Contact
 
 For questions, feedback, or support requests, contact the project maintainers at stelioskatsis12@gmail.com.
