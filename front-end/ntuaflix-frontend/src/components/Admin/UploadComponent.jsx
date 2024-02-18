@@ -6,7 +6,7 @@ import {useNavigate, useParams} from "react-router-dom";
 import {AdminUploadOptions} from "../../constants/AdminOptions";
 import axios from 'axios';
 
-const BASE_URL = 'http://127.0.0.1:9876/ntuaflix_api/admin/upload';
+const BASE_URL = 'https://localhost:9876/ntuaflix_api/admin/upload';
 
 const UploadComponent = () => {
     const navigate = useNavigate();
