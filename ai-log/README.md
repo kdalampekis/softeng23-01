@@ -1,15 +1,6 @@
 # ai-log
 
-Περιεχόμενα:
-
-- Όλα τα αρχεία του ai-tools-questionnaire - Softeng 2023-24 που ανεβάσατε είτε με το frontend http://galileo.softlab.ntua.gr:3001/ είτε με το CLI tool "se23*.sh"
-
-  
-Προσοχή 1: προσπαθείστε τα ονόματα αρχείων να διευκολύνουν την ταξινόμηση πχ 2023-10-29-16:55-req.zip
-  
-Προσοχή 2: κάθε αρχείο zip περιέχει α) το αρχείο μεταδεδομένων και β) το σύνολο του διαλόγου (prompts & answers) με το εργαλείο.
-  
-Δείτε το video: https://youtu.be/eUAjxCRNODU
+This folder contains the ai logs that were used in this project, with the combination of some metadata that have a structure similar to the one bellow:
 
 ```bash
 {
@@ -32,3 +23,6 @@
     }
 }
 ```
+
+## Attention
+We encountered a problem trying to upload the ai logs. More specifically, we were not aware that we should save the ai logs and insert them in the github repo, so we uploaded them to galileo a while ago and we couldnt find the ai logs that are missing (5 ai logs). So dexpite having made 30 ai records in galileo, 5 of them couldnt be found. I hope they can be found by searching our team's number. 

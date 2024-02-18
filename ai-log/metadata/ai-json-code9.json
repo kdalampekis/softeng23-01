@@ -1,0 +1,19 @@
+{
+    "answers": {
+        "phase": "coding",
+        "action": "code management",
+        "scope": "code management actions",
+        "action experience": "little",
+        "prog lang": "python",
+        "other prog lang": "<fill in>",
+        "tool": "chat gpt 3.x",
+        "other tool": "<fill in>",
+        "tool option": "free",
+        "tool experience": "master",
+        "time allocated (h)": "1",
+        "time saved estimate (h)": "2.5", 
+        "quality of ai help": "minor modifications needed",
+        "generic feeling": "great as-is",
+        "notes": "<fill in>"
+    }
+}
