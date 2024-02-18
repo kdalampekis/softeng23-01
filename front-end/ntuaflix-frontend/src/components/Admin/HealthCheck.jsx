@@ -33,7 +33,7 @@ export default function HealthCheck() {
         return <div className="healthCheck">
             <Header/>
             <h1 className="header">Loading...</h1>
-            <Footer role="admin"/>
+            {/*<Footer role="admin"/>*/}
         </div>;
     }
 
@@ -41,7 +41,7 @@ export default function HealthCheck() {
         return <div className="healthCheck">
             <Header/>
             <h1 className="header">{error}</h1>
-            <Footer role="admin"/>
+            {/*<Footer role="admin"/>*/}
         </div>;
     }
 
@@ -53,7 +53,7 @@ export default function HealthCheck() {
                 <p><strong className="dynamic-content">Status:</strong> {healthCheckData.status}</p>
                 <p><strong className="dynamic-content">Data Connection:</strong> {healthCheckData.dataconnection}</p>
             </div>
-            <Footer role="admin"/>
+            {/*<Footer role="admin"/>*/}
         </div>
     )
 }

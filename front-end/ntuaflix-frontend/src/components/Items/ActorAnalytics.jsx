@@ -1,12 +1,17 @@
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import "../../styles.css";
-import { searchMovieByTitleID } from "../../api";
+import {searchMovieByTitleID, searchNBestRatedGenre} from "../../api";
+import {getActorPercentages} from "../../api";
 
 const ActorAnalytics = ({ actor, onSearchAgain, onExit }) => {
     const [filmography, setFilmography] = useState([]);
     const fullImageUrl = actor.imgUrl ? actor.imgUrl.replace('{width_variable}', 'w300') : null;
     const hasImage = actor.imgUrl && actor.imgUrl !== "\\N";
+    const [genrePercentages, setGenrePercentages] = useState({});
+
+
+    let percentages;
 
 
     useEffect(() => {
@@ -35,19 +40,43 @@ const ActorAnalytics = ({ actor, onSearchAgain, onExit }) => {
             }
         };
 
-        fetchMovieTitles();
+        const fetchGenrePercentages = async () => {
+            try {
+                percentages = await getActorPercentages(actor.primaryName);
+                console.log(percentages);
+                console.log(percentages[actor.primaryName]);
+                percentages = percentages[actor.primaryName];
+                setGenrePercentages(percentages);
+            } catch (error) {
+                console.error('Error fetching genre percentages:', error);
+            }
+        };
 
-        // Cleanup function to set isMounted false when the component unmounts
+
+        fetchMovieTitles();
+        fetchGenrePercentages();
+
+
         return () => {
             isMounted = false;
         };
-    }, [actor.nameTitles]); // Add the missing dependency array here
+
+    }, [actor.nameTitles, actor.primaryName]); // Add the missing dependency array here
+
+
+    console.log("Final: ", percentages);
+
+
+
+
+
 
     return (
         <div className="actor-analytics-container">
             <div className="actor-analytics-content">
                 <h1 className="actor-header">{actor.primaryName}</h1>
-                <p><strong className="dynamic-content">Profession:</strong> {actor.primaryProfession.split(',').join(', ')}</p>
+                <p><strong
+                    className="dynamic-content">Profession:</strong> {actor.primaryProfession.split(',').join(', ')}</p>
                 <p><strong className="dynamic-content">Birth Year:</strong> {actor.birthYear}</p>
                 <p><strong className="dynamic-content">Death Year:</strong> {actor.deathYear}</p>
                 <p className="actor-info">
@@ -61,6 +90,14 @@ const ActorAnalytics = ({ actor, onSearchAgain, onExit }) => {
                         ))}
                     </span>
                 </p>
+                <p className="actor-info">
+                    <strong className="dynamic-content">Percentages: </strong>
+                        <span>
+                            {/*{genrePercentages.}*/}
+                        </span>
+                </p>
+
+
             </div>
             {hasImage && (
                 <div className="actor-analytics-image-container">

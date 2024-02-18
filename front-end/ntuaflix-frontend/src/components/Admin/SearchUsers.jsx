@@ -73,7 +73,7 @@ export default function SearchUsers() {
                 </div>
             </div>
 
-            <Footer role="admin"/>
+            {/*<Footer role="admin"/>*/}
         </div>
     );
 }
