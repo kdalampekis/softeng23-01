@@ -1,0 +1,491 @@
+# Database Models #
+
+User
+Stelios Katsis
+ChatGPT 3.5
+
+User
+(venv) PS C:\SoftEng\softeng23-01\back-end\Django\ntuaflix> python manage.py migrate        
+Operations to perform:
+  Apply all migrations: admin, administrator, auth, authtoken, contenttypes, ntuaflix_api, sessions
+Running migrations:
+  Applying administrator.0001_initial...Traceback (most recent call last):
+  File "C:\SoftEng\venv\Lib\site-packages\django\db\backends\utils.py", line 103, in _execute
+    return self.cursor.execute(sql)
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\SoftEng\venv\Lib\site-packages\django\db\backends\mysql\base.py", line 75, in execute
+    return self.cursor.execute(query, args)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\SoftEng\venv\Lib\site-packages\MySQLdb\cursors.py", line 179, in execute
+    res = self._query(mogrified_query)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\SoftEng\venv\Lib\site-packages\MySQLdb\cursors.py", line 330, in _query
+    db.query(q)
+  File "C:\SoftEng\venv\Lib\site-packages\MySQLdb\connections.py", line 257, in query
+    _mysql.connection.query(self, query)
+MySQLdb.OperationalError: (1050, "Table 'crew' already exists")
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\SoftEng\softeng23-01\back-end\Django\ntuaflix\manage.py", line 39, in <module>     
+    main()
+  File "C:\SoftEng\softeng23-01\back-end\Django\ntuaflix\manage.py", line 35, in main
+    execute_from_command_line(sys.argv)
+  File "C:\SoftEng\venv\Lib\site-packages\django\core\management\__init__.py", line 442, in execute_from_command_line
+    utility.execute()
+  File "C:\SoftEng\venv\Lib\site-packages\django\core\management\__init__.py", line 436, in execute
+    self.fetch_command(subcommand).run_from_argv(self.argv)
+  File "C:\SoftEng\venv\Lib\site-packages\django\core\management\base.py", line 412, in run_from_argv
+    self.execute(*args, **cmd_options)
+  File "C:\SoftEng\venv\Lib\site-packages\django\core\management\base.py", line 458, in execute
+    output = self.handle(*args, **options)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\SoftEng\venv\Lib\site-packages\django\core\management\base.py", line 106, in wrapper
+    res = handle_func(*args, **kwargs)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\SoftEng\venv\Lib\site-packages\django\core\management\commands\migrate.py", line 356, in handle
+    post_migrate_state = executor.migrate(
+                         ^^^^^^^^^^^^^^^^^
+  File "C:\SoftEng\venv\Lib\site-packages\django\db\migrations\executor.py", line 135, in migrate
+    state = self._migrate_all_forwards(
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\SoftEng\venv\Lib\site-packages\django\db\migrations\executor.py", line 167, in _migrate_all_forwards
+    state = self.apply_migration(
+            ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\SoftEng\venv\Lib\site-packages\django\db\migrations\executor.py", line 252, in apply_migration
+    state = migration.apply(state, schema_editor)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\SoftEng\venv\Lib\site-packages\django\db\migrations\migration.py", line 132, in apply
+    operation.database_forwards(
+  File "C:\SoftEng\venv\Lib\site-packages\django\db\migrations\operations\models.py", line 96, in database_forwards
+    schema_editor.create_model(model)
+  File "C:\SoftEng\venv\Lib\site-packages\django\db\backends\base\schema.py", line 485, in create_model
+    self.execute(sql, params or None)
+  File "C:\SoftEng\venv\Lib\site-packages\django\db\backends\base\schema.py", line 201, in execute
+    cursor.execute(sql, params)
+  File "C:\SoftEng\venv\Lib\site-packages\django\db\backends\utils.py", line 122, in execute  
+    return super().execute(sql, params)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\SoftEng\venv\Lib\site-packages\django\db\backends\utils.py", line 79, in execute   
+    return self._execute_with_wrappers(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\SoftEng\venv\Lib\site-packages\django\db\backends\utils.py", line 92, in _execute_with_wrappers
+    return executor(sql, params, many, context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\SoftEng\venv\Lib\site-packages\django\db\backends\utils.py", line 100, in _execute 
+    with self.db.wrap_database_errors:
+  File "C:\SoftEng\venv\Lib\site-packages\django\db\utils.py", line 91, in __exit__
+    raise dj_exc_value.with_traceback(traceback) from exc_value
+  File "C:\SoftEng\venv\Lib\site-packages\django\db\backends\utils.py", line 103, in _execute 
+    return self.cursor.execute(sql)
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\SoftEng\venv\Lib\site-packages\django\db\backends\mysql\base.py", line 75, in execute
+    return self.cursor.execute(query, args)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\SoftEng\venv\Lib\site-packages\MySQLdb\cursors.py", line 179, in execute
+    res = self._query(mogrified_query)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\SoftEng\venv\Lib\site-packages\MySQLdb\cursors.py", line 330, in _query
+    db.query(q)
+  File "C:\SoftEng\venv\Lib\site-packages\MySQLdb\connections.py", line 257, in query
+    _mysql.connection.query(self, query)
+django.db.utils.OperationalError: (1050, "Table 'crew' already exists")
+
+What does this message mean?
+ChatGPT
+The error message indicates that there is an issue with applying a database migration related to the "administrator" app in your Django project. Specifically, it says that the migration "administrator.0001_initial" is failing because it's trying to create a table named "crew," but the table already exists in the database.
+
+Here are the key parts of the error message:
+
+arduino
+Copy code
+MySQLdb.OperationalError: (1050, "Table 'crew' already exists")
+This part of the error tells you that there is a MySQL OperationalError with error code 1050, indicating that the specified table ('crew') already exists in the database.
+
+arduino
+Copy code
+File "C:\SoftEng\softeng23-01\back-end\Django\ntuaflix\manage.py", line 35, in main
+    execute_from_command_line(sys.argv)
+This part of the error traceback points to the location in your Django project where the error occurred, specifically in the manage.py file.
+
+arduino
+Copy code
+django.db.utils.OperationalError: (1050, "Table 'crew' already exists")
+Finally, this part of the traceback indicates that the error is a Django database utility error (django.db.utils.OperationalError) and provides the error message with the code 1050.
+
+To resolve this issue, you may want to do the following:
+
+Check Database State: Verify the current state of your database to see if the "crew" table already exists. You can use a database client or command-line tools to inspect the database.
+
+Rollback Migrations: If the "crew" table already exists, you may want to roll back the applied migrations and then reapply them. Use the following commands:
+
+bash
+Copy code
+python manage.py migrate administrator zero
+python manage.py migrate
+The first command rolls back the migrations for the "administrator" app, and the second command reapplies them.
+
+Database Reset: If the issue persists, you may consider resetting the entire database and applying migrations again. Be cautious with this approach as it will delete all data in your database.
+
+bash
+Copy code
+python manage.py reset_db
+python manage.py migrate
+The reset_db command resets the entire database, and then migrate applies all migrations.
+
+Make sure to backup your data or use these commands in a development environment where data loss is acceptable.
+
+User
+CREATE TABLE IF NOT EXISTS WorkAs (
+	workas_Id int NOT NULL AUTO_INCREMENT,
+    tconst varchar(10) NOT NULL,
+    ordering int(10),
+    nconst varchar(10) NOT NULL,
+    category varchar(25),
+    job varchar(255),
+    characters varchar(255),
+    img_url_asset varchar(255),
+    PRIMARY KEY (workas_Id)
+);
+
+I want to create the previous table like the ones metioned below:
+
+from django.db import models
+
+# Create your models here.
+# ///////////////////////////////////////////////////////////////////////////////////////////////////
+    
+#   ΑΠΟ ΕΔΩ ΚΑΙ ΚΑΤΩ ΕΧΕΙ ΟΛΑ ΤΑ TABLES ΤΗΣ SQL ΣΥΜΦΩΝΑ ΜΕ ΤΑ ΔΕΔΟΜΕΝΑ ΠΟΥ ΜΑΣ ΕΧΟΥΝ ΔΩΘΕΙ
+#   ΠΧ TITLEAKA,TITLEBASIC,...
+
+class TitleBasic(models.Model):
+    tconst = models.CharField(max_length=10, primary_key=True)
+    titleType = models.CharField(max_length=255, blank=True, null=True)
+    primaryTitle = models.CharField(max_length=255, blank=True, null=True)
+    originalTitle = models.CharField(max_length=255, blank=True, null=True)
+    isAdult = models.IntegerField()
+    startYear = models.IntegerField()  # 'year' in MySQL typically corresponds to an integer in Django
+    endYear = models.IntegerField(blank=True, null=True)  # Assuming this can be NULL
+    runtimeMinutes = models.IntegerField(blank=True, null=True)
+    genres = models.CharField(max_length=255, blank=True, null=True)
+    img_url_asset = models.CharField(max_length=255, blank=True, null=True)
+
+    class Meta:
+        db_table = 'TitleBasic'  
+
+    def __str__(self):
+        return self.primaryTitle
+
+class TitleAka(models.Model):
+    aka_Id = models.AutoField(primary_key=True)
+    tconst = models.CharField(max_length=10)  # Assuming this might be a foreign key to another table
+    ordering = models.IntegerField()
+    title = models.CharField(max_length=255)
+    region = models.CharField(max_length=255, blank=True, null=True)  # Assuming region can be optional
+    language = models.CharField(max_length=255, blank=True, null=True)  # Assuming language can be optional
+    types = models.CharField(max_length=255, blank=True, null=True)  # Assuming types can be optional
+    attributes = models.CharField(max_length=255, blank=True, null=True)  # Assuming attributes can be optional
+    isOriginalTitle = models.IntegerField()
+
+    class Meta:
+        db_table = 'TitleAka'  
+
+    def __str__(self):
+        return self.title
+    
+class Names(models.Model):
+    nconst = models.CharField(max_length=10, primary_key=True)
+    primaryName = models.CharField(max_length=255, blank=True, null=True)
+    birthYear = models.IntegerField(blank=True, null=True)
+    deathYear = models.IntegerField(blank=True, null=True)
+    primaryProfession = models.CharField(max_length=255, blank=True, null=True)
+    knownForTitles = models.CharField(max_length=255, blank=True, null=True)
+    imgUrl = models.CharField(max_length=255, blank=True, null=True)
+
+    class Meta:
+        db_table = 'Names'  
+
+    def __str__(self):
+        return self.primaryName or 'Unknown Name'
+
+class Crew(models.Model):
+    tconst = models.CharField(max_length=10, primary_key=True)
+    directors = models.CharField(max_length=255, blank=True, null=True)
+    writers = models.CharField(max_length=255, blank=True, null=True)
+
+    class Meta:
+        db_table = 'Crew'  
+
+    def __str__(self):
+        return f"Crew for {self.tconst}"
+
+
+class Episode(models.Model):
+    tconst = models.CharField(max_length=10, primary_key=True)
+    parentTconst = models.CharField(max_length=11)  # Assuming this might be a foreign key to another table
+    seasonNumber = models.IntegerField(blank=True, null=True)
+    episodeNumber = models.IntegerField(blank=True, null=True)
+
+    class Meta:
+        db_table = 'Episode'  
+
+    def __str__(self):
+        return f"Episode {self.episodeNumber} of Season {self.seasonNumber} ({self.tconst})"
+
+class Principal(models.Model):
+    workas_Id = models.AutoField(primary_key=True)
+    tconst = models.CharField(max_length=10)  # This might be a ForeignKey to another table
+    ordering = models.IntegerField()
+    nconst = models.CharField(max_length=10)  # This might also be a ForeignKey
+    category = models.CharField(max_length=25, blank=True, null=True)
+    job = models.CharField(max_length=255, blank=True, null=True)
+    characters = models.CharField(max_length=255, blank=True, null=True)
+    img_url_asset = models.CharField(max_length=255, blank=True, null=True)
+
+    class Meta:
+        db_table = 'Principal'  
+
+    def __str__(self):
+        return f"{self.category} - {self.nconst}"
+
+class Rating(models.Model):
+    tconst = models.CharField(max_length=10, primary_key=True)
+    averageRating = models.FloatField(blank=True, null=True)
+    numVotes = models.IntegerField(blank=True, null=True)
+
+    class Meta:
+        db_table = 'Rating'  
+
+    def __str__(self):
+        return f"Rating {self.averageRating} for {self.tconst}"
+ChatGPT
+It seems like you want to create a Django model for a table named WorkAs based on the SQL table definition you provided. You can create a Django model using the ORM (Object-Relational Mapping) to represent your table.
+
+Here's how you can define the WorkAs model in Django:
+
+python
+Copy code
+from django.db import models
+
+class WorkAs(models.Model):
+    workas_Id = models.AutoField(primary_key=True)
+    tconst = models.CharField(max_length=10)
+    ordering = models.IntegerField()
+    nconst = models.CharField(max_length=10)
+    category = models.CharField(max_length=25, blank=True, null=True)
+    job = models.CharField(max_length=255, blank=True, null=True)
+    characters = models.CharField(max_length=255, blank=True, null=True)
+    img_url_asset = models.CharField(max_length=255, blank=True, null=True)
+
+    class Meta:
+        db_table = 'WorkAs'
+
+    def __str__(self):
+        return f"{self.category} - {self.nconst}"
+This model definition corresponds to the SQL table WorkAs. Make sure to adjust the max_length and field types according to your specific requirements.
+
+Additionally, don't forget to run the following Django management commands to apply the changes to your database:
+
+bash
+Copy code
+python manage.py makemigrations
+python manage.py migrate
+These commands will generate the necessary database migration files and apply them to create the WorkAs table in your database.
+
+User
+Can i depict somehow foreign keys in django models?
+ChatGPT
+Yes, you can depict foreign keys in Django models to represent relationships between tables. In Django, you can use the ForeignKey field to establish a many-to-one relationship between two models. Here's an example of how you can depict foreign keys in Django models:
+
+Let's assume you have a WorkAs table with foreign keys to the Names and TitleBasic tables. Update the WorkAs model to include these foreign keys:
+
+python
+Copy code
+from django.db import models
+
+class WorkAs(models.Model):
+    workas_Id = models.AutoField(primary_key=True)
+    tconst = models.ForeignKey('TitleBasic', on_delete=models.CASCADE)
+    ordering = models.IntegerField()
+    nconst = models.ForeignKey('Names', on_delete=models.CASCADE)
+    category = models.CharField(max_length=25, blank=True, null=True)
+    job = models.CharField(max_length=255, blank=True, null=True)
+    characters = models.CharField(max_length=255, blank=True, null=True)
+    img_url_asset = models.CharField(max_length=255, blank=True, null=True)
+
+    class Meta:
+        db_table = 'WorkAs'
+
+    def __str__(self):
+        return f"{self.category} - {self.nconst}"
+In this example:
+
+tconst is a foreign key referencing the TitleBasic model.
+nconst is a foreign key referencing the Names model.
+on_delete=models.CASCADE specifies that when the referenced object (either from TitleBasic or Names) is deleted, also delete the related WorkAs objects.
+Make sure to adjust the model names and fields according to your actual Django models.
+
+After making these changes, run the following commands to apply the migrations:
+
+bash
+Copy code
+python manage.py makemigrations
+python manage.py migrate
+These commands will generate and apply the necessary migrations to create the foreign key relationships in your database.
+
+User
+from django.db import models
+from ..models import *
+
+
+class TitleBasic(models.Model):
+    tconst = models.CharField(max_length=10, primary_key=True)
+    titleType = models.CharField(max_length=255, blank=True, null=True)
+    primaryTitle = models.CharField(max_length=255, blank=True, null=True)
+    originalTitle = models.CharField(max_length=255, blank=True, null=True)
+    isAdult = models.IntegerField(blank=True, null=True)
+    startYear = models.IntegerField(blank=True, null=True)
+    endYear = models.IntegerField(blank=True, null=True)
+    runtimeMinutes = models.IntegerField(blank=True, null=True)
+    genres = models.CharField(max_length=255, blank=True, null=True)
+    img_url_asset = models.CharField(max_length=255, blank=True, null=True)
+
+    class Meta:
+        db_table = 'TitleBasic'  
+
+    def get_tconst(self):
+        # Return the tconst value of the instance
+        return self.tconst
+
+    def __str__(self):
+        return self.tconst
+
+
+class TitleAka(models.Model):
+    aka_Id = models.AutoField(primary_key=True)
+    tconst = models.ForeignKey(TitleBasic, on_delete=models.CASCADE)  # ForeignKey
+    ordering = models.IntegerField(default=0)
+    title = models.CharField(max_length=255, null=True)
+    region = models.CharField(max_length=255, blank=True, null=True)
+    language = models.CharField(max_length=255, blank=True, null=True)
+    types = models.CharField(max_length=255, blank=True, null=True)
+    attributes = models.CharField(max_length=255, blank=True, null=True)
+    isOriginalTitle = models.IntegerField()
+    
+    class Meta:
+        db_table = 'TitleAka'  
+
+    def __str__(self):
+        return self.title
+    
+    
+class Names(models.Model):
+    nconst = models.CharField(max_length=10, primary_key=True)
+    primaryName = models.CharField(max_length=255, blank=True, null=True)
+    birthYear = models.IntegerField(blank=True, null=True)
+    deathYear = models.IntegerField(blank=True, null=True)
+    primaryProfession = models.CharField(max_length=255, blank=True, null=True)
+    knownForTitles = models.CharField(max_length=255, blank=True, null=True)
+    imgUrl = models.CharField(max_length=255, blank=True, null=True)
+
+    class Meta:
+        db_table = 'Names'  
+
+    def __str__(self):
+        return self.nconst
+
+
+class Crew(models.Model):
+    tconst = models.OneToOneField(TitleBasic, primary_key=True, on_delete=models.CASCADE)  # ForeignKey
+    directors = models.CharField(max_length=255, blank=True, null=True)
+    writers = models.CharField(max_length=255, blank=True, null=True)
+
+    class Meta:
+        db_table = 'Crew'  
+
+    def __str__(self):
+        return f"Crew for {self.tconst}"
+
+
+class Episode(models.Model):
+    tconst = models.OneToOneField(TitleBasic, primary_key=True, on_delete=models.CASCADE)  # ForeignKey
+    parentTconst = models.CharField(max_length=10)
+    seasonNumber = models.IntegerField(blank=True, null=True)
+    episodeNumber = models.IntegerField(blank=True, null=True)
+
+    class Meta:
+        db_table = 'Episode'
+
+    def __str__(self):
+        return f"Episode {self.episodeNumber} of Season {self.seasonNumber} ({self.tconst})"
+
+
+class Principals(models.Model):
+    workas_Id = models.AutoField(primary_key=True)
+    tconst = models.ForeignKey(TitleBasic, on_delete=models.CASCADE)  # ForeignKey
+    ordering = models.IntegerField(blank=True, null=True)
+    nconst = models.ForeignKey(Names, on_delete=models.CASCADE)  # ForeignKey
+    category = models.CharField(max_length=25, blank=True, null=True)
+    job = models.CharField(max_length=255, blank=True, null=True)
+    characters = models.CharField(max_length=255, blank=True, null=True)
+    img_url_asset = models.CharField(max_length=255, blank=True, null=True)
+
+    class Meta:
+        db_table = 'Principals'  
+
+    def __str__(self):
+        return f"{self.category} - {self.nconst}"
+
+
+class Rating(models.Model):
+    tconst = models.OneToOneField(TitleBasic, primary_key=True, on_delete=models.CASCADE)  # ForeignKey
+    averageRating = models.FloatField(blank=True, null=True)
+    numVotes = models.IntegerField(blank=True, null=True)
+
+    class Meta:
+        db_table = 'Rating'  
+
+    def __str__(self):
+        return f"Rating {self.averageRating} for {self.tconst}"
+
+With the same logic as these models, i want to create one more model called Likes. The SQL Table for thids model is:
+
+CREATE TABLE IF NOT EXISTS User_Like (
+    tconst varchar(10) NOT NULL,
+    userId int(10) NOT NULL,
+    Liked bit(1),
+    PRIMARY KEY (tconst, userId)
+);
+ChatGPT
+Certainly! You can create a Likes model in Django based on the provided SQL table definition. Here's how you can define the Django model for the Likes table:
+
+python
+Copy code
+from django.db import models
+
+class Likes(models.Model):
+    tconst = models.ForeignKey('TitleBasic', on_delete=models.CASCADE)
+    userId = models.IntegerField()
+    liked = models.BooleanField()
+
+    class Meta:
+        db_table = 'User_Like'
+        unique_together = (('tconst', 'userId'),)
+
+    def __str__(self):
+        return f"Like status for {self.tconst} by User {self.userId}"
+In this model definition:
+
+tconst is a foreign key referencing the TitleBasic model.
+userId is an integer field representing the user ID.
+liked is a boolean field representing whether the user liked or not.
+The unique_together attribute in the Meta class ensures that the combination of tconst and userId is unique, simulating the composite primary key in the SQL table.
+
+After defining the model, you can run the following commands to generate migrations and apply them to create the Likes table in your database:
+
+bash
+Copy code
+python manage.py makemigrations
+python manage.py migrate
+This will create the necessary database tables and relationships for the Likes model.

@@ -1,0 +1,645 @@
+# User Likes #
+
+User
+Stelios Katsis
+ChatGPT 3.5
+
+User
+from django.http import JsonResponse
+from rest_framework import generics
+from .serializers import TitleObjectSerializer,NameObjectSerializer
+from django.shortcuts import render
+from rest_framework.views import APIView
+from django.db.models import Q
+from collections import Counter
+from .models import *
+from rest_framework.authtoken.models import Token
+from rest_framework.authtoken.views import ObtainAuthToken
+from rest_framework.response import Response
+from rest_framework import status
+from rest_framework.authentication import TokenAuthentication
+from django.contrib.auth.models import User
+from django.shortcuts import get_object_or_404
+from rest_framework.permissions import AllowAny
+from django.contrib.auth import authenticate, login
+
+class SignUpAPIView(APIView):
+    permission_classes = [AllowAny]
+
+    def post(self, request):
+        username = request.data.get('username')
+        password = request.data.get('password')
+        email = request.data.get('email')
+        first_name = request.data.get('firstname')
+        last_name = request.data.get('lastname')
+        print(username, last_name)
+        # Create a new user with the provided information
+        user = User.objects.create_user(username=username, password=password, email=email, first_name=first_name, last_name=last_name, is_active=False, is_superuser = False)
+
+        return Response({"detail": "User created successfully. Activation required."}, status=status.HTTP_201_CREATED)
+
+class LogoutApiView(APIView):
+    def post(self, request, *args, **kwargs):
+        # Logout the user (invalidate the token)
+        request.auth.delete()
+
+        return Response({"detail": "Successfully logged out."})
+
+class LoginApiView(APIView):
+    def post(self, request, *args, **kwargs):
+        print("Request data:", request.data)
+        username = request.data.get('username')
+        password = request.data.get('password')
+
+        # Manually authenticate the user
+        user = authenticate(request, username=username, password=password)
+
+        if user is not None:
+            login(request, user)
+            # Manually generate or retrieve the authentication token
+            token, created = Token.objects.get_or_create(user=user)
+            response_data = {
+                'token': token.key,
+                'is_superuser': user.is_superuser
+            }
+            return Response(response_data)
+        else:
+            return Response({"error": "Invalid credentials"}, status=400)
+
+# Following on the link: title/
+class TitleBasicList(generics.ListAPIView):
+    serializer_class = TitleObjectSerializer
+    queryset = TitleObject.objects.all()
+
+    def get_title(self):
+        serializer_class = TitleObjectSerializer
+        title = TitleObject.objects.all()
+
+        return title
+
+# Following on the link: title/<str:titleID>/
+class TitleDetailView(generics.ListAPIView):
+    serializer_class = TitleObjectSerializer
+
+    def get_queryset(self):
+        active_user_token = User.objects.filter(is_active=True).values_list('auth_token', flat=True).first()
+        token = self.request.META.get('HTTP_AUTHORIZATION')
+        print(token)
+
+        # Check if the authenticated user is a superuser
+        if token == active_user_token:
+            try:
+                titleID = self.kwargs.get('titleID')
+                return TitleObject.objects.filter(tconst=titleID)
+            except TitleObject.DoesNotExist:
+                return Response({"error": "Title not found"}, status=status.HTTP_404_NOT_FOUND)
+        else:
+            return Response({"error": "Permission denied. You don't have an active user account."}, status=status.HTTP_403_FORBIDDEN)
+
+# Following on the link: searchtitle/
+class SearchTitleView(APIView):
+    def get(self, request):
+        active_user_token = User.objects.filter(is_active=True).values_list('auth_token', flat=True).first()
+        token = self.request.META.get('HTTP_AUTHORIZATION')
+        print(token)
+
+        if token == active_user_token:
+            try:
+                title_query = request.GET.get('title', None)
+
+                if title_query:
+                    title_objects = TitleObject.objects.filter(originalTitle__icontains=title_query)
+                    serializer = TitleObjectSerializer(title_objects, many=True)
+                    return Response(serializer.data)
+                else:
+                    # Render the search form if no query is provided
+                    return render(request, 'search_title.html')
+            except TitleObject.DoesNotExist:
+                return Response({"error": "Title not found"}, status=status.HTTP_404_NOT_FOUND)
+        else:
+            return Response({"error": "Permission denied. You don't have an active user account."}, status=status.HTTP_403_FORBIDDEN)
+
+class FilteredTitleObjectsView(APIView):
+
+    def get(self, request, *args, **kwargs):
+        active_user_token = User.objects.filter(is_active=True).values_list('auth_token', flat=True).first()
+        token = self.request.META.get('HTTP_AUTHORIZATION')
+        print(token)
+
+        if token == active_user_token:
+            try:
+                # Retrieve query parameters
+                genre = request.GET.get('genre', None)
+                minimum_rating = request.GET.get('minimumrating', None)
+                year_from = request.GET.get('yearfrom', None)
+                year_to = request.GET.get('yearto', None)
+
+                if genre:
+                    # Start building the query
+                    query = Q()
+                    if genre:
+                        query &= Q(genres__icontains=genre)
+                    if minimum_rating:
+                        query &= Q(averageRating__gte=minimum_rating)
+                    if year_from:
+                        query &= Q(startYear__gte=year_from)
+                    if year_to:
+                        query &= Q(endYear__lte=year_to)
+
+                    # Execute the query
+                    title_objects = TitleObject.objects.filter(query)
+
+                    # Serialize the queryset
+                    serializer = TitleObjectSerializer(title_objects, many=True)
+                else:
+                    return render(request, 'search_criteria.html')
+                # Return the response
+                return Response(serializer.data)
+            except Exception as e:
+                return Response({"error": str(e)}, status=400)
+        else:
+            return Response({"error": "Permission denied. You don't have an active user account."}, status=403)
+
+class NameObjectView(generics.ListAPIView):
+    serializer_class = NameObjectSerializer
+
+    def get_queryset(self):
+
+
+        queryset = NameObject.objects.all()
+
+        return queryset
+
+class NameBiography(generics.ListAPIView):
+    serializer_class = NameObjectSerializer
+
+    def get_queryset(self):
+        active_user_token = User.objects.filter(is_active=True).values_list('auth_token', flat=True).first()
+        token = self.request.META.get('HTTP_AUTHORIZATION')
+        print(token)
+
+        if token == active_user_token:
+            try:
+                nameID = self.kwargs.get('nameID')
+                return NameObject.objects.filter(nconst=nameID)
+            except Exception as e:
+                return Response({"error": str(e)}, status=400)
+        else:
+            return Response({"error": "Permission denied. You don't have an active user account."}, status=403)
+
+class SearchNameView(APIView):
+    def get(self, request):
+        active_user_token = User.objects.filter(is_active=True).values_list('auth_token', flat=True).first()
+        token = self.request.META.get('HTTP_AUTHORIZATION')
+        print(token)
+
+        if token == active_user_token:
+            try:
+                name_query = request.GET.get('name', None)
+                if name_query:
+                    name_objects = NameObject.objects.filter(primaryName__icontains=name_query)
+                    serializer = NameObjectSerializer(name_objects, many=True)
+                    return Response(serializer.data)
+                else:
+                    # Render the search form if no query is provided
+                    return render(request, 'search_name.html')
+            except Exception as e:
+                return Response({"error": str(e)}, status=500)
+        else:
+            return Response({"error": "Permission denied. You don't have an active user account."}, status=403)
+
+class SearchByGenre(APIView):
+
+    def get(self, request, *args, **kwargs):
+        # Retrieve query parameters
+        genre = request.GET.get('genre', None)
+        number = request.GET.get('number',None)
+        toprated = request.GET.get('toprated',None)
+        # Check if the 'genre' parameter is provided
+        if genre:
+            # Filter by genre
+            queryset = TitleObject.objects.filter(genres__icontains=genre)
+            # Serialize the queryset
+
+            if toprated=='true':
+                if number:
+                    queryset = queryset.order_by('-averageRating')[:int(number)]
+
+                else:
+                    context = {
+                    'error_message': "You have to input a number."
+                    }
+                    return render(request, 'SearchByGenre.html', context)
+
+            else:
+                if number:
+                    queryset = queryset[:int(number)]
+
+
+            serializer = TitleObjectSerializer(queryset, many=True)
+            # Return the serialized data
+        else:
+            # If 'genre' is not provided, render the search criteria form
+            return render(request, 'SearchByGenre.html')
+
+        return Response(serializer.data)
+
+class SearchByYear(APIView):
+
+    def get(self, request, *args, **kwargs):
+        # Retrieve query parameters
+        year = request.GET.get('year', None)
+        # Check if the 'genre' parameter is provided
+        if year:
+            # Filter by genre
+            queryset = TitleObject.objects.filter(startYear=year)
+            # Serialize the queryset
+            serializer = TitleObjectSerializer(queryset, many=True)
+
+            # Return the serialized data
+        else:
+            return render(request, 'SearchByYear.html')
+
+        return Response(serializer.data)
+
+class SearchByName(APIView):
+
+    def get(self, request, *args, **kwargs):
+        # Retrieve query parameters
+        name = request.GET.get('name', None)
+        toprated = request.GET.get('toprated',None)
+        newest = request.GET.get('newest',None)
+        number = request.GET.get('number',None)
+        # Check if the 'genre' parameter is provided
+        if name:
+            # Filter by genre
+            queryset = TitleObject.objects.filter(primaryName__icontains=name)
+
+            if (toprated == 'true' and newest== 'true'):
+                context = {
+                'error_message': "You can only choose 'Earliest Release' or 'Top Rated', not both."
+                }
+                return render(request, 'SearchByName.html', context)
+
+            if number:
+                if toprated=='true':
+                    queryset = queryset.order_by('-averageRating')[:int(number)]
+                # Serialize the queryset
+
+                if newest=='true':
+                    queryset = queryset.order_by('-startYear')[:int(number)]
+            else:
+                if toprated=='true':
+                    queryset = queryset.order_by('-averageRating')[:1]
+                # Serialize the queryset
+
+                if newest=='true':
+                    queryset = queryset.order_by('-startYear')[:1]
+
+
+
+            serializer = TitleObjectSerializer(queryset, many=True)
+            # Return the serialized data
+        else:
+            # If 'genre' is not provided, render the search criteria form
+            return render(request, 'SearchByName.html')
+
+        return Response(serializer.data)
+
+class NameProfileView(APIView):
+
+    def get(self, request, *args, **kwargs):
+
+        name = request.GET.get('name', '')  # Default to an empty string if not provided
+
+        actors_genre_percentages = {}
+
+        if name:
+            filtered_profiles = NameProfile.objects.filter(ActorName__icontains=name)
+
+            for profile in filtered_profiles:
+                if profile.AllGenres:
+                    # Split the genres and strip whitespace from each genre individually
+                    genres = [genre.strip() for genre in profile.AllGenres.split(',')]
+                    # Count each genre
+                    genre_counts = Counter(genres)
+
+                    # Calculate the total number of genre occurrences
+                    total_genres = sum(genre_counts.values())
+
+                    # Calculate the percentage for each genre
+                    genre_percentages = {genre: (count / total_genres) * 100 for genre, count in genre_counts.items()}
+
+                    # Assign the result to the actor's name
+                    actors_genre_percentages[profile.ActorName] = genre_percentages
+
+            # Return the percentages as JSON or render your template
+            return JsonResponse(actors_genre_percentages)
+
+        else:
+            return render(request, 'NameProfile.html')
+
+Regarding these views and a model called Likes:
+
+class Likes(models.Model):
+    tconst = models.ForeignKey(TitleBasic, on_delete=models.CASCADE)
+    userId = models.ForeignKey(User, on_delete=models.CASCADE)
+    liked = models.BooleanField()
+
+    class Meta:
+        db_table = 'User_Like'
+        unique_together = (('tconst', 'userId'),)
+
+    def __str__(self):
+        return f"Like status for {self.tconst} by User {self.userId}"
+
+I want to create a function that will show the likes and dislikes for a specific film by all acounts. How should the endpoint look like. Create a get request
+ChatGPT
+To create an endpoint for fetching likes and dislikes for a specific film, you can add a new view in your Django app. Let's call this view TitleLikesView. This view will handle the GET request and return the likes and dislikes for a specific film.
+
+Here's a basic implementation:
+
+python
+Copy code
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework import status
+from .models import Likes
+from .serializers import LikesSerializer
+from .models import TitleObject
+
+class TitleLikesView(APIView):
+    def get(self, request, titleID):
+        # titleID is the identifier for the film
+        try:
+            # Fetch the title object
+            title_object = TitleObject.objects.get(tconst=titleID)
+        except TitleObject.DoesNotExist:
+            return Response({"error": "Title not found"}, status=status.HTTP_404_NOT_FOUND)
+
+        # Fetch likes for the specific title
+        likes_objects = Likes.objects.filter(tconst=title_object)
+
+        # Serialize the likes data
+        serializer = LikesSerializer(likes_objects, many=True)
+
+        # Count likes and dislikes
+        likes_count = sum(1 for like in likes_objects if like.liked)
+        dislikes_count = sum(1 for like in likes_objects if not like.liked)
+
+        # Create a response dictionary
+        response_data = {
+            "title": title_object.originalTitle,
+            "likes": likes_count,
+            "dislikes": dislikes_count,
+            "likes_data": serializer.data
+        }
+
+        return Response(response_data, status=status.HTTP_200_OK)
+In this implementation:
+
+The titleID is the unique identifier for the film.
+We fetch the TitleObject using the provided titleID.
+Then, we retrieve the likes associated with that specific title using Likes.objects.filter(tconst=title_object).
+Serialize the likes data using the LikesSerializer.
+Count the number of likes and dislikes.
+Create a response dictionary containing the title name, likes count, dislikes count, and serialized likes data.
+To use this view, you need to add a new URL pattern in your urls.py:
+
+python
+Copy code
+from django.urls import path
+from .views import TitleLikesView
+
+urlpatterns = [
+    # Other URL patterns
+    path('title_likes/<str:titleID>/', TitleLikesView.as_view(), name='title-likes'),
+]
+Now, you can make a GET request to /title_likes/<titleID>/ to get the likes and dislikes information for a specific film. Replace <titleID> with the actual identifier of the film.
+
+User
+name_query = request.GET.get('name', None)
+ChatGPT
+It looks like you are using request.GET.get('name', None) to retrieve the value of the 'name' parameter from the query parameters in a Django view. This is a common way to get query parameters in Django.
+
+Here's a breakdown of how this works:
+
+request.GET: This is a dictionary-like object that contains all the GET parameters from the request URL.
+.get('name', None): This method is used to retrieve the value associated with the key 'name' from the GET parameters. The second argument (None in this case) is the default value returned if the key is not found in the dictionary.
+So, in your case, name_query will contain the value of the 'name' parameter if it exists in the query parameters, and it will be None if the 'name' parameter is not present in the URL.
+
+For example, if your URL is something like /search?name=John, then name_query would be assigned the value 'John'. If the URL is /search without the 'name' parameter, then name_query would be None.
+
+User
+class TitleLikesView(APIView):
+    def get(self, request, titleID):
+        try:
+            title_object = TitleObject.objects.get(tconst=titleID)
+        except TitleObject.DoesNotExist:
+            return Response({"error": "Title not found"}, status=status.HTTP_404_NOT_FOUND)
+
+        likes_objects = Likes.objects.filter(tconst=title_object.tconst)
+
+        likes_count = sum(1 for like in likes_objects if like.liked)
+        dislikes_count = sum(1 for like in likes_objects if not like.liked)
+
+        response_data = {
+            "title": title_object.originalTitle,
+            "likes": likes_count,
+            "dislikes": dislikes_count,
+        }
+
+        return Response(response_data, status=status.HTTP_200_OK)
+
+I have created this view. In my project i use the default User provided by django. I want to modify the code so that it checkes and returns if the logged in user has liked this movie or not
+ChatGPT
+To achieve this, you can modify the TitleLikesView to include information about whether the currently logged-in user has liked the movie or not. You can use the authentication information provided by Django REST Framework to get the current user.
+
+Here's an updated version of the TitleLikesView:
+
+python
+Copy code
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework import status
+from .models import Likes
+from .serializers import LikesSerializer
+from .models import TitleObject
+from rest_framework.permissions import IsAuthenticated
+
+class TitleLikesView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, titleID):
+        try:
+            title_object = TitleObject.objects.get(tconst=titleID)
+        except TitleObject.DoesNotExist:
+            return Response({"error": "Title not found"}, status=status.HTTP_404_NOT_FOUND)
+
+        # Get the currently logged-in user
+        current_user = request.user
+
+        likes_objects = Likes.objects.filter(tconst=title_object.tconst)
+
+        likes_count = sum(1 for like in likes_objects if like.liked)
+        dislikes_count = sum(1 for like in likes_objects if not like.liked)
+
+        # Check if the current user has liked the movie
+        user_has_liked = likes_objects.filter(userId=current_user, liked=True).exists()
+
+        response_data = {
+            "title": title_object.originalTitle,
+            "likes": likes_count,
+            "dislikes": dislikes_count,
+            "user_has_liked": user_has_liked,
+        }
+
+        return Response(response_data, status=status.HTTP_200_OK)
+In this updated version:
+
+I added IsAuthenticated to permission_classes to ensure that only authenticated users can access this view.
+I used request.user to get the currently logged-in user.
+I checked if the current user has liked the movie by filtering the likes_objects queryset based on the userId and liked fields.
+Now, the user_has_liked field in the response will indicate whether the logged-in user has liked the movie or not.
+
+User
+from django.contrib.auth.models import User
+
+What collumns does the User table have?
+ChatGPT
+The User model in Django's authentication system (django.contrib.auth.models.User) includes the following columns:
+
+id: AutoField - Primary key for the user.
+username: CharField - The unique username used for authentication.
+password: CharField - A hashed password.
+first_name: CharField - The first name of the user.
+last_name: CharField - The last name of the user.
+email: EmailField - The email address of the user.
+is_staff: BooleanField - Designates whether the user can access the admin site.
+is_active: BooleanField - Designates whether the user account is active.
+date_joined: DateTimeField - A timestamp representing when the user account was created.
+Additionally, the User model has some inherited fields and methods from the AbstractBaseUser and PermissionsMixin classes, which are used to provide more advanced features like custom authentication and permissions.
+
+Keep in mind that if you have made customizations to the User model in your project (such as extending it or using a custom user model), the fields might vary. If you want to see the exact details for your project, you can inspect the database table directly or use the Django shell to explore the model:
+
+python
+Copy code
+from django.contrib.auth.models import User
+
+# Display the fields of the User model
+print(User._meta.get_fields())
+This will print information about each field in the User model, including their names and types.
+
+User
+class Likes(models.Model):
+    tconst = models.ForeignKey(TitleBasic, on_delete=models.CASCADE)
+    userId = models.ForeignKey(User, on_delete=models.CASCADE)
+    liked = models.BooleanField()
+
+    class Meta:
+        db_table = 'User_Like'
+        unique_together = (('tconst', 'userId'),)
+
+    def __str__(self):
+        return f"Like status for {self.tconst} by User {self.userId}"
+
+I want this model's userID values to correspond to the id column of the User table
+ChatGPT
+It looks like you have a ForeignKey relationship between the Likes model and the User model. By default, when you create a ForeignKey, Django will use the primary key (id) of the related model (User in this case) as the foreign key.
+
+In your Likes model:
+
+python
+Copy code
+class Likes(models.Model):
+    tconst = models.ForeignKey(TitleBasic, on_delete=models.CASCADE)
+    userId = models.ForeignKey(User, on_delete=models.CASCADE)
+    liked = models.BooleanField()
+
+    class Meta:
+        db_table = 'User_Like'
+        unique_together = (('tconst', 'userId'),)
+
+    def __str__(self):
+        return f"Like status for {self.tconst} by User {self.userId}"
+The userId field is a ForeignKey to the User model. This means that userId will store the primary key (id) of a user from the User table.
+
+For example, if you have a user with id=1 in the User table, and you create a like with userId=1, it will correspond to that specific user in the User table.
+
+Make sure that the User model you are referring to is the default Django User model. If you have a custom user model, you should use that model instead in the ForeignKey relationship.
+
+User
+class TitleLikesView(APIView):
+    def get(self, request, titleID):
+        active_user_token = User.objects.filter(is_active=False).values_list('auth_token', flat=True).first()
+        token = self.request.META.get('HTTP_AUTHORIZATION')
+
+        if token == active_user_token:
+            try:
+                title_object = TitleObject.objects.get(tconst=titleID)
+            except TitleObject.DoesNotExist:
+                return Response({"error": "Title not found"}, status=status.HTTP_404_NOT_FOUND)
+
+            like_object = Likes.objects.filter(tconst=title_object.tconst)
+            user = ...
+            
+            likes_count = sum(1 for like in like_object if like.liked)
+            dislikes_count = sum(1 for like in like_object if not like.liked)
+            user_has_liked = like_object.filter(userId=user, liked=True).exists()
+            
+            response_data = {
+                "title": title_object.originalTitle,
+                "likes": likes_count,
+                "dislikes": dislikes_count,
+                "hasLiked": user_has_liked,
+            }
+
+            return Response(response_data, status=status.HTTP_200_OK)
+        else:
+            return Response({"error": "Permission denied. You don't have an active user account."}, status=403)
+
+I am a user and i am using this class. I want to be able to find te User object that corresponds to me  so that i can complete my tasks. How do i od that?
+ChatGPT
+In your TitleLikesView, you can retrieve the user associated with the provided token. If you are using Django's default authentication system along with the TokenAuthentication class, you can get the user associated with the token using the request.user attribute. Here's how you can modify your view:
+
+python
+Copy code
+from rest_framework.authentication import TokenAuthentication
+from rest_framework.permissions import IsAuthenticated
+
+class TitleLikesView(APIView):
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, titleID):
+        try:
+            title_object = TitleObject.objects.get(tconst=titleID)
+        except TitleObject.DoesNotExist:
+            return Response({"error": "Title not found"}, status=status.HTTP_404_NOT_FOUND)
+
+        like_objects = Likes.objects.filter(tconst=title_object.tconst)
+        
+        # Get the currently logged-in user using request.user
+        user = request.user
+        
+        likes_count = sum(1 for like in like_objects if like.liked)
+        dislikes_count = sum(1 for like in like_objects if not like.liked)
+        user_has_liked = like_objects.filter(userId=user, liked=True).exists()
+
+        response_data = {
+            "title": title_object.originalTitle,
+            "likes": likes_count,
+            "dislikes": dislikes_count,
+            "hasLiked": user_has_liked,
+        }
+
+        return Response(response_data, status=status.HTTP_200_OK)
+In this modification:
+
+I added authentication_classes to include TokenAuthentication. This will automatically authenticate the user based on the token provided in the request.
+
+I added permission_classes to include IsAuthenticated. This ensures that only authenticated users can access this view.
+
+I used request.user to get the currently logged-in user associated with the token.
+
+Now, the user variable in your view will hold the User object corresponding to the user making the request.

@@ -1,0 +1,105 @@
+class TitleObjectSerializer(serializers.ModelSerializer):
+    titlesAkas = serializers.SerializerMethodField()
+    genres = serializers.SerializerMethodField()
+    principals=serializers.SerializerMethodField()
+    rating=serializers.SerializerMethodField()
+
+    class Meta:
+        model = TitleObject
+        fields = ['tconst', 'titleType', 'originalTitle', 'img_url_asset', 'startYear', 'endYear', 'genres','titlesAkas','principals','rating']  # You can choose to exclude 'titles' and 'regions' if they should not appear separately.
+        # fields = [field.name for field in model._meta.fields if field.name not in ('titles', 'regions')]
+    
+    def get_titlesAkas(self, obj):
+        # Split the titles and regions by ', ' and zip them into tuples
+        akaTitle = obj.titles.split(',') if obj.titles else []
+        regionAbbrev = obj.regions.split(',') if obj.regions else []
+        # Combine the titles and regions into a list of dictionaries
+        return [{'akaTitle': akaTitle, 'regionAbbrev': regionAbbrev} for akaTitle, regionAbbrev in zip(akaTitle, regionAbbrev)]
+
+    def get_genres(self, obj):
+        return obj.genres.split(',') if obj.genres else []
+
+    
+    def get_principals(self, obj):
+        # Split the titles and regions by ', ' and zip them into tuples
+        nameID = obj.nconsts.split(',') if obj.nconsts else []
+        name = obj.primaryName.split(',') if obj.primaryName else []
+        category= obj.categories.split(',') if obj.categories else []
+        # Combine the titles and regions into a list of dictionaries
+        return [{'nameID': nameID, 'name': name, 'category':category} for nameID, name,category in zip(nameID, name,category)]
+
+    def get_rating(self, obj):
+        return [{'avRating': obj.averageRating, 'nVotes': obj.numVotes}]
+
+Do the same for the previous serializer
+ChatGPT
+To test the TitleObjectSerializer, you will need to write tests that check both the serialization and deserialization processes, ensuring that your custom get_ methods are functioning correctly and that the output data matches the expected format.
+
+Given the structure of your TitleObjectSerializer, here's an example of how you might write these tests:
+
+Setting Up the Test Environment
+Ensure you have a tests.py file in your Django app where TitleObjectSerializer is defined.
+
+Writing the Serializer Test
+python
+Copy code
+from django.test import TestCase
+from .models import TitleObject  # Replace with your actual model import
+from .serializers import TitleObjectSerializer
+
+class TitleObjectSerializerTest(TestCase):
+    def setUp(self):
+        # Create a TitleObject instance for testing
+        self.title_object = TitleObject.objects.create(
+            tconst='tt1234567',
+            titleType='movie',
+            originalTitle='Test Movie',
+            img_url_asset='url/to/image.jpg',
+            startYear=2020,
+            endYear=2021,
+            titles='Title1,Title2',
+            regions='US,UK',
+            genres='Comedy,Drama',
+            averageRating=7.5,
+            numVotes=100,
+            nconsts='nm0000001,nm0000002',
+            categories='Director,Actor',
+            primaryName='Name1,Name2'
+        )
+
+    def test_title_object_serialization(self):
+        # Test the serialization process
+        serializer = TitleObjectSerializer(self.title_object)
+        expected_data = {
+            'tconst': 'tt1234567',
+            'titleType': 'movie',
+            'originalTitle': 'Test Movie',
+            'img_url_asset': 'url/to/image.jpg',
+            'startYear': 2020,
+            'endYear': 2021,
+            'genres': ['Comedy', 'Drama'],
+            'titlesAkas': [
+                {'akaTitle': 'Title1', 'regionAbbrev': 'US'},
+                {'akaTitle': 'Title2', 'regionAbbrev': 'UK'}
+            ],
+            'principals': [
+                {'nameID': 'nm0000001', 'name': 'Name1', 'category': 'Director'},
+                {'nameID': 'nm0000002', 'name': 'Name2', 'category': 'Actor'}
+            ],
+            'rating': [{'avRating': 7.5, 'nVotes': 100}]
+        }
+        self.assertEqual(serializer.data, expected_data)
+
+    # Add more tests as needed for edge cases or invalid data
+Key Points
+setUp Method: This method is used to set up any objects that are necessary for all test methods in the class. Here, it creates an instance of TitleObject.
+
+test_title_object_serialization: This method tests whether the serialization of the TitleObject instance matches the expected output.
+
+Expected Data: The structure of expected_data should match the output format of your serializer. Be sure to include all fields and ensure they match the serialized output format, especially for custom fields.
+
+Running the Test: Use python manage.py test to run your tests.
+
+Additional Testing: Consider adding tests for deserialization (creating an instance from JSON data) and any custom validation logic that your serializer might have.
+
+Remember to adjust the test case to match the actual structure of your TitleObject model and serializer.
