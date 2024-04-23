@@ -1,0 +1,942 @@
+{
+	"info": {
+		"_postman_id": "a6e7078c-5315-40de-b3b4-b91261ea394c",
+		"name": "Test API",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json",
+		"_exporter_id": "33030814"
+	},
+	"item": [
+		{
+			"name": "https://localhost:9876/ntuaflix_api/title/titleID/",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Response has tconst\", function () {\r",
+							"    var responseJson = pm.response.json();\r",
+							"    pm.expect(responseJson).to.have.property(\"tconst\");\r",
+							"    // Replace \"title\" with the actual key you expect in your response\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "833e0feda3611b08c6135e231629f9c11913116c",
+						"type": "text"
+					}
+				],
+				"url": "https://localhost:9876/ntuaflix_api/title/tt0000929/"
+			},
+			"response": []
+		},
+		{
+			"name": "https://localhost:9876/ntuaflix_api/title",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Response status code is 200\", function () {",
+							"  pm.expect(pm.response.code).to.equal(200);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": "https://localhost:9876/ntuaflix_api/title"
+			},
+			"response": []
+		},
+		{
+			"name": "https://localhost:9876/ntuaflix_api/name/",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Response status code is 200\", function () {",
+							"  pm.expect(pm.response.code).to.equal(200);",
+							"});",
+							"",
+							"",
+							"pm.test(\"Response Content-Type is application/json\", function () {",
+							"  pm.expect(pm.response.headers.get(\"Content-Type\")).to.include(\"application/json\");",
+							"});",
+							"",
+							"",
+							"pm.test(\"Verify the presence and length of the nameTitles array\", function () {",
+							"    const responseData = pm.response.json();",
+							"",
+							"    pm.expect(responseData).to.be.an('array');",
+							"    pm.expect(responseData).to.have.lengthOf.at.least(1, \"Array should not be empty\");",
+							"    responseData.forEach(function (item) {",
+							"        pm.expect(item.nameTitles).to.exist.and.to.be.an('array');",
+							"        pm.expect(item.nameTitles).to.have.lengthOf(1, \"nameTitles array should contain exactly 1 element\");",
+							"    });",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": "https://localhost:9876/ntuaflix_api/name/"
+			},
+			"response": []
+		},
+		{
+			"name": "https://localhost:9876/ntuaflix_api/name/nameID/",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Response status code is 200\", function () {",
+							"  pm.response.to.have.status(200);",
+							"});",
+							"",
+							"",
+							"pm.test(\"Verify that the 'nameTitles' array is present and contains at least one element\", function () {",
+							"    const responseData = pm.response.json();",
+							"    ",
+							"    pm.expect(responseData).to.be.an('array');",
+							"    pm.expect(responseData).to.have.lengthOf.at.least(1, \"Array should contain at least one element\");",
+							"    responseData.forEach(function (item) {",
+							"        pm.expect(item.nameTitles).to.exist.and.to.be.an('array').that.is.not.empty;",
+							"    });",
+							"});",
+							"",
+							"",
+							"pm.test(\"Birth year is a non-negative integer\", function () {",
+							"  const responseData = pm.response.json();",
+							"",
+							"  pm.expect(responseData).to.be.an('array');",
+							"  responseData.forEach(function (item) {",
+							"    pm.expect(item.birthYear).to.be.a('number').and.to.be.at.least(0);",
+							"  });",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "833e0feda3611b08c6135e231629f9c11913116c",
+						"type": "text"
+					}
+				],
+				"url": "https://localhost:9876/ntuaflix_api/name/nm0000019/"
+			},
+			"response": []
+		},
+		{
+			"name": "https://localhost:9876/ntuaflix_api/searchtitle",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Response status code is 200\", function () {",
+							"  pm.expect(pm.response.code).to.equal(200);",
+							"});",
+							"",
+							"",
+							"pm.test(\"tconst is a non-empty string\", function () {",
+							"    const responseData = pm.response.json();",
+							"    ",
+							"    pm.expect(responseData).to.be.an('array');",
+							"    responseData.forEach(function(item) {",
+							"        pm.expect(item.tconst).to.be.a('string').and.to.have.lengthOf.at.least(1, \"Value should not be empty\");",
+							"    });",
+							"});",
+							"",
+							"",
+							"pm.test(\"startYear is a positive integer\", function () {",
+							"    const responseData = pm.response.json();",
+							"    ",
+							"    pm.expect(responseData).to.be.an('array');",
+							"    responseData.forEach(function(item) {",
+							"        pm.expect(item.startYear).to.be.a('number').and.to.be.greaterThan(0);",
+							"    });",
+							"});",
+							"",
+							"",
+							"pm.test(\"Genres is an array that is not empty\", function () {",
+							"  const responseData = pm.response.json();",
+							"",
+							"  pm.expect(responseData).to.be.an('array');",
+							"  responseData.forEach(function (item) {",
+							"    pm.expect(item.genres).to.be.an('array').and.to.have.lengthOf.at.least(1);",
+							"  });",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "833e0feda3611b08c6135e231629f9c11913116c",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "https://localhost:9876/ntuaflix_api/searchtitle/?title=Dre",
+					"protocol": "https",
+					"host": [
+						"localhost"
+					],
+					"port": "9876",
+					"path": [
+						"ntuaflix_api",
+						"searchtitle",
+						""
+					],
+					"query": [
+						{
+							"key": "title",
+							"value": "Dre"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "https://localhost:9876/ntuaflix_api/bygenre/",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Response status code is 200\", function () {",
+							"    pm.expect(pm.response.code).to.equal(200);",
+							"});",
+							"",
+							"",
+							"pm.test(\"Response content type is application/json\", function () {",
+							"  pm.expect(pm.response.headers.get(\"Content-Type\")).to.include(\"application/json\");",
+							"});",
+							"",
+							"",
+							"pm.test(\"The 'tconst' field is a non-empty string\", function () {",
+							"  const responseData = pm.response.json();",
+							"  ",
+							"  pm.expect(responseData).to.be.an('array').and.to.have.lengthOf.at.least(1, \"Array should not be empty\");",
+							"  ",
+							"  responseData.forEach(function(item) {",
+							"    pm.expect(item.tconst).to.be.a('string').and.to.have.lengthOf.at.least(1, \"Value should not be empty\");",
+							"  });",
+							"});",
+							"",
+							"",
+							"pm.test(\"Verify that the 'titleType' field is a non-empty string\", function () {",
+							"  const responseData = pm.response.json();",
+							"",
+							"  pm.expect(responseData).to.be.an('array');",
+							"  responseData.forEach(function(item){",
+							"    pm.expect(item.titleType).to.be.a('string').and.to.have.lengthOf.at.least(1, \"Value should not be empty\");",
+							"  });",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "833e0feda3611b08c6135e231629f9c11913116c",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "https://localhost:9876/ntuaflix_api/bygenre/?genre=Drama&minimumrating=4&yearfrom=1990&yearto=1995",
+					"protocol": "https",
+					"host": [
+						"localhost"
+					],
+					"port": "9876",
+					"path": [
+						"ntuaflix_api",
+						"bygenre",
+						""
+					],
+					"query": [
+						{
+							"key": "genre",
+							"value": "Drama"
+						},
+						{
+							"key": "minimumrating",
+							"value": "4"
+						},
+						{
+							"key": "yearfrom",
+							"value": "1990"
+						},
+						{
+							"key": "yearto",
+							"value": "1995"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "https://localhost:9876/ntuaflix_api/searchname/",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Response status code is 200\", function () {",
+							"  pm.response.to.have.status(200);",
+							"});",
+							"",
+							"",
+							"pm.test(\"nconst is a non-empty string\", function () {",
+							"    const responseData = pm.response.json();",
+							"    ",
+							"    pm.expect(responseData).to.be.an('array');",
+							"    responseData.forEach(function(item) {",
+							"        pm.expect(item.nconst).to.be.a('string').and.to.have.lengthOf.at.least(1, \"Value should not be empty\");",
+							"    });",
+							"});",
+							"",
+							"",
+							"pm.test(\"birthYear is a positive integer or zero\", function () {",
+							"  const responseData = pm.response.json();",
+							"  ",
+							"  pm.expect(responseData).to.be.an('array');",
+							"  ",
+							"  responseData.forEach(function(item) {",
+							"    pm.expect(item.birthYear).to.be.a('number').and.to.satisfy(function(value) {",
+							"      return value >= 0;",
+							"    }, \"birthYear should be a positive integer or zero\");",
+							"  });",
+							"});",
+							"",
+							"",
+							"pm.test(\"nameTitles is an array with at least one element\", function () {",
+							"  const responseData = pm.response.json();",
+							"  ",
+							"  pm.expect(responseData).to.be.an('array');",
+							"  pm.expect(responseData).to.have.lengthOf.at.least(1, \"Array should have at least one element\");",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "833e0feda3611b08c6135e231629f9c11913116c",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": []
+				},
+				"url": {
+					"raw": "https://localhost:9876/ntuaflix_api/searchname/?name=Sean",
+					"protocol": "https",
+					"host": [
+						"localhost"
+					],
+					"port": "9876",
+					"path": [
+						"ntuaflix_api",
+						"searchname",
+						""
+					],
+					"query": [
+						{
+							"key": "name",
+							"value": "Sean"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "https://localhost:9876/ntuaflix_api/SearchByYear",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Response status code is 200\", function () {",
+							"  pm.response.to.have.status(200);",
+							"});",
+							"",
+							"",
+							"pm.test(\"Response is in JSON format\", function () {",
+							"    pm.expect(pm.response.headers.get(\"Content-Type\")).to.include(\"application/json\");",
+							"});",
+							"",
+							"",
+							"pm.test(\"The 'tconst' field is a non-empty string\", function () {",
+							"    const responseData = pm.response.json();",
+							"    ",
+							"    pm.expect(responseData).to.be.an('array');",
+							"    ",
+							"    responseData.forEach(function (item) {",
+							"        pm.expect(item.tconst).to.be.a('string').and.to.have.lengthOf.at.least(1);",
+							"    });",
+							"});",
+							"",
+							"",
+							"pm.test(\"Validate the titleType field is a non-empty string\", function () {",
+							"    const responseData = pm.response.json();",
+							"",
+							"    pm.expect(responseData).to.be.an('array');",
+							"    responseData.forEach(function (item) {",
+							"        pm.expect(item.titleType).to.be.a('string').and.to.have.lengthOf.at.least(1);",
+							"    });",
+							"});",
+							"",
+							"",
+							"pm.test(\"Validate that 'originalTitle' is a non-empty string\", function () {",
+							"    const responseData = pm.response.json();",
+							"    ",
+							"    pm.expect(responseData).to.be.an('array');",
+							"    responseData.forEach(function (item) {",
+							"        pm.expect(item.originalTitle).to.be.a('string').and.to.have.lengthOf.at.least(1, \"Value should not be empty\");",
+							"    });",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://localhost:9876/ntuaflix_api/SearchByYear/?year=1991",
+					"protocol": "https",
+					"host": [
+						"localhost"
+					],
+					"port": "9876",
+					"path": [
+						"ntuaflix_api",
+						"SearchByYear",
+						""
+					],
+					"query": [
+						{
+							"key": "year",
+							"value": "1991"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "https://localhost:9876/ntuaflix_api/SearchByGenre",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Response status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"",
+							"pm.test(\"Genres array is not empty\", function () {",
+							"  const responseData = pm.response.json();",
+							"  ",
+							"  pm.expect(responseData).to.be.an('array');",
+							"  responseData.forEach(function(item) {",
+							"    pm.expect(item.genres).to.be.an('array').that.is.not.empty;",
+							"  });",
+							"});",
+							"",
+							"",
+							"pm.test(\"Verify that the 'titlesAkas' array is not empty\", function () {",
+							"    const responseData = pm.response.json();",
+							"",
+							"    pm.expect(responseData).to.be.an('array');",
+							"    responseData.forEach(function(item) {",
+							"        pm.expect(item.titlesAkas).to.be.an('array').and.to.have.lengthOf.at.least(1, \"Value should not be empty\");",
+							"    });",
+							"});",
+							"",
+							"",
+							"pm.test(\"The 'principals' array should not be empty\", function () {",
+							"    const responseData = pm.response.json();",
+							"    ",
+							"    pm.expect(responseData).to.be.an('array');",
+							"    responseData.forEach(function(item) {",
+							"        pm.expect(item.principals).to.exist.and.to.be.an('array').that.is.not.empty;",
+							"    });",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://localhost:9876/ntuaflix_api/SearchByGenre/?genre=Drama&toprated=true&number=5",
+					"protocol": "https",
+					"host": [
+						"localhost"
+					],
+					"port": "9876",
+					"path": [
+						"ntuaflix_api",
+						"SearchByGenre",
+						""
+					],
+					"query": [
+						{
+							"key": "genre",
+							"value": "Drama"
+						},
+						{
+							"key": "toprated",
+							"value": "true"
+						},
+						{
+							"key": "number",
+							"value": "5"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "https://localhost:9876/ntuaflix_api/SearchByName",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Response status code is 200\", function () {",
+							"  pm.response.to.have.status(200);",
+							"});",
+							"",
+							"",
+							"pm.test(\"Verify that the 'titlesAkas' array is present in the response and contains the expected number of elements\", function () {",
+							"    const responseData = pm.response.json();",
+							"",
+							"    pm.expect(responseData).to.be.an('array');",
+							"    responseData.forEach(function (item) {",
+							"        pm.expect(item.titlesAkas).to.exist.and.to.be.an('array').and.to.have.lengthOf(1);",
+							"    });",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://localhost:9876/ntuaflix_api/SearchByName/?name=Sean+Bean&toprated=true&newest=false&number=3",
+					"protocol": "https",
+					"host": [
+						"localhost"
+					],
+					"port": "9876",
+					"path": [
+						"ntuaflix_api",
+						"SearchByName",
+						""
+					],
+					"query": [
+						{
+							"key": "name",
+							"value": "Sean+Bean"
+						},
+						{
+							"key": "toprated",
+							"value": "true"
+						},
+						{
+							"key": "newest",
+							"value": "false"
+						},
+						{
+							"key": "number",
+							"value": "3"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "https://localhost:9876/ntuaflix_api/NameProfile",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Response status code is 200\", function () {",
+							"    pm.expect(pm.response.code).to.equal(200);",
+							"});",
+							"",
+							"",
+							"pm.test(\"Response has the required fields\", function () {",
+							"  const responseData = pm.response.json();",
+							"  ",
+							"  pm.expect(responseData).to.be.an('object');",
+							"  pm.expect(responseData).to.include.all.keys('Sean Bean', 'Comedy', 'Crime', 'Drama');",
+							"});",
+							"",
+							"",
+							"pm.test(\"Comedy value is a non-negative integer\", function () {",
+							"    const responseData = pm.response.json();",
+							"    ",
+							"    pm.expect(responseData[\"Sean Bean\"][\"Comedy\"]).to.be.a('number').and.to.be.at.least(0);",
+							"});",
+							"",
+							"pm.test(\"Crime value is a non-negative integer\", function () {",
+							"    const responseData = pm.response.json();",
+							"    ",
+							"    pm.expect(responseData[\"Sean Bean\"][\"Crime\"]).to.be.a('number').and.to.be.at.least(0);",
+							"});",
+							"",
+							"pm.test(\"Verify that the response is in JSON format\", function () {",
+							"  pm.expect(pm.response.headers.get(\"Content-Type\")).to.include(\"application/json\");",
+							"});",
+							"",
+							"",
+							"pm.test(\"Verify that the Content-Type header is set to 'application/json'\", function () {",
+							"  pm.expect(pm.response.headers.get(\"Content-Type\")).to.equal(\"application/json\");",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://localhost:9876/ntuaflix_api/NameProfile/?name=Sean+Bean",
+					"protocol": "https",
+					"host": [
+						"localhost"
+					],
+					"port": "9876",
+					"path": [
+						"ntuaflix_api",
+						"NameProfile",
+						""
+					],
+					"query": [
+						{
+							"key": "name",
+							"value": "Sean+Bean"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "https://localhost:9876/ntuaflix_api/title_likes",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Response status code is 200\", function () {",
+							"  pm.response.to.have.status(200);",
+							"});",
+							"",
+							"",
+							"pm.test(\"Likes and dislikes are non-negative integers\", function () {",
+							"    const responseData = pm.response.json();",
+							"    ",
+							"    pm.expect(responseData.likes).to.be.a('number').and.to.be.at.least(0, \"Likes should be a non-negative integer\");",
+							"    pm.expect(responseData.dislikes).to.be.a('number').and.to.be.at.least(0, \"Dislikes should be a non-negative integer\");",
+							"});",
+							"",
+							"",
+							"pm.test(\"Verify that 'hasLiked' field is a boolean value\", function () {",
+							"  const responseData = pm.response.json();",
+							"  ",
+							"  pm.expect(responseData.hasLiked).to.be.a('boolean');",
+							"});",
+							"",
+							"",
+							"pm.test(\"Verify that the 'hasDisliked' field is a boolean value\", function () {",
+							"    const responseData = pm.response.json();",
+							"    ",
+							"    pm.expect(responseData.hasDisliked).to.be.a('boolean');",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "833e0feda3611b08c6135e231629f9c11913116c",
+						"type": "text"
+					}
+				],
+				"url": "https://localhost:9876/ntuaflix_api/title_likes/tt0000929/"
+			},
+			"response": []
+		},
+		{
+			"name": "https://localhost:9876/ntuaflix_api/SearchByName/",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": "https://localhost:9876/ntuaflix_api/SearchByName/"
+			},
+			"response": []
+		},
+		{
+			"name": "https://localhost:9876/ntuaflix_api/title_likes/press_like",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Response status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"",
+							"pm.test(\"Response has the required field - status\", function () {",
+							"    const responseData = pm.response.json();",
+							"    ",
+							"    pm.expect(responseData.status).to.exist.and.to.be.a('string');",
+							"});",
+							"",
+							"",
+							"pm.test(\"Status is a non-empty string\", function () {",
+							"  const responseData = pm.response.json();",
+							"  ",
+							"  pm.expect(responseData.status).to.exist.and.to.be.a('string').and.to.have.lengthOf.at.least(1, \"Value should not be empty\");",
+							"});",
+							"",
+							"",
+							"pm.test(\"Status is either 'success' or 'failure'\", function () {",
+							"    const responseData = pm.response.json();",
+							"    ",
+							"    pm.expect(responseData.status).to.exist.and.to.be.oneOf(['success', 'failure']);",
+							"});",
+							"",
+							"",
+							"pm.test(\"Content-Type is application/json\", function () {",
+							"  pm.expect(pm.response.headers.get(\"Content-Type\")).to.equal(\"application/json\");",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "833e0feda3611b08c6135e231629f9c11913116c",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "https://localhost:9876/ntuaflix_api/title_likes/press_like/tt0000929/"
+			},
+			"response": []
+		},
+		{
+			"name": "https://localhost:9876/ntuaflix_api/login/",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Response status code is 200\", function () {",
+							"  pm.response.to.have.status(200);",
+							"});",
+							"",
+							"",
+							"pm.test(\"Response has the required fields - token and is_superuser\", function () {",
+							"  const responseData = pm.response.json();",
+							"  ",
+							"  pm.expect(responseData).to.be.an('object');",
+							"  pm.expect(responseData.token).to.exist.and.to.be.a('string');",
+							"  pm.expect(responseData.is_superuser).to.exist.and.to.be.a('boolean');",
+							"});",
+							"",
+							"",
+							"pm.test(\"Token is a non-empty string\", function () {",
+							"  const responseData = pm.response.json();",
+							"  ",
+							"  pm.expect(responseData.token).to.be.a('string').and.to.have.lengthOf.at.least(1, \"Token should not be empty\");",
+							"});",
+							"",
+							"",
+							"pm.test(\"is_superuser is a boolean value\", function () {",
+							"  const responseData = pm.response.json();",
+							"  ",
+							"  pm.expect(responseData.is_superuser).to.be.a('boolean');",
+							"});",
+							"",
+							"",
+							"pm.test(\"Content-Type is application/json\", function () {",
+							"    pm.expect(pm.response.headers.get(\"Content-Type\")).to.include(\"application/json\");",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"username\": \"epa\",\r\n    \"password\": \"epa\"\r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "https://localhost:9876/ntuaflix_api/login/"
+			},
+			"response": []
+		},
+		{
+			"name": "https://localhost:9876/ntuaflix_api/signup/",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"username\": \"desiredUsername\",\r\n    \"password\": \"securePassword123!\",\r\n    \"email\": \"user@example.com\",\r\n    \"firstname\": \"FirstName\",\r\n    \"lastname\": \"LastName\"\r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "https://localhost:9876/ntuaflix_api/signup/"
+			},
+			"response": []
+		},
+		{
+			"name": "https://localhost:9876/ntuaflix_api/logout/",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "2c9ee25cbf71cbb9c49ff751c09ad542e82e9f78",
+						"type": "text"
+					}
+				],
+				"url": "https://localhost:9876/ntuaflix_api/logout/"
+			},
+			"response": []
+		},
+		{
+			"name": "https://localhost:9876/ntuaflix_api/admin/upload/{{Upload Type}}/",
+			"protocolProfileBehavior": {
+				"strictSSL": false
+			},
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "833e0feda3611b08c6135e231629f9c11913116c",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": []
+				},
+				"url": {
+					"raw": "https://localhost:9876/ntuaflix_api/admin/upload/titlebasics/",
+					"protocol": "https",
+					"host": [
+						"localhost"
+					],
+					"port": "9876",
+					"path": [
+						"ntuaflix_api",
+						"admin",
+						"upload",
+						"titlebasics",
+						""
+					],
+					"query": [
+						{
+							"key": "",
+							"value": null,
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
