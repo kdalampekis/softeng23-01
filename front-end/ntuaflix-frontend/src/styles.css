@@ -1,0 +1,476 @@
+:root {
+    --gradient3: #A9A9A9;
+    --gradient4: #00FF00;
+    --gradient2: #BF40BF;
+    --gradient1: #7F00FF;
+    --button: #7F00FF;
+    --functionality: #800080;
+    --functionality1: #9F2B68;
+}
+
+* {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+}
+html {
+    font-family: "Montserrat", sans-serif;
+}
+
+body {
+    background: black;
+    padding: 0 16px;
+    /*min-height: 100vh; !* 100% of the viewport height *!*/
+    overflow-x: hidden;
+}
+
+html, body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+header {
+    background: linear-gradient(to right, var(--gradient1), var(--gradient2));
+    margin: auto -16px;
+    padding: 16px 32px;
+    box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.3);
+}
+
+header h1 {
+    color: white;
+    font-family: "McLaren", cursive;
+    font-weight: 200;
+}
+
+.message {
+    color: white;
+    text-align: center;
+    margin-top: 10rem;
+    font-size: 2.7rem;
+}
+
+h2 {
+    text-align: center;
+    margin-top: 2rem;
+    color: white;
+}
+
+.buttonContainer p, Link {
+    color: white;
+}
+
+.buttonContainer Link {
+    text-decoration: none;
+}
+
+button , .button {
+    padding: 10px 20px;
+    width: 150px;
+    color: white;
+    border-radius: 10px;
+    font-size: 16px;
+    cursor: pointer;
+    text-align: center;
+    margin: 1rem;
+    background: black;
+    border: 2px solid var(--button);
+}
+
+option {
+    text-align: center;
+}
+
+button:hover {
+    background: var(--button);
+    color: white;
+}
+
+.body {
+    padding-bottom: 6rem;
+}
+
+.buttonContainer {
+    margin-top: 2.5rem;
+    text-align: center;
+}
+
+.inputContainer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    margin-top: 2rem;
+}
+
+.new {
+    margin-top: 3rem;
+}
+
+.inputContainer Button {
+    margin-top: 1rem;
+}
+
+input, .styled-select {
+    width: 200px;
+    padding: 10px;
+    margin: 10px 0;
+    border-radius: 5px;
+    border: 2px solid white;
+    background-color: white;
+    color: black;
+    font-size: 16px;
+    text-align: left;
+}
+
+input:not([type="file"]) {
+    background-color: black;
+    color: white;
+    border: 2px solid white;
+    border-radius: 10px;
+}
+
+
+.fileInputContainer {
+    position: relative;
+    text-align: center;
+    margin-top: 3rem;
+}
+
+.custom-file-input {
+    width: 1px;
+    height: 1px;
+    opacity: 0;
+    overflow: hidden;
+    position: absolute;
+    z-index: -1;
+}
+
+.custom-file-label {
+    display: inline-block;
+    padding: 10px 20px;
+    margin: 10px 0;
+    color: white;
+    background-color: black;
+    border: 2px solid white;
+    border-radius: 10px;
+    cursor: pointer;
+    text-align: center;
+}
+
+.custom-file-label::before {
+    content: 'Choose file...';
+    display: block;
+    margin-right: 10px;
+}
+
+.custom-file-label.file-chosen::before {
+    content: none;
+}
+
+
+.label-success, input:not([type="file"]):valid {
+    border: 2px solid lime;
+}
+
+.label-failure, input:not([type="file"]):invalid {
+    border: 2px solid red;
+}
+
+
+.buttonContainer input:last-child {
+    margin-bottom: 2rem;
+}
+
+
+
+.custom-file-label.no-file-selected, input:not([type="file"]):focus {
+    border: 2px solid white;
+}
+
+
+
+.healthCheckInfo {
+    margin: auto;
+    color: white;
+    padding: 2rem;
+}
+
+.healthCheckInfo h2 {
+    font-size: 2.5rem;
+    text-align: left;
+}
+
+.healthCheckInfo p:first-of-type {
+    margin-top: 2rem;
+}
+
+
+
+
+
+/* Hide the number input spinner */
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+input[type="number"] {
+    -moz-appearance: textfield; /* Firefox */
+}
+
+input::placeholder, input:-ms-input-placeholder, input::-ms-input-placeholder {
+    color: white;
+}
+
+input::placeholder {
+    opacity: 1; /* Firefox */
+}
+
+
+
+.query input {
+    width: 250px;
+}
+
+
+/* To style the dropdown arrow */
+.styled-select::-ms-expand {
+    display: none;
+}
+
+
+.styled-select:hover {
+    background-color: #f5f5f5;
+}
+
+.home {
+    margin-top: 5rem;
+}
+
+.functionality, .actor, .movie {
+    border: 2px solid var(--button);
+    padding: 10px;
+    margin: 4px 0;
+    border-radius: 10px;
+    width: 10rem;
+    height: 10rem;
+    text-align: center;
+    color: white;
+    background: black;
+}
+
+.actor, .movie {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: start;
+    border: 2px solid white;
+    height: 12rem;
+    width: 20rem;
+}
+
+.functionality:hover, .movie:hover, .actor:hover {
+    background: linear-gradient(to right, var(--gradient1), var(--gradient2));
+    border: 2px solid white;
+}
+
+.actor:hover .actor-image, .movie:hover .movie-image {
+    border: 2px solid black;
+    box-shadow: 0 2px 5px 5px black;
+}
+
+.functionalitiesContainer, .moviesContainer, .actorsContainer {
+    margin: 3rem auto;
+    width: 70%;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+    padding: 20px 10px;
+    color: white;
+}
+
+.moviesContainer, .actorsContainer {
+    width: 90%;
+}
+
+footer {
+    background-color: black;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    width: 100%;
+    height: 4rem;
+    padding: 1rem;
+    padding-bottom: 1.5rem;
+    z-index: 2;
+    position: fixed;
+    bottom: 0;
+}
+
+footer p, .link {
+    color: #ccc;
+    text-decoration: none;
+}
+
+.link:hover {
+    color: white;
+}
+
+footer button {
+    border-color: white;
+}
+
+footer button:hover {
+    background-color: black;
+}
+
+.dynamic-content {
+    background: linear-gradient(45deg, var(--gradient1), var(--gradient2));
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    color: transparent;
+}
+
+.movie h3, p {
+    padding: 5px;
+}
+
+
+
+.movie-analytics-container, .actor-analytics-container, .user-container {
+    display: flex;
+    width: 90%;
+    justify-content: space-between;
+    border: 2px solid white;
+    border-radius: 10px;
+    background: black;
+    color: white;
+    margin: auto;
+    margin-top: 2rem;
+}
+
+.movie-analytics-content, .actor-analytics-content, .user-content {
+    flex: 3;
+    padding: 20px;
+    height: 100%;
+    overflow: hidden;
+}
+
+.movie-analytics-image-container, .actor-analytics-image-container {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px;
+    margin: 1rem;
+}
+
+.movie-analytics-image, .actor-analytics-image {
+    width: 100%;
+    height: 50vh;
+    object-fit: contain;
+}
+
+
+.movie-analytics-content h1, .actor-analytics-content h1, .user-content h1 {
+    margin: 1rem 0 2rem 0;
+    font-size: 2.5rem;
+}
+
+
+.movie-analytics-content h2, .actor-analytics-content h2 {
+    text-align: left;
+}
+
+.movie-analytics-content p, .actor-analytics-content p, .user-content p {
+    letter-spacing: 1px;
+    line-height: 25px;
+}
+
+
+
+.addLikeButtons {
+    margin: .25rem;
+}
+
+.addLikeButtons button {
+    background-color: #353535;
+    border-color: black;
+}
+
+.noImage {
+    text-align: left;
+    margin-left: 0;
+    margin-top: 2rem;
+}
+
+.noImage button:first-child {
+    margin-left: 0;
+}
+
+.addLikeButtons button:hover {
+    background-color: gray;
+    color: black;
+}
+
+.movie-analytics-content .movie-info span,
+.movie-analytics-content .aka-titles li,
+.movie-analytics-content .principal-crew li {
+    word-wrap: break-word;
+    white-space: normal;
+}
+
+/* To make sure list items do not break out of their containers */
+.aka-titles ul, .principal-crew ul {
+    padding: 0;
+    margin: 0;
+}
+
+.aka-titles li, .principal-crew li {
+    /* Ensures list items break onto the next line within their container */
+    display: inline;
+    margin-right: 5px;
+}
+
+strong {
+    font-size: 1.25rem;
+}
+
+
+.actor-image, .movie-image {
+    width: 33.33%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 10px;
+}
+
+
+.actor-details, .movie-details {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 66.66%;
+    height: 100%;
+    padding-left: 10px;
+}
+
+.actor-name, .actor-profession {
+    text-align: center;
+}
+
+
+/* When there is no image, the details should take up the whole width */
+.actor-details.full-width, .movie-details.full-width, .movie-analytics-content.full-width, .actor-analytics-content.full-width {
+    width: 100%; /* Text takes up full width when there's no image */
+}
+
+
